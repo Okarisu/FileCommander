@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZC9pJRPFwc/zSkCq1cb0DRpIHEL94EOe52OvYhmiw7IRRcU80Mcnk6cZrFhKMlDUFtsvSSpGhBVvt4hl84FmcQ==",
+  "success": true,
+  "projectFilePath": "/home/toohka/Documents/DEV/FileCommander/FileCommander/FileCommander.csproj",
+  "expectedPackageFiles": [
+    "/home/toohka/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.9/microsoft.aspnetcore.app.ref.6.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}
