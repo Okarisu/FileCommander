@@ -6,7 +6,8 @@
 
 Cílem práce je vytvořit v programovacím jazyce C# multiplatformní desktopovou aplikaci k práci se soubory. Mezi funkce programu patří:
 
-- přesouvání a kopírování souborů a složek
+- přesouvání a kopírování souborů/složek
+- přejmenování souborů/složek
 - vytváření nových složek
 - mazání souborů a složek
 - komprese a dekomprese archivů
