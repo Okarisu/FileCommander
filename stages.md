@@ -8,6 +8,8 @@ Dále bude možné vytvářet archivy a jiné archivy extrahovat.
 ## Požadavky
 
 ### F1. Zobrazení obsahu adresáře
+Uživatel bude moci otevřít složku a zobrazit její obsah.
+
 ### F2. 
 
 ## Případy užití
@@ -22,7 +24,7 @@ Dále bude možné vytvářet archivy a jiné archivy extrahovat.
 ### UC8. Extrakce archivu
 
 ## Milestones
-
+ 
 ### MS1. - 12.2.
 ### MS2. - 2.3.
 ### MS3. - 20.3.
