@@ -1,0 +1,15 @@
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.csproj.AssemblyReference.cache
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.GeneratedMSBuildEditorConfig.editorconfig
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.AssemblyInfoInputs.cache
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.AssemblyInfo.cs
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.csproj.CoreCompileInputs.cache
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/FileCommander
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/FileCommander.deps.json
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/FileCommander.runtimeconfig.json
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/FileCommander.dll
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/ref/FileCommander.dll
+/home/toohka/Documents/DEV/FileCommander/FileCommander/bin/Debug/net6.0/FileCommander.pdb
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.dll
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/ref/FileCommander.dll
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.pdb
+/home/toohka/Documents/DEV/FileCommander/FileCommander/obj/Debug/net6.0/FileCommander.genruntimeconfig.cache

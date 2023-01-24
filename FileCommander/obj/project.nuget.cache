@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "ZC9pJRPFwc/zSkCq1cb0DRpIHEL94EOe52OvYhmiw7IRRcU80Mcnk6cZrFhKMlDUFtsvSSpGhBVvt4hl84FmcQ==",
+  "dgSpecHash": "N37g5EkBSaY2fenXRvK7yLCFw4U9TLypyNjIxHsXb2LVCwlhbz0syBSOgN7ZIzkUtpYgBCot4yH81umJvLBysQ==",
   "success": true,
   "projectFilePath": "/home/toohka/Documents/DEV/FileCommander/FileCommander/FileCommander.csproj",
   "expectedPackageFiles": [
-    "/home/toohka/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.9/microsoft.aspnetcore.app.ref.6.0.9.nupkg.sha512"
+    "/home/toohka/.nuget/packages/nstack.core/1.0.3/nstack.core.1.0.3.nupkg.sha512",
+    "/home/toohka/.nuget/packages/system.valuetuple/4.5.0/system.valuetuple.4.5.0.nupkg.sha512",
+    "/home/toohka/.nuget/packages/terminal.gui/1.8.2/terminal.gui.1.8.2.nupkg.sha512",
+    "/home/toohka/.nuget/packages/microsoft.netcore.app.ref/6.0.12/microsoft.netcore.app.ref.6.0.12.nupkg.sha512",
+    "/home/toohka/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.12/microsoft.aspnetcore.app.ref.6.0.12.nupkg.sha512",
+    "/home/toohka/.nuget/packages/microsoft.netcore.app.host.linux-x64/6.0.12/microsoft.netcore.app.host.linux-x64.6.0.12.nupkg.sha512"
   ],
   "logs": []
 }
