@@ -12,9 +12,11 @@ public class IconApp : Window
     const int COL_PIXBUF = 2;
     const int COL_IS_DIRECTORY = 3;
 
-    DirectoryInfo root = new DirectoryInfo("/");
+    DirectoryInfo LeftRoot = new DirectoryInfo("/");
+    DirectoryInfo RightRoot = new DirectoryInfo("/");
     Gdk.Pixbuf dirIcon, fileIcon;
     ListStore LeftStore;
+    ListStore RightStore;
     ToolButton upButton;
 
     public IconApp() : base("IconView")
@@ -26,6 +28,7 @@ public class IconApp : Window
         VBox vbox = new VBox(false, 0);
         Add(vbox);
 
+        /*
         Toolbar toolbar = new Toolbar();
         vbox.PackStart(toolbar, false, false, 0);
 
@@ -37,6 +40,7 @@ public class IconApp : Window
         ToolButton homeButton = new ToolButton(Stock.Home);
         homeButton.IsImportant = true;
         toolbar.Insert(homeButton, -1);
+        */
 
         fileIcon = GetIcon(Stock.File);
         dirIcon = GetIcon(Stock.Open);
@@ -47,26 +51,50 @@ public class IconApp : Window
 
         HBox hbox = new HBox(false, 0);
         
+        //Left panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
         leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
         leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         hbox.PackStart(leftScrolledWindow, true, true, 0);
 
         LeftStore = CreateStore();
-        LeftStore.FillStore();
+        FillStore(LeftStore, LeftRoot);
 
-        IconView iconView = new IconView(LeftStore);
-        iconView.SelectionMode = SelectionMode.Multiple;
+        IconView LeftIconView = new IconView(LeftStore);
+        LeftIconView.SelectionMode = SelectionMode.Multiple;
 
-        upButton.Clicked += new EventHandler(OnUpClicked);
-        homeButton.Clicked += new EventHandler(OnHomeClicked);
+        //upButton.Clicked += new EventHandler(OnUpClicked);
+        //homeButton.Clicked += new EventHandler(OnHomeClicked);
 
-        iconView.TextColumn = COL_DISPLAY_NAME;
-        iconView.PixbufColumn = COL_PIXBUF;
+        LeftIconView.TextColumn = COL_DISPLAY_NAME;
+        LeftIconView.PixbufColumn = COL_PIXBUF;
 
-        iconView.ItemActivated += OnItemActivated;
-        leftScrolledWindow.Add(iconView);
-        iconView.GrabFocus();
+        LeftIconView.ItemActivated += OnItemActivated;
+        OnItemActivated(LeftRoot, LeftStore, leftScrolledWindow, leftScrolledWindow.ItemActivated);
+        leftScrolledWindow.Add(LeftIconView);
+        LeftIconView.GrabFocus();
+        
+        //Right panel
+        ScrolledWindow rightScrolledWindow = new ScrolledWindow();
+        rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
+        rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+        hbox.PackStart(rightScrolledWindow, true, true, 0);
+
+        RightStore = CreateStore();
+        FillStore(RightStore, RightRoot);
+
+        IconView RightIconView = new IconView(LeftStore);
+        RightIconView.SelectionMode = SelectionMode.Multiple;
+
+        //upButton.Clicked += new EventHandler(OnUpClicked);
+        //homeButton.Clicked += new EventHandler(OnHomeClicked);
+
+        RightIconView.TextColumn = COL_DISPLAY_NAME;
+        RightIconView.PixbufColumn = COL_PIXBUF;
+
+        RightIconView.ItemActivated += OnItemActivated;
+        rightScrolledWindow.Add(RightIconView);
+        RightIconView.GrabFocus();
         
         ShowAll();
     }
@@ -86,9 +114,9 @@ public class IconApp : Window
         return store;
     }
 
-    void FillStore()
+    void FillStore(ListStore store, DirectoryInfo root)
     {
-        LeftStore.Clear();
+        store.Clear();
 
         if (!root.Exists)
             return;
@@ -104,17 +132,20 @@ public class IconApp : Window
             if (!file.Name.StartsWith("."))
                 LeftStore.AppendValues(file.FullName, file.Name, fileIcon, false);
         }
-    }
 
-    void OnHomeClicked(object sender, EventArgs a)
+    }
+    
+    
+
+    void OnHomeClicked(DirectoryInfo root, ListStore store, object sender, EventArgs a)
     {
         root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
-        FillStore();
+        FillStore(store, root);
         upButton.Sensitive = true;
     }
 
-    void OnItemActivated(object sender, ItemActivatedArgs a)
+    void OnItemActivated(DirectoryInfo root, ListStore store, object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
         LeftStore.GetIter(out iter, a.Path);
@@ -125,15 +156,15 @@ public class IconApp : Window
             return;
 
         root = new DirectoryInfo(path);
-        FillStore();
+        FillStore(store, root);
 
         upButton.Sensitive = true;
     }
 
-    void OnUpClicked(object sender, EventArgs a)
+    void OnUpClicked(DirectoryInfo root, ListStore store, object sender, EventArgs a)
     {
         root = root.Parent;
-        FillStore();
+        FillStore(store, root);
         upButton.Sensitive = (root.FullName == "/" ? false : true);
     }
 }
