@@ -7,13 +7,14 @@ class SharpApp : Window
 {
     public SharpApp() : base("File Commander")
     {
-        
+        //Defaults
         SetDefaultSize(720, 512);
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
         
+        
+        
         MenuBar mb = new MenuBar();
-
         Menu filemenu = new Menu();
         MenuItem file = new MenuItem("File");
         file.Submenu = filemenu;

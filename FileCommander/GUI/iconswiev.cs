@@ -50,6 +50,7 @@ public class IconApp : Window
         //TODO do hlavního VBox přidat HBox
 
         HBox hbox = new HBox(false, 0);
+        vbox.PackStart(hbox, true, true, 0);
         
         //Left panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
@@ -69,8 +70,7 @@ public class IconApp : Window
         LeftIconView.TextColumn = COL_DISPLAY_NAME;
         LeftIconView.PixbufColumn = COL_PIXBUF;
 
-        LeftIconView.ItemActivated += OnItemActivated;
-        OnItemActivated(LeftRoot, LeftStore, leftScrolledWindow, leftScrolledWindow.ItemActivated);
+        LeftIconView.ItemActivated += OnLeftItemActivated;
         leftScrolledWindow.Add(LeftIconView);
         LeftIconView.GrabFocus();
         
@@ -92,7 +92,7 @@ public class IconApp : Window
         RightIconView.TextColumn = COL_DISPLAY_NAME;
         RightIconView.PixbufColumn = COL_PIXBUF;
 
-        RightIconView.ItemActivated += OnItemActivated;
+        RightIconView.ItemActivated += OnRightItemActivated;
         rightScrolledWindow.Add(RightIconView);
         RightIconView.GrabFocus();
         
@@ -148,6 +148,22 @@ public class IconApp : Window
     void OnItemActivated(DirectoryInfo root, ListStore store, object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
+        store.GetIter(out iter, a.Path);
+        string path = (string) store.GetValue(iter, COL_PATH);
+        bool isDir = (bool) store.GetValue(iter, COL_IS_DIRECTORY);
+
+        if (!isDir)
+            return;
+
+        root = new DirectoryInfo(path);
+        FillStore(store, root);
+
+        upButton.Sensitive = true;
+    }
+    
+    void OnLeftItemActivated(object sender, ItemActivatedArgs a)
+    {
+        TreeIter iter;
         LeftStore.GetIter(out iter, a.Path);
         string path = (string) LeftStore.GetValue(iter, COL_PATH);
         bool isDir = (bool) LeftStore.GetValue(iter, COL_IS_DIRECTORY);
@@ -155,8 +171,24 @@ public class IconApp : Window
         if (!isDir)
             return;
 
-        root = new DirectoryInfo(path);
-        FillStore(store, root);
+        LeftRoot = new DirectoryInfo(path);
+        FillStore(LeftStore, LeftRoot);
+
+        upButton.Sensitive = true;
+    }
+    
+    void OnRightItemActivated(object sender, ItemActivatedArgs a)
+    {
+        TreeIter iter;
+        RightStore.GetIter(out iter, a.Path);
+        string path = (string) RightStore.GetValue(iter, COL_PATH);
+        bool isDir = (bool) RightStore.GetValue(iter, COL_IS_DIRECTORY);
+
+        if (!isDir)
+            return;
+
+        RightRoot = new DirectoryInfo(path);
+        FillStore(RightStore, RightRoot);
 
         upButton.Sensitive = true;
     }

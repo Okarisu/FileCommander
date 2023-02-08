@@ -6,7 +6,7 @@ class Program
  public static void Main()
  {
   Application.Init();
-  new FileCommander.GUI.DialogApp();
+  new FileCommander.GUI.IconApp();
   Application.Run();
 
  }
