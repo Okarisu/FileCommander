@@ -17,7 +17,7 @@ public class IconApp : Window
     Gdk.Pixbuf dirIcon, fileIcon;
     ListStore LeftStore;
     ListStore RightStore;
-    ToolButton upButton;
+    
 
     public IconApp() : base("IconView")
     {
@@ -27,6 +27,28 @@ public class IconApp : Window
 
         VBox vbox = new VBox(false, 0);
         Add(vbox);
+        
+        Toolbar toolbar = new Toolbar();
+        toolbar.ToolbarStyle = ToolbarStyle.Icons;
+
+        ToolButton newtb = new ToolButton(Stock.New);
+        ToolButton opentb = new ToolButton(Stock.Open);
+        ToolButton savetb = new ToolButton(Stock.Save);
+        SeparatorToolItem sep = new SeparatorToolItem();
+        ToolButton quittb = new ToolButton(Stock.Quit);
+
+        toolbar.Insert(newtb, 0);
+        toolbar.Insert(opentb, 1);
+        toolbar.Insert(savetb, 2);
+        toolbar.Insert(sep, 3);
+        toolbar.Insert(quittb, 4);
+
+        quittb.Clicked += delegate { Application.Quit(); };
+         
+        //HBox toolbox = new HBox(false, 2);
+        vbox.PackStart(toolbar, false, true, 0);
+
+        //toolbox.PackStart(toolbar, false, false, 0);
 
         /*
         Toolbar toolbar = new Toolbar();
@@ -44,28 +66,19 @@ public class IconApp : Window
 
         fileIcon = GetIcon(Stock.File);
         dirIcon = GetIcon(Stock.Open);
-
         
-        //TODO new HBox - do něj 2 new ScrolledWindow
-        //TODO do hlavního VBox přidat HBox
-
-        HBox hbox = new HBox(false, 0);
-        vbox.PackStart(hbox, true, true, 0);
+        
         
         //Left panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
         leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
         leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        hbox.PackStart(leftScrolledWindow, true, true, 0);
 
         LeftStore = CreateStore();
         FillStore(LeftStore, LeftRoot);
 
         IconView LeftIconView = new IconView(LeftStore);
         LeftIconView.SelectionMode = SelectionMode.Multiple;
-
-        //upButton.Clicked += new EventHandler(OnUpClicked);
-        //homeButton.Clicked += new EventHandler(OnHomeClicked);
 
         LeftIconView.TextColumn = COL_DISPLAY_NAME;
         LeftIconView.PixbufColumn = COL_PIXBUF;
@@ -78,16 +91,12 @@ public class IconApp : Window
         ScrolledWindow rightScrolledWindow = new ScrolledWindow();
         rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
         rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        hbox.PackStart(rightScrolledWindow, true, true, 0);
 
         RightStore = CreateStore();
         FillStore(RightStore, RightRoot);
 
-        IconView RightIconView = new IconView(LeftStore);
+        IconView RightIconView = new IconView(RightStore);
         RightIconView.SelectionMode = SelectionMode.Multiple;
-
-        //upButton.Clicked += new EventHandler(OnUpClicked);
-        //homeButton.Clicked += new EventHandler(OnHomeClicked);
 
         RightIconView.TextColumn = COL_DISPLAY_NAME;
         RightIconView.PixbufColumn = COL_PIXBUF;
@@ -95,6 +104,12 @@ public class IconApp : Window
         RightIconView.ItemActivated += OnRightItemActivated;
         rightScrolledWindow.Add(RightIconView);
         RightIconView.GrabFocus();
+
+        HBox hbox = new HBox(false, 0);
+        hbox.PackStart(leftScrolledWindow, true, true, 0);
+        hbox.PackStart(rightScrolledWindow, true, true, 0);
+        
+        vbox.PackStart(hbox, true, true, 0);
         
         ShowAll();
     }
@@ -106,14 +121,13 @@ public class IconApp : Window
 
     ListStore CreateStore()
     {
-        ListStore store = new ListStore(typeof (string), 
+        ListStore store = new ListStore(typeof(string), 
             typeof(string), typeof (Gdk.Pixbuf), typeof(bool));
 
         store.SetSortColumnId(COL_DISPLAY_NAME, SortType.Ascending);
 
         return store;
     }
-
     void FillStore(ListStore store, DirectoryInfo root)
     {
         store.Clear();
@@ -124,26 +138,17 @@ public class IconApp : Window
         foreach (DirectoryInfo di in root.GetDirectories())
         {
             if (!di.Name.StartsWith("."))
-                LeftStore.AppendValues(di.FullName, di.Name, dirIcon, true);
+                store.AppendValues(di.FullName, di.Name, dirIcon, true);
         }
         
         foreach (FileInfo file in root.GetFiles())
         {
             if (!file.Name.StartsWith("."))
-                LeftStore.AppendValues(file.FullName, file.Name, fileIcon, false);
+                store.AppendValues(file.FullName, file.Name, fileIcon, false);
         }
 
     }
-    
-    
 
-    void OnHomeClicked(DirectoryInfo root, ListStore store, object sender, EventArgs a)
-    {
-        root = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(store, root);
-        upButton.Sensitive = true;
-    }
 
     void OnItemActivated(DirectoryInfo root, ListStore store, object sender, ItemActivatedArgs a)
     {
@@ -158,7 +163,6 @@ public class IconApp : Window
         root = new DirectoryInfo(path);
         FillStore(store, root);
 
-        upButton.Sensitive = true;
     }
     
     void OnLeftItemActivated(object sender, ItemActivatedArgs a)
@@ -174,7 +178,6 @@ public class IconApp : Window
         LeftRoot = new DirectoryInfo(path);
         FillStore(LeftStore, LeftRoot);
 
-        upButton.Sensitive = true;
     }
     
     void OnRightItemActivated(object sender, ItemActivatedArgs a)
@@ -185,18 +188,12 @@ public class IconApp : Window
         bool isDir = (bool) RightStore.GetValue(iter, COL_IS_DIRECTORY);
 
         if (!isDir)
+        {
+            Console.WriteLine("Here");
             return;
+        }
 
         RightRoot = new DirectoryInfo(path);
         FillStore(RightStore, RightRoot);
-
-        upButton.Sensitive = true;
-    }
-
-    void OnUpClicked(DirectoryInfo root, ListStore store, object sender, EventArgs a)
-    {
-        root = root.Parent;
-        FillStore(store, root);
-        upButton.Sensitive = (root.FullName == "/" ? false : true);
     }
 }
