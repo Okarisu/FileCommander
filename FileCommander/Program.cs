@@ -1,14 +1,13 @@
-﻿/*
- * TODO
- * GUI - výběr souborů - 2 paralelní okna
- * toolbar - výběr funkcí
- * 
-*/
+﻿using Gtk;
+ using static FileCommander.GUI.IconApp; 
 
 class Program
 {
  public static void Main()
  {
-  Console.WriteLine("42");
+  Application.Init();
+  new FileCommander.GUI.DialogApp();
+  Application.Run();
+
  }
 }
