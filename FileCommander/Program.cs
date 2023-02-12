@@ -1,12 +1,12 @@
-﻿using Gtk;
- using static FileCommander.GUI.IconApp; 
+﻿namespace FileCommander;
+using Gtk;
 
-class Program
+static class Program
 {
  public static void Main()
  {
   Application.Init();
-  new FileCommander.GUI.IconApp();
+  new GUI.IconApp();
   Application.Run();
 
  }

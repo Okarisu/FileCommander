@@ -12,8 +12,9 @@ public class IconApp : Window
     const int COL_PIXBUF = 2;
     const int COL_IS_DIRECTORY = 3;
 
-    DirectoryInfo LeftRoot = new DirectoryInfo("/");
-    DirectoryInfo RightRoot = new DirectoryInfo("/");
+    DirectoryInfo leftRoot = new DirectoryInfo("/");
+    DirectoryInfo rightRoot = new DirectoryInfo("/");
+
     Gdk.Pixbuf dirIcon, fileIcon;
     ListStore LeftStore;
     ListStore RightStore;
@@ -27,26 +28,48 @@ public class IconApp : Window
 
         VBox vbox = new VBox(false, 0);
         Add(vbox);
+
+        HBox toolbarHorizontalBox = new HBox(true, 0);
         
-        Toolbar toolbar = new Toolbar();
-        toolbar.ToolbarStyle = ToolbarStyle.Icons;
+        Toolbar leftToolbar = new Toolbar();
+        leftToolbar.ToolbarStyle = ToolbarStyle.Icons;
 
-        ToolButton newtb = new ToolButton(Stock.New);
-        ToolButton opentb = new ToolButton(Stock.Open);
-        ToolButton savetb = new ToolButton(Stock.Save);
-        SeparatorToolItem sep = new SeparatorToolItem();
-        ToolButton quittb = new ToolButton(Stock.Quit);
+        ToolButton leftButtonNew = new ToolButton(Stock.New);
+        ToolButton leftButtonOpen = new ToolButton(Stock.Open);
+        ToolButton leftButtonSave = new ToolButton(Stock.Save);
+        SeparatorToolItem leftSep = new SeparatorToolItem();
+        ToolButton leftButtonQuit = new ToolButton(Stock.Quit);
 
-        toolbar.Insert(newtb, 0);
-        toolbar.Insert(opentb, 1);
-        toolbar.Insert(savetb, 2);
-        toolbar.Insert(sep, 3);
-        toolbar.Insert(quittb, 4);
+        leftToolbar.Insert(leftButtonNew, 0);
+        leftToolbar.Insert(leftButtonOpen, 1);
+        leftToolbar.Insert(leftButtonSave, 2);
+        leftToolbar.Insert(leftSep, 3);
+        leftToolbar.Insert(leftButtonQuit, 4);
 
-        quittb.Clicked += delegate { Application.Quit(); };
+        leftButtonQuit.Clicked += delegate { Application.Quit(); };
+
+        Toolbar rightToolbar = new Toolbar();
+        rightToolbar.ToolbarStyle = ToolbarStyle.Icons;
+
+        ToolButton rightButtonNew = new ToolButton(Stock.New);
+        ToolButton rightButtonOpen = new ToolButton(Stock.Open);
+        ToolButton rightButtonSave = new ToolButton(Stock.Save);
+        SeparatorToolItem rightsep = new SeparatorToolItem();
+        ToolButton rightButtonQuit = new ToolButton(Stock.Quit);
+        //ToolButton unzip = new ToolButton("unzip");
+
+        rightToolbar.Insert(rightButtonNew, 0);
+        rightToolbar.Insert(rightButtonOpen, 1);
+        rightToolbar.Insert(rightButtonSave, 2);
+        rightToolbar.Insert(rightsep, 3);
+        rightToolbar.Insert(rightButtonQuit, 4);
          
+        rightButtonQuit.Clicked += delegate { Application.Quit(); };
+
+        toolbarHorizontalBox.PackStart(leftToolbar, true, true, 0);
+        toolbarHorizontalBox.PackStart(rightToolbar, true, true, 0);
         //HBox toolbox = new HBox(false, 2);
-        vbox.PackStart(toolbar, false, true, 0);
+        vbox.PackStart(toolbarHorizontalBox, false, true, 0);
 
         //toolbox.PackStart(toolbar, false, false, 0);
 
@@ -68,24 +91,23 @@ public class IconApp : Window
         dirIcon = GetIcon(Stock.Open);
         
         
-        
         //Left panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
         leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
         leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
 
         LeftStore = CreateStore();
-        FillStore(LeftStore, LeftRoot);
+        FillStore(LeftStore, leftRoot);
 
-        IconView LeftIconView = new IconView(LeftStore);
-        LeftIconView.SelectionMode = SelectionMode.Multiple;
+        IconView leftIconView = new IconView(LeftStore);
+        leftIconView.SelectionMode = SelectionMode.Multiple;
 
-        LeftIconView.TextColumn = COL_DISPLAY_NAME;
-        LeftIconView.PixbufColumn = COL_PIXBUF;
+        leftIconView.TextColumn = COL_DISPLAY_NAME;
+        leftIconView.PixbufColumn = COL_PIXBUF;
 
-        LeftIconView.ItemActivated += OnLeftItemActivated;
-        leftScrolledWindow.Add(LeftIconView);
-        LeftIconView.GrabFocus();
+        leftIconView.ItemActivated += OnLeftItemActivated;
+        leftScrolledWindow.Add(leftIconView);
+        leftIconView.GrabFocus();
         
         //Right panel
         ScrolledWindow rightScrolledWindow = new ScrolledWindow();
@@ -93,17 +115,17 @@ public class IconApp : Window
         rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
 
         RightStore = CreateStore();
-        FillStore(RightStore, RightRoot);
+        FillStore(RightStore, rightRoot);
 
-        IconView RightIconView = new IconView(RightStore);
-        RightIconView.SelectionMode = SelectionMode.Multiple;
+        IconView rightIconView = new IconView(RightStore);
+        rightIconView.SelectionMode = SelectionMode.Multiple;
 
-        RightIconView.TextColumn = COL_DISPLAY_NAME;
-        RightIconView.PixbufColumn = COL_PIXBUF;
+        rightIconView.TextColumn = COL_DISPLAY_NAME;
+        rightIconView.PixbufColumn = COL_PIXBUF;
 
-        RightIconView.ItemActivated += OnRightItemActivated;
-        rightScrolledWindow.Add(RightIconView);
-        RightIconView.GrabFocus();
+        rightIconView.ItemActivated += OnRightItemActivated;
+        rightScrolledWindow.Add(rightIconView);
+        rightIconView.GrabFocus();
 
         HBox hbox = new HBox(false, 0);
         hbox.PackStart(leftScrolledWindow, true, true, 0);
@@ -149,7 +171,7 @@ public class IconApp : Window
 
     }
 
-
+    //Asi by bylo fajn pro oba panely použít společnou metodu, ale nepřišel jsem na to, jak to sloučit.
     void OnItemActivated(DirectoryInfo root, ListStore store, object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
@@ -175,8 +197,8 @@ public class IconApp : Window
         if (!isDir)
             return;
 
-        LeftRoot = new DirectoryInfo(path);
-        FillStore(LeftStore, LeftRoot);
+        leftRoot = new DirectoryInfo(path);
+        FillStore(LeftStore, leftRoot);
 
     }
     
@@ -193,7 +215,7 @@ public class IconApp : Window
             return;
         }
 
-        RightRoot = new DirectoryInfo(path);
-        FillStore(RightStore, RightRoot);
+        rightRoot = new DirectoryInfo(path);
+        FillStore(RightStore, rightRoot);
     }
 }
