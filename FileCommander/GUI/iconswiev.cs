@@ -34,6 +34,32 @@ public class IconApp : Window
         Toolbar leftToolbar = new Toolbar();
         leftToolbar.ToolbarStyle = ToolbarStyle.Icons;
 
+        var toolRefreshButton = new ToolButton(Stock.Refresh);
+        var toolBackButton = new ToolButton(Stock.GoBack);
+        var toolForwardButton = new ToolButton(Stock.GoForward);
+        var toolUndoButton = new ToolButton(Stock.Undo);
+        var toolRedoButton = new ToolButton(Stock.Redo);
+        var toolNewButton = new ToolButton(Stock.New);
+        var toolCopyButton = new ToolButton(Stock.Copy);
+        var toolMoveButton = new ToolButton(Stock.Remove);
+        var toolDeleteButton = new ToolButton(Stock.Remove);
+        var toolRenameButton = new ToolButton(Stock.Network);
+
+        Toolbar toolbar = new Toolbar();
+        toolbar.ToolbarStyle = ToolbarStyle.Icons;
+        
+        toolbar.Insert(toolRefreshButton, 0);
+        toolbar.Insert(toolBackButton, 1);
+        toolbar.Insert(toolForwardButton, 2);
+        toolbar.Insert(toolUndoButton, 3);
+        toolbar.Insert(toolRedoButton, 4);
+        toolbar.Insert(new SeparatorToolItem(), 5);
+        toolbar.Insert(toolNewButton, 6);
+        toolbar.Insert(toolCopyButton, 7);
+        toolbar.Insert(toolMoveButton, 8);
+        toolbar.Insert(toolDeleteButton, 9);
+        toolbar.Insert(toolRenameButton, 10);
+        
         ToolButton leftButtonNew = new ToolButton(Stock.New);
         ToolButton leftButtonOpen = new ToolButton(Stock.Open);
         ToolButton leftButtonSave = new ToolButton(Stock.Save);
@@ -69,9 +95,9 @@ public class IconApp : Window
         toolbarHorizontalBox.PackStart(leftToolbar, true, true, 0);
         toolbarHorizontalBox.PackStart(rightToolbar, true, true, 0);
         //HBox toolbox = new HBox(false, 2);
-        vbox.PackStart(toolbarHorizontalBox, false, true, 0);
+        //vbox.PackStart(toolbarHorizontalBox, false, true, 0);
 
-        //toolbox.PackStart(toolbar, false, false, 0);
+        vbox.PackStart(toolbar, false, false, 0);
 
         /*
         Toolbar toolbar = new Toolbar();
