@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace FileCommander.GUI;
 
 using System;
@@ -10,18 +12,21 @@ public class IconApp : Window
     const int COL_DISPLAY_NAME = 1;
     const int COL_PIXBUF = 2;
     const int COL_IS_DIRECTORY = 3;
+   
 
-    DirectoryInfo leftRoot = new DirectoryInfo("/");
-    DirectoryInfo rightRoot = new DirectoryInfo("/");
+    private DirectoryInfo _leftRoot, _rightRoot;
 
-    Gdk.Pixbuf dirIcon, fileIcon;
-    ListStore LeftStore;
-    ListStore RightStore;
+    private readonly Gdk.Pixbuf _dirIcon, _fileIcon;
+    private ListStore _leftStore, _rightStore;
 
-    //TODO ?? Nastavení v menu/tools -> XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
-    //TODO ?? --||-- v YAML? 
+    //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public IconApp() : base("File Commander")
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            _leftRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
+            _rightRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
+        }
         SetDefaultSize(650, 400);
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
@@ -54,17 +59,17 @@ public class IconApp : Window
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
-        fileIcon = GetIcon(Stock.File);
-        dirIcon = GetIcon(Stock.Open);
+        _fileIcon = GetIcon(Stock.File);
+        _dirIcon = GetIcon(Stock.Open);
 
         //Levý panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
         leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
         leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        LeftStore = CreateStore();
-        FillStore(LeftStore, leftRoot);
+        _leftStore = CreateStore();
+        FillStore(_leftStore, _leftRoot);
         
-        IconView leftIconView = new IconView(LeftStore);
+        IconView leftIconView = new IconView(_leftStore);
         leftIconView.SelectionMode = SelectionMode.Multiple;
         leftIconView.TextColumn = COL_DISPLAY_NAME;
         leftIconView.PixbufColumn = COL_PIXBUF;
@@ -77,10 +82,10 @@ public class IconApp : Window
         ScrolledWindow rightScrolledWindow = new ScrolledWindow();
         rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
         rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        RightStore = CreateStore();
-        FillStore(RightStore, rightRoot);
+        _rightStore = CreateStore();
+        FillStore(_rightStore, _rightRoot);
         
-        IconView rightIconView = new IconView(RightStore);
+        IconView rightIconView = new IconView(_rightStore);
         rightIconView.SelectionMode = SelectionMode.Multiple;
         rightIconView.TextColumn = COL_DISPLAY_NAME;
         rightIconView.PixbufColumn = COL_PIXBUF;
@@ -94,8 +99,30 @@ public class IconApp : Window
         twinPanelsBox.PackStart(rightScrolledWindow, true, true, 0);
 
         windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
+        
+        leftHomeButton.Clicked += OnLeftHomeClicked!;
+        rightHomeButton.Clicked += OnRightHomeClicked!;
 
         ShowAll();
+    }
+
+    
+
+    void OnLeftHomeClicked(Object sender, EventArgs e)
+    {
+        Console.WriteLine(sender.GetHashCode());
+        _leftRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal));
+        FillStore(_leftStore, _leftRoot);
+        //upButton.Sensitive = true;
+    }
+    void OnRightHomeClicked(Object sender, EventArgs e)
+    {
+        Console.WriteLine(sender.GetHashCode());
+        _rightRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal));
+        FillStore(_rightStore, _rightRoot);
+        //upButton.Sensitive = true;
     }
 
     Toolbar CreateToolbar()
@@ -154,13 +181,13 @@ public class IconApp : Window
         foreach (DirectoryInfo di in root.GetDirectories())
         {
             if (!di.Name.StartsWith("."))
-                store.AppendValues(di.FullName, di.Name, dirIcon, true);
+                store.AppendValues(di.FullName, di.Name, _dirIcon, true);
         }
 
         foreach (FileInfo file in root.GetFiles())
         {
             if (!file.Name.StartsWith("."))
-                store.AppendValues(file.FullName, file.Name, fileIcon, false);
+                store.AppendValues(file.FullName, file.Name, _fileIcon, false);
         }
     }
 
@@ -182,23 +209,23 @@ public class IconApp : Window
     void OnLeftItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
-        LeftStore.GetIter(out iter, a.Path);
-        string path = (string) LeftStore.GetValue(iter, COL_PATH);
-        bool isDir = (bool) LeftStore.GetValue(iter, COL_IS_DIRECTORY);
+        _leftStore.GetIter(out iter, a.Path);
+        string path = (string) _leftStore.GetValue(iter, COL_PATH);
+        bool isDir = (bool) _leftStore.GetValue(iter, COL_IS_DIRECTORY);
 
         if (!isDir)
             return;
 
-        leftRoot = new DirectoryInfo(path);
-        FillStore(LeftStore, leftRoot);
+        _leftRoot = new DirectoryInfo(path);
+        FillStore(_leftStore, _leftRoot);
     }
 
     void OnRightItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
-        RightStore.GetIter(out iter, a.Path);
-        string path = (string) RightStore.GetValue(iter, COL_PATH);
-        bool isDir = (bool) RightStore.GetValue(iter, COL_IS_DIRECTORY);
+        _rightStore.GetIter(out iter, a.Path);
+        string path = (string) _rightStore.GetValue(iter, COL_PATH);
+        bool isDir = (bool) _rightStore.GetValue(iter, COL_IS_DIRECTORY);
 
         if (!isDir)
         {
@@ -206,7 +233,7 @@ public class IconApp : Window
             return;
         }
 
-        rightRoot = new DirectoryInfo(path);
-        FillStore(RightStore, rightRoot);
+        _rightRoot = new DirectoryInfo(path);
+        FillStore(_rightStore, _rightRoot);
     }
 }
