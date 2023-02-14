@@ -14,7 +14,7 @@ public class IconApp : Window
     const int COL_IS_DIRECTORY = 3;
    
 
-    private DirectoryInfo _leftRoot, _rightRoot;
+    private DirectoryInfo _leftRoot = new DirectoryInfo("/"), _rightRoot = new DirectoryInfo("/");
 
     private readonly Gdk.Pixbuf _dirIcon, _fileIcon;
     private ListStore _leftStore, _rightStore;
@@ -22,11 +22,12 @@ public class IconApp : Window
     //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public IconApp() : base("File Commander")
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        /*if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
+            //TODO Měl by uživatel vůbec mít přístup do rootu? Možná upravit v nastavení - toggle root priv, cesta přiřazená k Home - $home / $root
             _leftRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
             _rightRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
-        }
+        }*/
         SetDefaultSize(650, 400);
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
