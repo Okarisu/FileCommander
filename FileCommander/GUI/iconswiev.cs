@@ -12,7 +12,7 @@ public class IconApp : Window
     const int COL_DISPLAY_NAME = 1;
     const int COL_PIXBUF = 2;
     const int COL_IS_DIRECTORY = 3;
-   
+
 
     private DirectoryInfo _leftRoot = new DirectoryInfo("/"), _rightRoot = new DirectoryInfo("/");
 
@@ -69,13 +69,13 @@ public class IconApp : Window
         leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         _leftStore = CreateStore();
         FillStore(_leftStore, _leftRoot);
-        
+
         IconView leftIconView = new IconView(_leftStore);
         leftIconView.SelectionMode = SelectionMode.Multiple;
         leftIconView.TextColumn = COL_DISPLAY_NAME;
         leftIconView.PixbufColumn = COL_PIXBUF;
         leftIconView.ItemActivated += OnLeftItemActivated;
-        
+
         leftScrolledWindow.Add(leftIconView);
         //leftIconView.GrabFocus();
 
@@ -85,13 +85,13 @@ public class IconApp : Window
         rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         _rightStore = CreateStore();
         FillStore(_rightStore, _rightRoot);
-        
+
         IconView rightIconView = new IconView(_rightStore);
         rightIconView.SelectionMode = SelectionMode.Multiple;
         rightIconView.TextColumn = COL_DISPLAY_NAME;
         rightIconView.PixbufColumn = COL_PIXBUF;
         rightIconView.ItemActivated += OnRightItemActivated;
-        
+
         rightScrolledWindow.Add(rightIconView);
         //rightIconView.GrabFocus();
 
@@ -100,30 +100,11 @@ public class IconApp : Window
         twinPanelsBox.PackStart(rightScrolledWindow, true, true, 0);
 
         windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
-        
+
         leftHomeButton.Clicked += OnLeftHomeClicked!;
         rightHomeButton.Clicked += OnRightHomeClicked!;
 
         ShowAll();
-    }
-
-    
-
-    void OnLeftHomeClicked(Object sender, EventArgs e)
-    {
-        Console.WriteLine(sender.GetHashCode());
-        _leftRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(_leftStore, _leftRoot);
-        //upButton.Sensitive = true;
-    }
-    void OnRightHomeClicked(Object sender, EventArgs e)
-    {
-        Console.WriteLine(sender.GetHashCode());
-        _rightRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(_rightStore, _rightRoot);
-        //upButton.Sensitive = true;
     }
 
     Toolbar CreateToolbar()
@@ -156,6 +137,26 @@ public class IconApp : Window
 
         return toolbar;
     }
+
+
+    void OnLeftHomeClicked(Object sender, EventArgs e)
+    {
+        Console.WriteLine(sender.GetHashCode());
+        _leftRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal));
+        FillStore(_leftStore, _leftRoot);
+        //upButton.Sensitive = true;
+    }
+
+    void OnRightHomeClicked(Object sender, EventArgs e)
+    {
+        Console.WriteLine(sender.GetHashCode());
+        _rightRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal));
+        FillStore(_rightStore, _rightRoot);
+        //upButton.Sensitive = true;
+    }
+
 
     Gdk.Pixbuf GetIcon(string name)
     {
