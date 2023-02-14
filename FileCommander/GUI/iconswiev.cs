@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using static FileCommander.GUI.FunctionController;
 
 namespace FileCommander.GUI;
 
@@ -119,9 +120,24 @@ public class IconApp : Window
         var toolRedoButton = new ToolButton(Stock.Redo);
         var toolNewButton = new ToolButton(Stock.New);
         var toolCopyButton = new ToolButton(Stock.Copy);
-        var toolMoveButton = new ToolButton(Stock.Remove);
-        var toolDeleteButton = new ToolButton(Stock.Remove);
-        var toolRenameButton = new ToolButton(Stock.Network);
+        var toolMoveButton = new ToolButton(Stock.Remove); //Icon TBA
+        var toolRenameButton = new ToolButton(Stock.Network); //Icon TBA
+        var toolDeleteButton = new ToolButton(Stock.Remove); //Icon TBA
+        var toolExtractButton = new ToolButton(Stock.Execute); //Icon TBA
+        var toolCompressButton = new ToolButton(Stock.Execute); //Icon TBA
+
+        toolRefreshButton.Clicked += OnRefreshClicked!;
+        toolBackButton.Clicked += OnBackClicked!;
+        toolForwardButton.Clicked += OnForwardClicked!;
+        toolUndoButton.Clicked += OnUndoClicked!;
+        toolRedoButton.Clicked += OnRedoClicked!;
+        toolNewButton.Clicked += OnNewClicked!;
+        toolCopyButton.Clicked += OnCopyClicked!;
+        toolMoveButton.Clicked += OnMoveClicked!;
+        toolDeleteButton.Clicked += OnDeleteClicked!;
+        toolRenameButton.Clicked += OnRenameClicked!;
+        toolExtractButton.Clicked += OnExtractClicked!;
+        toolCompressButton.Clicked += OnCompressClicked!;
 
         toolbar.Insert(toolRefreshButton, 0);
         toolbar.Insert(toolBackButton, 1);
@@ -132,8 +148,11 @@ public class IconApp : Window
         toolbar.Insert(toolNewButton, 6);
         toolbar.Insert(toolCopyButton, 7);
         toolbar.Insert(toolMoveButton, 8);
-        toolbar.Insert(toolDeleteButton, 9);
-        toolbar.Insert(toolRenameButton, 10);
+        toolbar.Insert(toolRenameButton, 9);
+        toolbar.Insert(toolDeleteButton, 10);
+        toolbar.Insert(new SeparatorToolItem(), 11);
+        toolbar.Insert(toolExtractButton, 12);
+        toolbar.Insert(toolCompressButton, 12);
 
         return toolbar;
     }
