@@ -9,16 +9,16 @@ using Gtk;
 
 public class IconApp : Window
 {
-    const int COL_PATH = 0;
-    const int COL_DISPLAY_NAME = 1;
-    const int COL_PIXBUF = 2;
-    const int COL_IS_DIRECTORY = 3;
+    const int ColPath = 0;
+    const int ColDisplayName = 1;
+    const int ColPixbuf = 2;
+    const int ColIsDirectory = 3;
 
 
-    private DirectoryInfo _leftRoot = new DirectoryInfo("/"), _rightRoot = new DirectoryInfo("/");
-
-    private readonly Gdk.Pixbuf _dirIcon, _fileIcon;
-    private ListStore _leftStore, _rightStore;
+    public static DirectoryInfo LeftRoot = new DirectoryInfo("/"), RightRoot = new DirectoryInfo("/");
+    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
+    public static ListStore LeftStore, RightStore;
+    
 
     //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public IconApp() : base("File Commander")
@@ -38,78 +38,6 @@ public class IconApp : Window
         Add(windowVerticalBox);
 
         //Vytvoření nástrojové lišty
-        var toolbar = CreateToolbar();
-        windowVerticalBox.PackStart(toolbar, false, false, 0);
-
-        //Vytvoření lišty správy adresářových panelů
-        HBox twinPanelToolbox = new HBox();
-        //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
-
-        //Levá lišta
-        var leftPanelBar = new Toolbar();
-        leftPanelBar.ToolbarStyle = ToolbarStyle.Both;
-        var leftHomeButton = new ToolButton(Stock.Home);
-        leftPanelBar.Insert(leftHomeButton, -1);
-
-        //Pravá lišta
-        var rightPanelBar = new Toolbar();
-        rightPanelBar.ToolbarStyle = ToolbarStyle.Both;
-        var rightHomeButton = new ToolButton(Stock.Home);
-        rightPanelBar.Insert(rightHomeButton, -1);
-
-        twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
-        twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
-        windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
-
-        _fileIcon = GetIcon(Stock.File);
-        _dirIcon = GetIcon(Stock.Open);
-
-        //Levý panel
-        ScrolledWindow leftScrolledWindow = new ScrolledWindow();
-        leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        _leftStore = CreateStore();
-        FillStore(_leftStore, _leftRoot);
-
-        IconView leftIconView = new IconView(_leftStore);
-        leftIconView.SelectionMode = SelectionMode.Multiple;
-        leftIconView.TextColumn = COL_DISPLAY_NAME;
-        leftIconView.PixbufColumn = COL_PIXBUF;
-        leftIconView.ItemActivated += OnLeftItemActivated;
-
-        leftScrolledWindow.Add(leftIconView);
-        //leftIconView.GrabFocus();
-
-        //Pravý panel
-        ScrolledWindow rightScrolledWindow = new ScrolledWindow();
-        rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        _rightStore = CreateStore();
-        FillStore(_rightStore, _rightRoot);
-
-        IconView rightIconView = new IconView(_rightStore);
-        rightIconView.SelectionMode = SelectionMode.Multiple;
-        rightIconView.TextColumn = COL_DISPLAY_NAME;
-        rightIconView.PixbufColumn = COL_PIXBUF;
-        rightIconView.ItemActivated += OnRightItemActivated;
-
-        rightScrolledWindow.Add(rightIconView);
-        //rightIconView.GrabFocus();
-
-        HBox twinPanelsBox = new HBox(false, 0);
-        twinPanelsBox.PackStart(leftScrolledWindow, true, true, 0);
-        twinPanelsBox.PackStart(rightScrolledWindow, true, true, 0);
-
-        windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
-
-        leftHomeButton.Clicked += OnLeftHomeClicked!;
-        rightHomeButton.Clicked += OnRightHomeClicked!;
-
-        ShowAll();
-    }
-
-    Toolbar CreateToolbar()
-    {
         var toolbar = new Toolbar();
         toolbar.ToolbarStyle = ToolbarStyle.Both;
 
@@ -127,7 +55,7 @@ public class IconApp : Window
         var toolCompressButton = new ToolButton(Stock.Execute); //Icon TBA
 
         toolRefreshButton.Clicked += OnRefreshClicked!;
-        toolBackButton.Clicked += OnBackClicked!;
+        //toolBackButton.Clicked += OnBackClicked!;
         toolForwardButton.Clicked += OnForwardClicked!;
         toolUndoButton.Clicked += OnUndoClicked!;
         toolRedoButton.Clicked += OnRedoClicked!;
@@ -154,45 +82,99 @@ public class IconApp : Window
         toolbar.Insert(toolExtractButton, 12);
         toolbar.Insert(toolCompressButton, 12);
 
-        return toolbar;
+        windowVerticalBox.PackStart(toolbar, false, false, 0);
+
+        //Vytvoření lišty správy adresářových panelů
+        HBox twinPanelToolbox = new HBox();
+        //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
+
+        //Levá lišta
+        var leftPanelBar = new Toolbar();
+        leftPanelBar.ToolbarStyle = ToolbarStyle.Both;
+        var leftHomeButton = new ToolButton(Stock.Home);
+        leftPanelBar.Insert(leftHomeButton, -1);
+
+        //Pravá lišta
+        var rightPanelBar = new Toolbar();
+        rightPanelBar.ToolbarStyle = ToolbarStyle.Both;
+        var rightHomeButton = new ToolButton(Stock.Home);
+        rightPanelBar.Insert(rightHomeButton, -1);
+
+        twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
+        twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
+        windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
+
+        //Levý panel
+        ScrolledWindow leftScrolledWindow = new ScrolledWindow();
+        leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
+        leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+        LeftStore = CreateStore();
+        FillStore(LeftStore, LeftRoot);
+
+        IconView leftIconView = new IconView(LeftStore);
+        leftIconView.SelectionMode = SelectionMode.Multiple;
+        leftIconView.TextColumn = ColDisplayName;
+        leftIconView.PixbufColumn = ColPixbuf;
+        leftIconView.ItemActivated += OnLeftItemActivated;
+
+        leftScrolledWindow.Add(leftIconView);
+        //leftIconView.GrabFocus();
+
+        //Pravý panel
+        ScrolledWindow rightScrolledWindow = new ScrolledWindow();
+        rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
+        rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+        RightStore = CreateStore();
+        FillStore(RightStore, RightRoot);
+
+        IconView rightIconView = new IconView(RightStore);
+        rightIconView.SelectionMode = SelectionMode.Multiple;
+        rightIconView.TextColumn = ColDisplayName;
+        rightIconView.PixbufColumn = ColPixbuf;
+        rightIconView.ItemActivated += OnRightItemActivated;
+
+        rightScrolledWindow.Add(rightIconView);
+        //rightIconView.GrabFocus();
+
+        HBox twinPanelsBox = new HBox(false, 0);
+        twinPanelsBox.PackStart(leftScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(rightScrolledWindow, true, true, 0);
+
+        windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
+
+        leftHomeButton.Clicked += OnLeftHomeClicked!;
+        rightHomeButton.Clicked += OnRightHomeClicked!;
+
+
+        toolBackButton.Clicked += delegate
+        {
+
+            MessageDialog md = new MessageDialog(this, 
+                DialogFlags.DestroyWithParent, MessageType.Info, 
+                ButtonsType.Close, "Download completed");
+            md.Run();
+            md.Destroy();        };
+
+
+
+        ShowAll();
     }
-
-
-    void OnLeftHomeClicked(Object sender, EventArgs e)
-    {
-        Console.WriteLine(sender.GetHashCode());
-        _leftRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(_leftStore, _leftRoot);
-        //upButton.Sensitive = true;
-    }
-
-    void OnRightHomeClicked(Object sender, EventArgs e)
-    {
-        Console.WriteLine(sender.GetHashCode());
-        _rightRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(_rightStore, _rightRoot);
-        //upButton.Sensitive = true;
-    }
-
-
-    Gdk.Pixbuf GetIcon(string name)
+    private static Gdk.Pixbuf GetIcon(string name)
     {
         return Gtk.IconTheme.Default.LoadIcon(name, 48, (IconLookupFlags) 0);
     }
 
-    ListStore CreateStore()
+    private ListStore CreateStore()
     {
         ListStore store = new ListStore(typeof(string),
             typeof(string), typeof(Gdk.Pixbuf), typeof(bool));
 
-        store.SetSortColumnId(COL_DISPLAY_NAME, SortType.Ascending);
+        store.SetSortColumnId(ColDisplayName, SortType.Ascending);
 
         return store;
     }
 
-    void FillStore(ListStore store, DirectoryInfo root)
+    public static void FillStore(ListStore store, DirectoryInfo root)
     {
         store.Clear();
 
@@ -202,13 +184,13 @@ public class IconApp : Window
         foreach (DirectoryInfo di in root.GetDirectories())
         {
             if (!di.Name.StartsWith("."))
-                store.AppendValues(di.FullName, di.Name, _dirIcon, true);
+                store.AppendValues(di.FullName, di.Name, DirIcon, true);
         }
 
         foreach (FileInfo file in root.GetFiles())
         {
             if (!file.Name.StartsWith("."))
-                store.AppendValues(file.FullName, file.Name, _fileIcon, false);
+                store.AppendValues(file.FullName, file.Name, FileIcon, false);
         }
     }
 
@@ -217,8 +199,8 @@ public class IconApp : Window
     {
         TreeIter iter;
         store.GetIter(out iter, a.Path);
-        string path = (string) store.GetValue(iter, COL_PATH);
-        bool isDir = (bool) store.GetValue(iter, COL_IS_DIRECTORY);
+        string path = (string) store.GetValue(iter, ColPath);
+        bool isDir = (bool) store.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
             return;
@@ -227,26 +209,26 @@ public class IconApp : Window
         FillStore(store, root);
     }
 
-    void OnLeftItemActivated(object sender, ItemActivatedArgs a)
+    private void OnLeftItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
-        _leftStore.GetIter(out iter, a.Path);
-        string path = (string) _leftStore.GetValue(iter, COL_PATH);
-        bool isDir = (bool) _leftStore.GetValue(iter, COL_IS_DIRECTORY);
+        LeftStore.GetIter(out iter, a.Path);
+        string path = (string) LeftStore.GetValue(iter, ColPath);
+        bool isDir = (bool) LeftStore.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
             return;
 
-        _leftRoot = new DirectoryInfo(path);
-        FillStore(_leftStore, _leftRoot);
+        LeftRoot = new DirectoryInfo(path);
+        FillStore(LeftStore, LeftRoot);
     }
 
-    void OnRightItemActivated(object sender, ItemActivatedArgs a)
+    private void OnRightItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
-        _rightStore.GetIter(out iter, a.Path);
-        string path = (string) _rightStore.GetValue(iter, COL_PATH);
-        bool isDir = (bool) _rightStore.GetValue(iter, COL_IS_DIRECTORY);
+        RightStore.GetIter(out iter, a.Path);
+        string path = (string) RightStore.GetValue(iter, ColPath);
+        bool isDir = (bool) RightStore.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
         {
@@ -254,7 +236,7 @@ public class IconApp : Window
             return;
         }
 
-        _rightRoot = new DirectoryInfo(path);
-        FillStore(_rightStore, _rightRoot);
+        RightRoot = new DirectoryInfo(path);
+        FillStore(RightStore, RightRoot);
     }
 }

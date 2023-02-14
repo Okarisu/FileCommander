@@ -6,7 +6,7 @@ using System;
 class DialogApp : Window
 {
 
-    Label label;
+    Label _label;
 
     public DialogApp() : base("Font Selection Dialog")
     {
@@ -14,13 +14,13 @@ class DialogApp : Window
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
 
-        label = new Label("The only victory over love is flight.");
+        _label = new Label("The only victory over love is flight.");
         Button button = new Button("Select font");
         button.Clicked += OnClicked;
 
         Fixed fix = new Fixed();
         fix.Put(button, 100, 30);
-        fix.Put(label, 30, 90);
+        fix.Put(_label, 30, 90);
         Add(fix);
 
         ShowAll();
@@ -37,7 +37,7 @@ class DialogApp : Window
             {
                 Pango.FontDescription fontdesc =
                     Pango.FontDescription.FromString(fdia.FontName);
-                label.ModifyFont(fontdesc);
+                _label.ModifyFont(fontdesc);
             }
         };
 
