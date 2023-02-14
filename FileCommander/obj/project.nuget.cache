@@ -1,15 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "N37g5EkBSaY2fenXRvK7yLCFw4U9TLypyNjIxHsXb2LVCwlhbz0syBSOgN7ZIzkUtpYgBCot4yH81umJvLBysQ==",
+  "dgSpecHash": "n4cknkyjcGdEsPVIZaq3KNlTYEPu2lCba23EuA1mw8JQRfkzOJ0+/JPDnYWdOT92LTVeBln4Bry1/FXpmMS8ew==",
   "success": true,
   "projectFilePath": "/home/toohka/Documents/DEV/FileCommander/FileCommander/FileCommander.csproj",
   "expectedPackageFiles": [
+    "/home/toohka/.nuget/packages/atksharp/3.24.24.38/atksharp.3.24.24.38.nupkg.sha512",
+    "/home/toohka/.nuget/packages/cairosharp/3.24.24.38/cairosharp.3.24.24.38.nupkg.sha512",
+    "/home/toohka/.nuget/packages/gdksharp/3.24.24.38/gdksharp.3.24.24.38.nupkg.sha512",
+    "/home/toohka/.nuget/packages/giosharp/3.24.24.38/giosharp.3.24.24.38.nupkg.sha512",
+    "/home/toohka/.nuget/packages/glibsharp/3.24.24.38/glibsharp.3.24.24.38.nupkg.sha512",
+    "/home/toohka/.nuget/packages/gtksharp/3.24.24.38/gtksharp.3.24.24.38.nupkg.sha512",
     "/home/toohka/.nuget/packages/nstack.core/1.0.3/nstack.core.1.0.3.nupkg.sha512",
+    "/home/toohka/.nuget/packages/pangosharp/3.24.24.38/pangosharp.3.24.24.38.nupkg.sha512",
     "/home/toohka/.nuget/packages/system.valuetuple/4.5.0/system.valuetuple.4.5.0.nupkg.sha512",
     "/home/toohka/.nuget/packages/terminal.gui/1.8.2/terminal.gui.1.8.2.nupkg.sha512",
-    "/home/toohka/.nuget/packages/microsoft.netcore.app.ref/6.0.12/microsoft.netcore.app.ref.6.0.12.nupkg.sha512",
-    "/home/toohka/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.12/microsoft.aspnetcore.app.ref.6.0.12.nupkg.sha512",
-    "/home/toohka/.nuget/packages/microsoft.netcore.app.host.linux-x64/6.0.12/microsoft.netcore.app.host.linux-x64.6.0.12.nupkg.sha512"
+    "/home/toohka/.nuget/packages/microsoft.netcore.app.ref/6.0.13/microsoft.netcore.app.ref.6.0.13.nupkg.sha512",
+    "/home/toohka/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.13/microsoft.aspnetcore.app.ref.6.0.13.nupkg.sha512",
+    "/home/toohka/.nuget/packages/microsoft.netcore.app.host.linux-x64/6.0.13/microsoft.netcore.app.host.linux-x64.6.0.13.nupkg.sha512"
   ],
   "logs": []
 }

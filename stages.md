@@ -61,5 +61,16 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 ## Milestones
  
 ### MS1. - 12.2.
+- [x] UC1
+
 ### MS2. - 2.3.
+- [ ] UC2
+- [ ] UC3
+- [ ] UC4
+- [ ] UC5
+- [ ] UC6
+- [ ] UC7
+- [ ] UC8
+
 ### MS3. - 20.3.
+- [ ] Kontrola cest, testing, ať to proboha funguje
