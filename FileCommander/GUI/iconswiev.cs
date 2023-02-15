@@ -1,8 +1,6 @@
-using System.Runtime.InteropServices;
-using static FileCommander.GUI.FunctionController;
-
 namespace FileCommander.GUI;
 
+using static FunctionController;
 using System;
 using System.IO;
 using Gtk;
@@ -15,23 +13,23 @@ public class IconApp : Window
     const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo LeftRoot = new DirectoryInfo("/"), RightRoot = new DirectoryInfo("/");
+    public static DirectoryInfo LeftRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal)),
+        RightRoot = new DirectoryInfo(Environment.GetFolderPath(
+            Environment.SpecialFolder.Personal));
+
     private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
     public static ListStore LeftStore, RightStore;
-    
+
 
     //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public IconApp() : base("File Commander")
     {
-        /*if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            //TODO Měl by uživatel vůbec mít přístup do rootu? Možná upravit v nastavení - toggle root priv, cesta přiřazená k Home - $home / $root
-            _leftRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
-            _rightRoot = new DirectoryInfo($"/home/{System.Security.Principal.WindowsIdentity.GetCurrent().Name}");
-        }*/
-        SetDefaultSize(650, 400);
+        SetDefaultSize(1280, 720);
+        Maximize();
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
+
 
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
@@ -55,7 +53,7 @@ public class IconApp : Window
         var toolCompressButton = new ToolButton(Stock.Execute); //Icon TBA
 
         toolRefreshButton.Clicked += OnRefreshClicked!;
-        //toolBackButton.Clicked += OnBackClicked!;
+        toolBackButton.Clicked += OnBackClicked!;
         toolForwardButton.Clicked += OnForwardClicked!;
         toolUndoButton.Clicked += OnUndoClicked!;
         toolRedoButton.Clicked += OnRedoClicked!;
@@ -92,13 +90,17 @@ public class IconApp : Window
         var leftPanelBar = new Toolbar();
         leftPanelBar.ToolbarStyle = ToolbarStyle.Both;
         var leftHomeButton = new ToolButton(Stock.Home);
+        var leftUpButton = new ToolButton(Stock.GoUp);
         leftPanelBar.Insert(leftHomeButton, -1);
+        leftPanelBar.Insert(leftUpButton, -1);
 
         //Pravá lišta
         var rightPanelBar = new Toolbar();
         rightPanelBar.ToolbarStyle = ToolbarStyle.Both;
         var rightHomeButton = new ToolButton(Stock.Home);
+        var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightHomeButton, -1);
+        rightPanelBar.Insert(rightUpButton, -1);
 
         twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
@@ -144,21 +146,12 @@ public class IconApp : Window
 
         leftHomeButton.Clicked += OnLeftHomeClicked!;
         rightHomeButton.Clicked += OnRightHomeClicked!;
-
-
-        toolBackButton.Clicked += delegate
-        {
-
-            MessageDialog md = new MessageDialog(this, 
-                DialogFlags.DestroyWithParent, MessageType.Info, 
-                ButtonsType.Close, "Download completed");
-            md.Run();
-            md.Destroy();        };
-
-
+        leftUpButton.Clicked += OnLeftUpClicked!;
+        rightUpButton.Clicked += OnRightUpClicked!;
 
         ShowAll();
     }
+
     private static Gdk.Pixbuf GetIcon(string name)
     {
         return Gtk.IconTheme.Default.LoadIcon(name, 48, (IconLookupFlags) 0);
@@ -218,6 +211,7 @@ public class IconApp : Window
 
         if (!isDir)
             return;
+
 
         LeftRoot = new DirectoryInfo(path);
         FillStore(LeftStore, LeftRoot);

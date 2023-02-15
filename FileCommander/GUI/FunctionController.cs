@@ -9,23 +9,28 @@ public class FunctionController
 {
     public static void OnLeftHomeClicked(Object sender, EventArgs e)
     {
-        //Console.WriteLine(sender.GetHashCode());
         LeftRoot = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
         FillStore(LeftStore, LeftRoot);
-        //upButton.Sensitive = true;
     }
-
     public static void OnRightHomeClicked(Object sender, EventArgs e)
     {
-        //Console.WriteLine(sender.GetHashCode());
         RightRoot = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
         FillStore(RightStore, RightRoot);
-        //upButton.Sensitive = true;
     }
-
-
+    public static void OnLeftUpClicked(Object sender, EventArgs e)
+    {
+        LeftRoot = LeftRoot.Parent;
+        FillStore(LeftStore, LeftRoot);
+        //leftUpButton.Sensitive = (root.FullName == "/" ? false : true);
+    }
+    public static void OnRightUpClicked(Object sender, EventArgs e)
+    {
+        RightRoot = RightRoot.Parent;
+        FillStore(RightStore, RightRoot);
+        //rightUpButton.Sensitive = (root.FullName == "/" ? false : true);
+    }
     public static void OnRefreshClicked(Object sender, EventArgs e)
     {
         FillStore(LeftStore, LeftRoot);
@@ -34,7 +39,7 @@ public class FunctionController
 
     public static void OnBackClicked(Object sender, EventArgs e)
     {
-        //TODO logging historie cest?
+        //TODO logging historie cest? - Queue<Path>, to bude blivajz
     }
 
     public static void OnForwardClicked(Object sender, EventArgs e)
@@ -54,15 +59,11 @@ public class FunctionController
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
-        Entry entry = new Entry();
-        entry.Changed += delegate{Entry entry = (Entry) sender;
-            Console.WriteLine(entry.Text);
-            ;};
-        
-        Fixed fix = new Fixed();
-        fix.Put(entry, 60, 100);
-        //TODO asi nová třída pro dialokno?
-        
+        Application.Init();
+        new InputDialogWindow("Neco");
+        Application.Run();
+
+        Console.WriteLine(InputDialogWindow.path);
     }
 
     public static void OnCopyClicked(Object sender, EventArgs e)
