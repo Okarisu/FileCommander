@@ -110,6 +110,7 @@ public class IconApp : Window
         toolbar.Insert(leftToolRedoButton, 4);
         leftToolRedoButton.Clicked += OnRedoClicked!;
         
+        twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
 
         //PRAVÁ LIŠTA
         var rightPanelBar = new Toolbar();
@@ -143,7 +144,6 @@ public class IconApp : Window
         rightToolRedoButton.Clicked += OnRedoClicked!;
 
         
-        twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
