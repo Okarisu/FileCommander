@@ -117,7 +117,9 @@ public class IconApp : Window
         leftIconView.SelectionMode = SelectionMode.Multiple;
         leftIconView.TextColumn = ColDisplayName;
         leftIconView.PixbufColumn = ColPixbuf;
-        leftIconView.ItemActivated += OnLeftItemActivated;
+        leftIconView.ItemActivated += delegate(object o, ItemActivatedArgs args)
+        {
+            LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);  };
 
         leftScrolledWindow.Add(leftIconView);
         //leftIconView.GrabFocus();
@@ -133,7 +135,9 @@ public class IconApp : Window
         rightIconView.SelectionMode = SelectionMode.Multiple;
         rightIconView.TextColumn = ColDisplayName;
         rightIconView.PixbufColumn = ColPixbuf;
-        rightIconView.ItemActivated += OnRightItemActivated;
+        rightIconView.ItemActivated += delegate(object o, ItemActivatedArgs args)
+        {
+            RightRoot = OnItemActivated(args, RightRoot, RightStore);  };
 
         rightScrolledWindow.Add(rightIconView);
         //rightIconView.GrabFocus();
@@ -195,7 +199,7 @@ public class IconApp : Window
     }
 
     //Asi by bylo fajn pro oba panely použít společnou metodu, ale nepřišel jsem na to, jak to sloučit.
-    void OnItemActivated(object? sender, ItemActivatedArgs a, DirectoryInfo root, ListStore store)
+    DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
     {
         TreeIter iter;
         store.GetIter(out iter, a.Path);
@@ -203,10 +207,11 @@ public class IconApp : Window
         bool isDir = (bool) store.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
-            return;
+            return root;
 
         root = new DirectoryInfo(path);
         FillStore(store, root);
+        return root;
     }
 
     private static void OnLeftItemActivated(object sender, ItemActivatedArgs a)
