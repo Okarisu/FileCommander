@@ -31,6 +31,16 @@ public class FunctionController
         FillStore(RightStore, RightRoot);
         //rightUpButton.Sensitive = (root.FullName == "/" ? false : true);
     }
+
+    public static DirectoryInfo OnUpCLicked(DirectoryInfo root, ListStore store)
+    {
+        if (root.Parent == null) {
+            return root;
+        }
+        
+        FillStore(store, root.Parent);
+        return root.Parent;
+    }
     public static void OnRefreshClicked(Object sender, EventArgs e)
     {
         FillStore(LeftStore, LeftRoot);
@@ -44,24 +54,26 @@ public class FunctionController
 
     public static void OnForwardClicked(Object sender, EventArgs e)
     {
-        //TODO viz výše
+        //viz výše
     }
 
     public static void OnUndoClicked(Object sender, EventArgs e)
     {
-        //TODO logging provedených akcí
+        //TODO logging provedených akcí - command pattern
+        //https://stackoverflow.com/questions/3448943/best-design-pattern-for-undo-feature
     }
 
     public static void OnRedoClicked(Object sender, EventArgs e)
     {
-        //TODO viz výše
+        //viz výše
     }
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
         Application.Init();
-        new InputDialogWindow("Neco");
+        new DialogWindow("New Folder");
         Application.Run();
+        
 
         Console.WriteLine(InputDialogWindow.path);
     }

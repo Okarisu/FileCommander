@@ -3,11 +3,11 @@ namespace FileCommander.GUI;
 using Gtk;
 using Gdk;
 
-public class InputDialogWindow : Gtk.Window
+public class DialogWindow : FileChooserDialog
 {
     public static string path;
 
-    public InputDialogWindow(string title) : base(title)
+    public DialogWindow(string title)
     {
         SetDefaultSize(250, 200);
         SetPosition(WindowPosition.Center);
@@ -37,29 +37,18 @@ public class InputDialogWindow : Gtk.Window
 
         Add(fix);
 
-        ShowAll();*/
-        
-        VBox vbox = new VBox(false, 5);
-        Add(vbox);
-        
-        
-        Button ok = new Button("OK");
-        ok.SetSizeRequest(70, 30);
-        Button close = new Button("Close");
-        
-        HBox hbox = new HBox(true, 3);
-        hbox.Add(ok);
-        hbox.Add(close);
-        
-        Alignment halign = new Alignment(1, 0, 0, 0);
-        halign.Add(hbox);
-        
-        Alignment valign = new Alignment(0, 1, 0, 0);
-        vbox.PackStart(valign, false, false, 0);
-        vbox.PackStart(halign, false, false, 3);
+        */
 
+        var fc = new FileChooserDialog(
+            "Open...", this, FileChooserAction.Open,
+            "Cancel", ResponseType.Cancel, "Open", ResponseType.Ok);
 
-        ShowAll();
+        var fec = new InputDialogWindow("Choose neco nevim");
+
+        fc.Run();
+        fc.Destroy();
+            
+        //ShowAll();
     }
 
     void OnCreateClicked(object sender, EventArgs args)

@@ -18,7 +18,7 @@ public class IconApp : Window
         RightRoot = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
 
-    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
+    static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
     public static ListStore LeftStore, RightStore;
 
 
@@ -146,18 +146,20 @@ public class IconApp : Window
 
         leftHomeButton.Clicked += OnLeftHomeClicked!;
         rightHomeButton.Clicked += OnRightHomeClicked!;
-        leftUpButton.Clicked += OnLeftUpClicked!;
-        rightUpButton.Clicked += OnRightUpClicked!;
+        //leftUpButton.Clicked += OnLeftUpClicked!;
+        //rightUpButton.Clicked += OnRightUpClicked!;
+        leftUpButton.Clicked += delegate { LeftRoot = OnUpCLicked(LeftRoot, LeftStore); };
+        rightUpButton.Clicked += delegate { RightRoot = OnUpCLicked(RightRoot, RightStore); };
 
         ShowAll();
     }
 
-    private static Gdk.Pixbuf GetIcon(string name)
+    public static Gdk.Pixbuf GetIcon(string name)
     {
         return Gtk.IconTheme.Default.LoadIcon(name, 48, (IconLookupFlags) 0);
     }
 
-    private ListStore CreateStore()
+    public static ListStore CreateStore()
     {
         ListStore store = new ListStore(typeof(string),
             typeof(string), typeof(Gdk.Pixbuf), typeof(bool));
@@ -172,7 +174,10 @@ public class IconApp : Window
         store.Clear();
 
         if (!root.Exists)
+        {
+            Console.WriteLine("Root neexistuje");
             return;
+        }
 
         foreach (DirectoryInfo di in root.GetDirectories())
         {
@@ -185,10 +190,12 @@ public class IconApp : Window
             if (!file.Name.StartsWith("."))
                 store.AppendValues(file.FullName, file.Name, FileIcon, false);
         }
+
+        Console.WriteLine("here");
     }
 
     //Asi by bylo fajn pro oba panely použít společnou metodu, ale nepřišel jsem na to, jak to sloučit.
-    void OnItemActivated(DirectoryInfo root, ListStore store, object sender, ItemActivatedArgs a)
+    void OnItemActivated(object? sender, ItemActivatedArgs a, DirectoryInfo root, ListStore store)
     {
         TreeIter iter;
         store.GetIter(out iter, a.Path);
@@ -202,7 +209,7 @@ public class IconApp : Window
         FillStore(store, root);
     }
 
-    private void OnLeftItemActivated(object sender, ItemActivatedArgs a)
+    private static void OnLeftItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
         LeftStore.GetIter(out iter, a.Path);
@@ -217,7 +224,7 @@ public class IconApp : Window
         FillStore(LeftStore, LeftRoot);
     }
 
-    private void OnRightItemActivated(object sender, ItemActivatedArgs a)
+    private static void OnRightItemActivated(object sender, ItemActivatedArgs a)
     {
         TreeIter iter;
         RightStore.GetIter(out iter, a.Path);
