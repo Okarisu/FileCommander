@@ -7,40 +7,22 @@ using static IconApp;
 
 public class FunctionController
 {
-    public static void OnLeftHomeClicked(Object sender, EventArgs e)
+    public static DirectoryInfo OnHomeClicked(object? sender, EventArgs e, DirectoryInfo root, ListStore store)
     {
-        LeftRoot = new DirectoryInfo(Environment.GetFolderPath(
+        root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
-        FillStore(LeftStore, LeftRoot);
+        FillStore(store, root);
+        return root;
     }
-    public static void OnRightHomeClicked(Object sender, EventArgs e)
+    public static DirectoryInfo OnUpClicked(DirectoryInfo root, ListStore store)
     {
-        RightRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
-        FillStore(RightStore, RightRoot);
-    }
-    public static void OnLeftUpClicked(Object sender, EventArgs e)
-    {
-        LeftRoot = LeftRoot.Parent;
-        FillStore(LeftStore, LeftRoot);
-        //leftUpButton.Sensitive = (root.FullName == "/" ? false : true);
-    }
-    public static void OnRightUpClicked(Object sender, EventArgs e)
-    {
-        RightRoot = RightRoot.Parent;
-        FillStore(RightStore, RightRoot);
-        //rightUpButton.Sensitive = (root.FullName == "/" ? false : true);
-    }
-
-    public static DirectoryInfo OnUpCLicked(DirectoryInfo root, ListStore store)
-    {
-        if (root.Parent == null) {
+        if (root.Parent == null)
             return root;
-        }
-        
+
         FillStore(store, root.Parent);
         return root.Parent;
     }
+
     public static void OnRefreshClicked(Object sender, EventArgs e)
     {
         FillStore(LeftStore, LeftRoot);
@@ -73,7 +55,7 @@ public class FunctionController
         Application.Init();
         new DialogWindow("New Folder");
         Application.Run();
-        
+
 
         Console.WriteLine(InputDialogWindow.path);
     }
