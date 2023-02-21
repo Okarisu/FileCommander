@@ -13,12 +13,10 @@ public class IconApp : Window
     const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo LeftRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal)),
-        RightRoot = new DirectoryInfo(Environment.GetFolderPath(
-            Environment.SpecialFolder.Personal));
+    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal)),
+        RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
-    static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
+    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
     public static ListStore LeftStore, RightStore;
 
 
@@ -33,6 +31,8 @@ public class IconApp : Window
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
+
+        #region Toolbar
 
         //Vytvoření hlavní nástrojové lišty
         var toolbar = new Toolbar();
@@ -50,7 +50,7 @@ public class IconApp : Window
         toolbar.Insert(toolCopyButton, 7);
         toolCopyButton.Clicked += OnCopyClicked!;
 
-        var toolMoveButton = new ToolButton(Stock.Remove); //Icon TBA
+        var toolMoveButton = new ToolButton(Stock.Dnd); //Icon TBA
         toolbar.Insert(toolMoveButton, 8);
         toolMoveButton.Clicked += OnMoveClicked!;
 
@@ -58,7 +58,7 @@ public class IconApp : Window
         toolbar.Insert(toolRenameButton, 9);
         toolRenameButton.Clicked += OnRenameClicked!;
 
-        var toolDeleteButton = new ToolButton(Stock.Remove); //Icon TBA
+        var toolDeleteButton = new ToolButton(Stock.Delete);
         toolbar.Insert(toolDeleteButton, 10);
         toolDeleteButton.Clicked += OnDeleteClicked!;
 
@@ -75,77 +75,94 @@ public class IconApp : Window
 
         windowVerticalBox.PackStart(toolbar, false, false, 0);
 
+        #endregion
+
         //Vytvoření lišty správy adresářových panelů
         HBox twinPanelToolbox = new HBox();
         //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
+
+        #region LeftTwinBar
 
         //LEVÁ LIŠTA
         var leftPanelBar = new Toolbar();
         leftPanelBar.ToolbarStyle = ToolbarStyle.Both;
 
         var leftHomeButton = new ToolButton(Stock.Home);
-        leftPanelBar.Insert(leftHomeButton, -1);
+        leftPanelBar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += delegate(object? sender, EventArgs args)
         {
             LeftRoot = OnHomeClicked(sender, args, LeftRoot, LeftStore);
         };
 
         var leftUpButton = new ToolButton(Stock.GoUp);
-        leftPanelBar.Insert(leftUpButton, -1);
+        leftPanelBar.Insert(leftUpButton, 1);
         leftUpButton.Clicked += delegate { LeftRoot = OnUpClicked(LeftRoot, LeftStore); };
         
+        leftPanelBar.Insert(new SeparatorToolItem(), 2);
+        
         var leftToolBackButton = new ToolButton(Stock.GoBack);
-        toolbar.Insert(leftToolBackButton, 1);
+        leftPanelBar.Insert(leftToolBackButton, 3);
         leftToolBackButton.Clicked += OnBackClicked!;
         
         var leftToolForwardButton = new ToolButton(Stock.GoForward);
-        toolbar.Insert(leftToolForwardButton, 2);
+        leftPanelBar.Insert(leftToolForwardButton, 4);
         leftToolForwardButton.Clicked += OnForwardClicked!;
         
         var leftToolUndoButton = new ToolButton(Stock.Undo);
-        toolbar.Insert(leftToolUndoButton, 3);
+        leftPanelBar.Insert(leftToolUndoButton, 5);
         leftToolUndoButton.Clicked += OnUndoClicked!;
         
         var leftToolRedoButton = new ToolButton(Stock.Redo);
-        toolbar.Insert(leftToolRedoButton, 4);
+        leftPanelBar.Insert(leftToolRedoButton, 5);
         leftToolRedoButton.Clicked += OnRedoClicked!;
         
         twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
+
+        #endregion
+
+        #region RightTwinBar
 
         //PRAVÁ LIŠTA
         var rightPanelBar = new Toolbar();
         rightPanelBar.ToolbarStyle = ToolbarStyle.Both;
 
         var rightHomeButton = new ToolButton(Stock.Home);
-        rightPanelBar.Insert(rightHomeButton, -1);
+        rightPanelBar.Insert(rightHomeButton, 0);
         rightHomeButton.Clicked += delegate(object? sender, EventArgs args)
         {
             RightRoot = OnHomeClicked(sender, args, RightRoot, RightStore);
         };
 
         var rightUpButton = new ToolButton(Stock.GoUp);
-        rightPanelBar.Insert(rightUpButton, -1);
+        rightPanelBar.Insert(rightUpButton, 1);
         rightUpButton.Clicked += delegate { RightRoot = OnUpClicked(RightRoot, RightStore); };
         
+        rightPanelBar.Insert(new SeparatorToolItem(), 2);
+        
         var rightToolBackButton = new ToolButton(Stock.GoBack);
-        toolbar.Insert(rightToolBackButton, 1);
+        rightPanelBar.Insert(rightToolBackButton, 3);
         rightToolBackButton.Clicked += OnBackClicked!;
         
         var rightToolForwardButton = new ToolButton(Stock.GoForward);
-        toolbar.Insert(rightToolForwardButton, 2);
+        rightPanelBar.Insert(rightToolForwardButton, 4);
         rightToolForwardButton.Clicked += OnForwardClicked!;
         
         var rightToolUndoButton = new ToolButton(Stock.Undo);
-        toolbar.Insert(rightToolUndoButton, 3);
+        rightPanelBar.Insert(rightToolUndoButton, 5);
         rightToolUndoButton.Clicked += OnUndoClicked!;
         
         var rightToolRedoButton = new ToolButton(Stock.Redo);
-        toolbar.Insert(rightToolRedoButton, 4);
+        rightPanelBar.Insert(rightToolRedoButton, 6);
         rightToolRedoButton.Clicked += OnRedoClicked!;
 
         
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
+
+        #endregion
+        
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
+
+        #region LeftIconView
 
         //Levý panel
         ScrolledWindow leftScrolledWindow = new ScrolledWindow();
@@ -158,13 +175,17 @@ public class IconApp : Window
         leftIconView.SelectionMode = SelectionMode.Multiple;
         leftIconView.TextColumn = ColDisplayName;
         leftIconView.PixbufColumn = ColPixbuf;
-        leftIconView.ItemActivated += delegate(object o, ItemActivatedArgs args)
+        leftIconView.ItemActivated += delegate(object _, ItemActivatedArgs args)
         {
             LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
         };
 
         leftScrolledWindow.Add(leftIconView);
         //leftIconView.GrabFocus();
+
+        #endregion
+
+        #region RightIconView
 
         //Pravý panel
         ScrolledWindow rightScrolledWindow = new ScrolledWindow();
@@ -177,13 +198,15 @@ public class IconApp : Window
         rightIconView.SelectionMode = SelectionMode.Multiple;
         rightIconView.TextColumn = ColDisplayName;
         rightIconView.PixbufColumn = ColPixbuf;
-        rightIconView.ItemActivated += delegate(object o, ItemActivatedArgs args)
+        rightIconView.ItemActivated += delegate(object _, ItemActivatedArgs args)
         {
             RightRoot = OnItemActivated(args, RightRoot, RightStore);
         };
 
         rightScrolledWindow.Add(rightIconView);
         //rightIconView.GrabFocus();
+
+        #endregion
 
         HBox twinPanelsBox = new HBox(false, 0);
         twinPanelsBox.PackStart(leftScrolledWindow, true, true, 0);
@@ -197,10 +220,10 @@ public class IconApp : Window
 
     private static Gdk.Pixbuf GetIcon(string name)
     {
-        return Gtk.IconTheme.Default.LoadIcon(name, 48, (IconLookupFlags) 0);
+        return IconTheme.Default.LoadIcon(name, 48, 0);
     }
 
-    private ListStore CreateStore()
+    private static ListStore CreateStore()
     {
         ListStore store = new ListStore(typeof(string),
             typeof(string), typeof(Gdk.Pixbuf), typeof(bool));
@@ -232,12 +255,12 @@ public class IconApp : Window
         }
     }
 
-    private DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
+    private static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
     {
         TreeIter iter;
         store.GetIter(out iter, a.Path);
-        string path = (string) store.GetValue(iter, ColPath);
-        bool isDir = (bool) store.GetValue(iter, ColIsDirectory);
+        var path = (string) store.GetValue(iter, ColPath);
+        var isDir = (bool) store.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
             return root;

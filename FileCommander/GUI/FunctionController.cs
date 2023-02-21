@@ -7,6 +7,8 @@ using static IconApp;
 
 public class FunctionController
 {
+    #region Navigation
+
     public static DirectoryInfo OnHomeClicked(object? sender, EventArgs e, DirectoryInfo root, ListStore store)
     {
         root = new DirectoryInfo(Environment.GetFolderPath(
@@ -22,33 +24,31 @@ public class FunctionController
         FillStore(store, root.Parent);
         return root.Parent;
     }
-
     public static void OnRefreshClicked(Object sender, EventArgs e)
     {
+        //Není potřeba znovu zapsat DirInfo do rootu?
         FillStore(LeftStore, LeftRoot);
         FillStore(RightStore, RightRoot);
     }
-
     public static void OnBackClicked(Object sender, EventArgs e)
     {
         //TODO logging historie cest? - Queue<Path>, to bude blivajz
     }
-
     public static void OnForwardClicked(Object sender, EventArgs e)
     {
         //viz výše
     }
-
     public static void OnUndoClicked(Object sender, EventArgs e)
     {
         //TODO logging provedených akcí - command pattern
         //https://stackoverflow.com/questions/3448943/best-design-pattern-for-undo-feature
     }
-
     public static void OnRedoClicked(Object sender, EventArgs e)
     {
         //viz výše
     }
+
+    #endregion
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
