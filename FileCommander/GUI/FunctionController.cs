@@ -52,10 +52,7 @@ public class FunctionController
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
-        Application.Init();
-        new DialogWindow("New Folder");
-        Application.Run();
-
+        
 
         Console.WriteLine(InputDialogWindow.path);
     }

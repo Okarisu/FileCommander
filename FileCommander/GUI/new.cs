@@ -39,16 +39,14 @@ public class DialogWindow : FileChooserDialog
 
         */
 
-        var fc = new FileChooserDialog(
-            "Open...", this, FileChooserAction.Open,
-            "Cancel", ResponseType.Cancel, "Open", ResponseType.Ok);
+        //var fc = new FileChooserDialog("Open...", this, FileChooserAction.Open,"Cancel", ResponseType.Cancel, "Open", ResponseType.Ok);
+        
+        //fc.Run();
+        //fc.Destroy();
 
-        var fec = new InputDialogWindow("Choose neco nevim");
 
-        fc.Run();
-        fc.Destroy();
             
-        //ShowAll();
+        ShowAll();
     }
 
     void OnCreateClicked(object sender, EventArgs args)

@@ -28,6 +28,7 @@ public class IconApp : Window
         SetPosition(WindowPosition.Center);
         DeleteEvent += delegate { Application.Quit(); };
 
+
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
@@ -44,7 +45,12 @@ public class IconApp : Window
 
         var toolNewButton = new ToolButton(Stock.New);
         toolbar.Insert(toolNewButton, 6);
-        toolNewButton.Clicked += OnNewClicked!;
+        toolNewButton.Clicked += delegate
+        {
+            var d = new InputDialogWindow().GetDialog();
+            d.Run();
+            d.Destroy();
+        };
 
         var toolCopyButton = new ToolButton(Stock.Copy);
         toolbar.Insert(toolCopyButton, 7);
@@ -81,42 +87,66 @@ public class IconApp : Window
         HBox twinPanelToolbox = new HBox();
         //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
 
+
         #region LeftTwinBar
 
+        HBox leftTwinToolbox = new HBox();
+
         //LEVÁ LIŠTA
-        var leftPanelBar = new Toolbar();
-        leftPanelBar.ToolbarStyle = ToolbarStyle.Both;
+        var leftToolbar = new Toolbar();
+        leftToolbar.ToolbarStyle = ToolbarStyle.Both;
 
         var leftHomeButton = new ToolButton(Stock.Home);
-        leftPanelBar.Insert(leftHomeButton, 0);
+        leftToolbar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += delegate(object? sender, EventArgs args)
         {
             LeftRoot = OnHomeClicked(sender, args, LeftRoot, LeftStore);
         };
 
         var leftUpButton = new ToolButton(Stock.GoUp);
-        leftPanelBar.Insert(leftUpButton, 1);
+        leftToolbar.Insert(leftUpButton, 1);
         leftUpButton.Clicked += delegate { LeftRoot = OnUpClicked(LeftRoot, LeftStore); };
-        
-        leftPanelBar.Insert(new SeparatorToolItem(), 2);
-        
+
+        leftToolbar.Insert(new SeparatorToolItem(), 2);
+
         var leftToolBackButton = new ToolButton(Stock.GoBack);
-        leftPanelBar.Insert(leftToolBackButton, 3);
+        leftToolbar.Insert(leftToolBackButton, 3);
         leftToolBackButton.Clicked += OnBackClicked!;
-        
+
         var leftToolForwardButton = new ToolButton(Stock.GoForward);
-        leftPanelBar.Insert(leftToolForwardButton, 4);
+        leftToolbar.Insert(leftToolForwardButton, 4);
         leftToolForwardButton.Clicked += OnForwardClicked!;
-        
+
         var leftToolUndoButton = new ToolButton(Stock.Undo);
-        leftPanelBar.Insert(leftToolUndoButton, 5);
+        leftToolbar.Insert(leftToolUndoButton, 5);
         leftToolUndoButton.Clicked += OnUndoClicked!;
-        
+
         var leftToolRedoButton = new ToolButton(Stock.Redo);
-        leftPanelBar.Insert(leftToolRedoButton, 5);
+        leftToolbar.Insert(leftToolRedoButton, 5);
         leftToolRedoButton.Clicked += OnRedoClicked!;
-        
-        twinPanelToolbox.PackStart(leftPanelBar, true, true, 0);
+
+        //LEVÝ SEZNAM DISKŮ
+        /* HBox leftDisksBar = new HBox();
+         
+         var availableDrives = DriveInfo.GetDrives();
+         List<DriveInfo> drives = new List<DriveInfo>();
+ 
+         var pos = 0; //
+         foreach (var drive in availableDrives)
+         {
+             if (drive.IsReady)
+             {
+                 Console.WriteLine(drive.VolumeLabel);
+                 var necosl = new ToolButton(drive.VolumeLabel);
+                 leftToolbar.Insert(necosl, 6);
+                 necosl.Clicked += delegate { Console.WriteLine("clicked necosl"); };
+                 //var driveButton = new Button(drive.VolumeLabel);
+                 //leftDisksBar.Add(driveButton);
+             }
+         }
+ 
+      */
+        twinPanelToolbox.PackStart(leftToolbar, true, true, 0);
 
         #endregion
 
@@ -136,30 +166,31 @@ public class IconApp : Window
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
         rightUpButton.Clicked += delegate { RightRoot = OnUpClicked(RightRoot, RightStore); };
-        
+
         rightPanelBar.Insert(new SeparatorToolItem(), 2);
-        
+
         var rightToolBackButton = new ToolButton(Stock.GoBack);
         rightPanelBar.Insert(rightToolBackButton, 3);
         rightToolBackButton.Clicked += OnBackClicked!;
-        
+
         var rightToolForwardButton = new ToolButton(Stock.GoForward);
         rightPanelBar.Insert(rightToolForwardButton, 4);
         rightToolForwardButton.Clicked += OnForwardClicked!;
-        
+
         var rightToolUndoButton = new ToolButton(Stock.Undo);
         rightPanelBar.Insert(rightToolUndoButton, 5);
         rightToolUndoButton.Clicked += OnUndoClicked!;
-        
+
+
         var rightToolRedoButton = new ToolButton(Stock.Redo);
         rightPanelBar.Insert(rightToolRedoButton, 6);
         rightToolRedoButton.Clicked += OnRedoClicked!;
 
-        
+
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
 
         #endregion
-        
+
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
         #region LeftIconView
@@ -218,7 +249,7 @@ public class IconApp : Window
         ShowAll();
     }
 
-    private static Gdk.Pixbuf GetIcon(string name)
+    public static Gdk.Pixbuf GetIcon(string name)
     {
         return IconTheme.Default.LoadIcon(name, 48, 0);
     }
