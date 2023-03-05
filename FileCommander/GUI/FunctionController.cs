@@ -1,3 +1,5 @@
+using static FileCommander.GUI.InputDialogWindow;
+
 namespace FileCommander.GUI;
 
 using System;
@@ -52,7 +54,11 @@ public class FunctionController
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
-        Console.WriteLine(InputDialogWindow._path);
+        new InputDialogWindow("Create new folder");
+        
+        var path = GetPath();
+        NullPath();
+        
     }
 
     public static void OnCopyClicked(Object sender, EventArgs e)
