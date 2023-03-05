@@ -52,9 +52,7 @@ public class FunctionController
 
     public static void OnNewClicked(Object sender, EventArgs e)
     {
-        
-
-        Console.WriteLine(InputDialogWindow.path);
+        Console.WriteLine(InputDialogWindow._path);
     }
 
     public static void OnCopyClicked(Object sender, EventArgs e)

@@ -47,9 +47,11 @@ public class IconApp : Window
         toolbar.Insert(toolNewButton, 6);
         toolNewButton.Clicked += delegate
         {
-            var d = new InputDialogWindow().GetDialog();
+            var d = new InputDialogWindow("Create new folder").GetDialog();
             d.Run();
             d.Destroy();
+            Console.WriteLine(InputDialogWindow._path);
+
         };
 
         var toolCopyButton = new ToolButton(Stock.Copy);
