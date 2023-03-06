@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using Gtk;
 
-public class IconApp : Window
+public class App : Window
 {
     const int ColPath = 0;
     const int ColDisplayName = 1;
@@ -13,21 +13,27 @@ public class IconApp : Window
     const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal)),
-        RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
     private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
-    public static ListStore LeftStore, RightStore;
+    public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
+    private static ScrolledWindow _leftScrolledWindow = new();
+    private static ScrolledWindow _rightScrolledWindow = new();
+
+    private static IconView _leftIconView = new(LeftStore);
+    private static IconView _rightIconView = new(RightStore);
+
+    private static int FOCUS = 0;
 
     //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
-    public IconApp() : base("File Commander")
+    public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
         Maximize();
         SetPosition(WindowPosition.Center);
-        DeleteEvent += delegate { Application.Quit(); };
-
+        DeleteEvent += (sender, args) => Application.Quit();
 
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
@@ -78,10 +84,11 @@ public class IconApp : Window
 
         #endregion
 
+        #region TwinToolbox
+
         //Vytvoření lišty správy adresářových panelů
         HBox twinPanelToolbox = new HBox();
         //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
-
 
         #region LeftTwinBar
 
@@ -93,14 +100,11 @@ public class IconApp : Window
 
         var leftHomeButton = new ToolButton(Stock.Home);
         leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += delegate(object? sender, EventArgs args)
-        {
-            LeftRoot = OnHomeClicked(sender, args, LeftRoot, LeftStore);
-        };
+        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(sender, args, LeftRoot, LeftStore);
 
         var leftUpButton = new ToolButton(Stock.GoUp);
         leftToolbar.Insert(leftUpButton, 1);
-        leftUpButton.Clicked += delegate { LeftRoot = OnUpClicked(LeftRoot, LeftStore); };
+        leftUpButton.Clicked += (sender, args) => LeftRoot = OnUpClicked(LeftRoot, LeftStore);
 
         leftToolbar.Insert(new SeparatorToolItem(), 2);
 
@@ -120,27 +124,7 @@ public class IconApp : Window
         leftToolbar.Insert(leftToolRedoButton, 5);
         leftToolRedoButton.Clicked += OnRedoClicked!;
 
-        //LEVÝ SEZNAM DISKŮ
-        /* HBox leftDisksBar = new HBox();
-         
-         var availableDrives = DriveInfo.GetDrives();
-         List<DriveInfo> drives = new List<DriveInfo>();
- 
-         var pos = 0; //
-         foreach (var drive in availableDrives)
-         {
-             if (drive.IsReady)
-             {
-                 Console.WriteLine(drive.VolumeLabel);
-                 var necosl = new ToolButton(drive.VolumeLabel);
-                 leftToolbar.Insert(necosl, 6);
-                 necosl.Clicked += delegate { Console.WriteLine("clicked necosl"); };
-                 //var driveButton = new Button(drive.VolumeLabel);
-                 //leftDisksBar.Add(driveButton);
-             }
-         }
- 
-      */
+
         twinPanelToolbox.PackStart(leftToolbar, true, true, 0);
 
         #endregion
@@ -153,14 +137,11 @@ public class IconApp : Window
 
         var rightHomeButton = new ToolButton(Stock.Home);
         rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += delegate(object? sender, EventArgs args)
-        {
-            RightRoot = OnHomeClicked(sender, args, RightRoot, RightStore);
-        };
+        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(sender, args, RightRoot, RightStore);
 
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
-        rightUpButton.Clicked += delegate { RightRoot = OnUpClicked(RightRoot, RightStore); };
+        rightUpButton.Clicked += (sender, args) => RightRoot = OnUpClicked(RightRoot, RightStore);
 
         rightPanelBar.Insert(new SeparatorToolItem(), 2);
 
@@ -188,66 +169,57 @@ public class IconApp : Window
 
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
+        #endregion
+
+        #region TwinWindows
+
         #region LeftIconView
 
         //Levý panel
-        ScrolledWindow leftScrolledWindow = new ScrolledWindow();
-        leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        LeftStore = CreateStore();
+        //_leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
+        _leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         FillStore(LeftStore, LeftRoot);
 
-        IconView leftIconView = new IconView(LeftStore);
-        leftIconView.SelectionMode = SelectionMode.Multiple;
-        leftIconView.TextColumn = ColDisplayName;
-        leftIconView.PixbufColumn = ColPixbuf;
-        leftIconView.ItemActivated += delegate(object _, ItemActivatedArgs args)
-        {
-            LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-        };
-
-        leftScrolledWindow.Add(leftIconView);
-        //leftIconView.GrabFocus();
+        _leftIconView.GrabFocus();
+        _leftIconView.SelectionMode = SelectionMode.Multiple;
+        _leftIconView.TextColumn = ColDisplayName;
+        _leftIconView.PixbufColumn = ColPixbuf;
+        _leftIconView.ItemActivated += (sender, args) => LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
+        
+        _leftScrolledWindow.Add(_leftIconView);
 
         #endregion
 
         #region RightIconView
 
         //Pravý panel
-        ScrolledWindow rightScrolledWindow = new ScrolledWindow();
-        rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        RightStore = CreateStore();
+        //_rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
+        _rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         FillStore(RightStore, RightRoot);
 
-        IconView rightIconView = new IconView(RightStore);
-        rightIconView.SelectionMode = SelectionMode.Multiple;
-        rightIconView.TextColumn = ColDisplayName;
-        rightIconView.PixbufColumn = ColPixbuf;
-        rightIconView.ItemActivated += delegate(object _, ItemActivatedArgs args)
-        {
-            RightRoot = OnItemActivated(args, RightRoot, RightStore);
-        };
+        _rightIconView.SelectionMode = SelectionMode.Multiple;
+        _rightIconView.TextColumn = ColDisplayName;
+        _rightIconView.PixbufColumn = ColPixbuf;
+        _rightIconView.ItemActivated += (sender, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
 
-        rightScrolledWindow.Add(rightIconView);
-        //rightIconView.GrabFocus();
+        _rightScrolledWindow.Add(_rightIconView);
 
         #endregion
 
         HBox twinPanelsBox = new HBox(false, 0);
-        twinPanelsBox.PackStart(leftScrolledWindow, true, true, 0);
-        twinPanelsBox.PackStart(rightScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(_leftScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(_rightScrolledWindow, true, true, 0);
 
+        #endregion
+
+        
         windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
-
-
+        
         ShowAll();
     }
 
-    public static Gdk.Pixbuf GetIcon(string name)
-    {
-        return IconTheme.Default.LoadIcon(name, 48, 0);
-    }
+
+    public static Gdk.Pixbuf GetIcon(string name) => IconTheme.Default.LoadIcon(name, 48, 0);
 
     private static ListStore CreateStore()
     {
@@ -294,5 +266,41 @@ public class IconApp : Window
         root = new DirectoryInfo(path);
         FillStore(store, root);
         return root;
+    }
+
+    public static int GetFocusedWindow()
+    {
+        if (_leftScrolledWindow.FocusOnClick)
+        {
+            return 1;
+        }
+        
+        if (_rightScrolledWindow.FocusOnClick)
+        {
+            return 2;
+        }
+
+        if (_rightScrolledWindow.HasFocus)
+        {
+            return 2;
+        }
+      if (_rightScrolledWindow.IsFocus)
+        {
+            return 2;
+        }
+      return 0;
+    }
+
+    public static int GetFocusedWindow(bool a) => FOCUS;
+    
+
+        public static TreePath[]? GetSelectedItems(int window)
+    {
+        return window switch
+        {
+            1 => _leftIconView.SelectedItems,
+            2 => _rightIconView.SelectedItems,
+            _ => null
+        };
     }
 }

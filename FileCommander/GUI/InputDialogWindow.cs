@@ -12,13 +12,15 @@ public class InputDialogWindow : Dialog
     {
         _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
+        _dialog.Resizable = false;
 
-        var box = new VBox();
-        _dialog.Add(box);
-
+        var requestLabel = new Label("Folder name");
+        _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
         var entry = new Entry();
+        _dialog.ContentArea.PackStart(entry, true, true, 0);
+        
         //TODO přidat validaci vstupu
-        //TODO nechat jako delegate, nebo změnit na lambdu?
+
         _dialog.Response += delegate(object o, ResponseArgs args)
         {
             Console.WriteLine(args.ResponseId.ToString());
@@ -31,7 +33,6 @@ public class InputDialogWindow : Dialog
                 NullPath();
             }
         };
-        _dialog.ContentArea.PackStart(entry, true, true, 0);
         _dialog.ShowAll();
         _dialog.Run();
         _dialog.Destroy();

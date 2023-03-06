@@ -10,7 +10,7 @@ static class Program
     public static void Main()
     {
         Application.Init();
-        var APP = new IconApp();
+        var APP = new App();
         Application.Run();
 
         IS_RUNNING = APP.IsActive;

@@ -1,0 +1,21 @@
+//LEVÝ SEZNAM DISKŮ
+        /* HBox leftDisksBar = new HBox();
+         
+         var availableDrives = DriveInfo.GetDrives();
+         List<DriveInfo> drives = new List<DriveInfo>();
+ 
+         var pos = 0; //
+         foreach (var drive in availableDrives)
+         {
+             if (drive.IsReady)
+             {
+                 Console.WriteLine(drive.VolumeLabel);
+                 var necosl = new ToolButton(drive.VolumeLabel);
+                 leftToolbar.Insert(necosl, 6);
+                 necosl.Clicked += delegate { Console.WriteLine("clicked necosl"); };
+                 //var driveButton = new Button(drive.VolumeLabel);
+                 //leftDisksBar.Add(driveButton);
+             }
+         }
+ 
+      */
