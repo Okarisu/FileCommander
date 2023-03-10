@@ -1,3 +1,6 @@
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
 namespace FileCommander.GUI;
 
 using static FunctionController;
@@ -17,6 +20,7 @@ public class App : Window
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
     private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
+
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
     private static ScrolledWindow _leftScrolledWindow = new();
@@ -25,7 +29,7 @@ public class App : Window
     private static IconView _leftIconView = new(LeftStore);
     private static IconView _rightIconView = new(RightStore);
 
-    private static int FOCUS = 0;
+    private static int _focusedPanel;
 
     //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public App() : base("File Commander")
@@ -33,7 +37,7 @@ public class App : Window
         SetDefaultSize(1280, 720);
         Maximize();
         SetPosition(WindowPosition.Center);
-        DeleteEvent += (sender, args) => Application.Quit();
+        DeleteEvent += (sender, _) => Application.Quit();
 
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
@@ -104,7 +108,7 @@ public class App : Window
 
         var leftUpButton = new ToolButton(Stock.GoUp);
         leftToolbar.Insert(leftUpButton, 1);
-        leftUpButton.Clicked += (sender, args) => LeftRoot = OnUpClicked(LeftRoot, LeftStore);
+        leftUpButton.Clicked += (_, _) => LeftRoot = OnUpClicked(LeftRoot, LeftStore);
 
         leftToolbar.Insert(new SeparatorToolItem(), 2);
 
@@ -141,7 +145,7 @@ public class App : Window
 
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
-        rightUpButton.Clicked += (sender, args) => RightRoot = OnUpClicked(RightRoot, RightStore);
+        rightUpButton.Clicked += (_, _) => RightRoot = OnUpClicked(RightRoot, RightStore);
 
         rightPanelBar.Insert(new SeparatorToolItem(), 2);
 
@@ -184,8 +188,10 @@ public class App : Window
         _leftIconView.SelectionMode = SelectionMode.Multiple;
         _leftIconView.TextColumn = ColDisplayName;
         _leftIconView.PixbufColumn = ColPixbuf;
-        _leftIconView.ItemActivated += (sender, args) => LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-        
+        _leftIconView.ItemActivated += (_, args) => LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
+        _leftIconView.FocusInEvent += (o, args) => _focusedPanel = 1;
+
+
         _leftScrolledWindow.Add(_leftIconView);
 
         #endregion
@@ -201,6 +207,12 @@ public class App : Window
         _rightIconView.TextColumn = ColDisplayName;
         _rightIconView.PixbufColumn = ColPixbuf;
         _rightIconView.ItemActivated += (sender, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
+        _rightIconView.FocusInEvent += (o, args) => _focusedPanel = 2;
+
+        foreach (var item in LeftStore)
+        {
+            Console.WriteLine(item.GetHashCode());
+        }
 
         _rightScrolledWindow.Add(_rightIconView);
 
@@ -208,13 +220,12 @@ public class App : Window
 
         HBox twinPanelsBox = new HBox(false, 0);
         twinPanelsBox.PackStart(_leftScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
         twinPanelsBox.PackStart(_rightScrolledWindow, true, true, 0);
 
         #endregion
 
-        
         windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
-        
         ShowAll();
     }
 
@@ -268,33 +279,9 @@ public class App : Window
         return root;
     }
 
-    public static int GetFocusedWindow()
-    {
-        if (_leftScrolledWindow.FocusOnClick)
-        {
-            return 1;
-        }
-        
-        if (_rightScrolledWindow.FocusOnClick)
-        {
-            return 2;
-        }
+    public static int GetFocusedWindow() => _focusedPanel;
 
-        if (_rightScrolledWindow.HasFocus)
-        {
-            return 2;
-        }
-      if (_rightScrolledWindow.IsFocus)
-        {
-            return 2;
-        }
-      return 0;
-    }
-
-    public static int GetFocusedWindow(bool a) => FOCUS;
-    
-
-        public static TreePath[]? GetSelectedItems(int window)
+    public static TreePath[]? GetSelectedItems(int window)
     {
         return window switch
         {

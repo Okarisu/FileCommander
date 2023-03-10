@@ -77,24 +77,18 @@ public class FunctionController
         var window = GetFocusedWindow();
         var selection = GetSelectedItems(window);
 
-        //new InputDialogWindow("Copy location");
-        //var path = GetPath();
-        //NullPath();
+        if (selection == null) return;
+        
+        var store = window == 1 ? LeftStore : RightStore;
+        var paths = new string?[selection.Length];
+        TreeIter iter;
 
-        var root = window == 1 ? LeftRoot : RightRoot;
-        var contests = Directory.EnumerateFileSystemEntries(root.ToString()).ToList();
-        foreach (var item in selection)
+        for (var i = 0; i < selection.Length; i += 1)
         {
-            var movable = contests.Find(x => x == item.ToString());
-            Console.WriteLine(movable);
-            
-            /*
-            var source = Path.Combine(root.ToString(), item.ToString());
-            var destination = Path.Combine(path.ToString(), item.ToString());
-            File.Copy(source, destination);*/
+            store.GetIter(out iter, selection[i]);
+            paths[i] = store.GetValue(iter, 0).ToString();
         }
 
-        
         Refresh();
     }
 
