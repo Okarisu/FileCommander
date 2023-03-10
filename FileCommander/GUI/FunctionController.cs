@@ -1,8 +1,6 @@
-using System.ComponentModel;
-using static FileCommander.GUI.InputDialogWindow;
-
 namespace FileCommander.GUI;
 
+using static InputDialogWindow;
 using System;
 using System.IO;
 using Gtk;
@@ -29,86 +27,95 @@ public class FunctionController
         return root.Parent;
     }
 
-    public static void OnRefreshClicked(Object sender, EventArgs e)
+    public static void OnRefreshClicked(object sender, EventArgs e)
     {
         Refresh();
     }
 
-    public static void OnBackClicked(Object sender, EventArgs e)
+    public static void OnBackClicked(object sender, EventArgs e)
     {
         //TODO logging historie cest? - Queue<Path>, to bude blivajz
     }
 
-    public static void OnForwardClicked(Object sender, EventArgs e)
+    public static void OnForwardClicked(object sender, EventArgs e)
     {
         //viz výše
     }
 
-    public static void OnUndoClicked(Object sender, EventArgs e)
+    public static void OnUndoClicked(object sender, EventArgs e)
     {
         //TODO logging provedených akcí - command pattern
         //https://stackoverflow.com/questions/3448943/best-design-pattern-for-undo-feature
     }
 
-    public static void OnRedoClicked(Object sender, EventArgs e)
+    public static void OnRedoClicked(object sender, EventArgs e)
     {
         //viz výše
     }
 
     #endregion
 
-    public static void OnNewClicked(Object sender, EventArgs e)
+    private static string GetPath(string dialogTitle)
     {
-        new InputDialogWindow("New folder");
-
-        var path = GetPath();
+        new InputDialogWindow(dialogTitle);
+        var path = InputDialogWindow.GetPath();
         NullPath();
+        return path;
+    }
 
-        var window = App.GetFocusedWindow();
-        var root = window == 1 ? LeftRoot : RightRoot;
+    public static void OnNewClicked(object sender, EventArgs e)
+    {
+        var path = GetPath("New folder");
+
+        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 
         var newDirectoryPath = Path.Combine(root.ToString(), path);
         Directory.CreateDirectory(newDirectoryPath);
         Refresh();
     }
 
-    public static void OnCopyClicked(Object sender, EventArgs e)
+    public static void OnCopyClicked(object sender, EventArgs e)
     {
-        var window = GetFocusedWindow();
-        var selection = GetSelectedItems(window);
+        var items = GetSelectedItems();
+        if (items.files == null) return;
 
-        if (selection == null) return;
-        
-        var store = window == 1 ? LeftStore : RightStore;
-        var paths = new string?[selection.Length];
-        TreeIter iter;
+        var path = GetPath("Copy to...");
 
-        for (var i = 0; i < selection.Length; i += 1)
+        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
+
+
+        foreach (var item in items.files)
         {
-            store.GetIter(out iter, selection[i]);
-            paths[i] = store.GetValue(iter, 0).ToString();
+            if (item!.IsDirectory)
+            {
+                //https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+            }
+            else
+            {
+                File.Copy(item.Path, Path.Combine(path, item.Filename));
+            }
         }
 
         Refresh();
     }
 
-    public static void OnMoveClicked(Object sender, EventArgs e)
+    public static void OnMoveClicked(object sender, EventArgs e)
     {
     }
 
-    public static void OnDeleteClicked(Object sender, EventArgs e)
+    public static void OnDeleteClicked(object sender, EventArgs e)
     {
     }
 
-    public static void OnRenameClicked(Object sender, EventArgs e)
+    public static void OnRenameClicked(object sender, EventArgs e)
     {
     }
 
-    public static void OnExtractClicked(Object sender, EventArgs e)
+    public static void OnExtractClicked(object sender, EventArgs e)
     {
     }
 
-    public static void OnCompressClicked(Object sender, EventArgs e)
+    public static void OnCompressClicked(object sender, EventArgs e)
     {
     }
 

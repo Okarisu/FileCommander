@@ -281,13 +281,23 @@ public class App : Window
 
     public static int GetFocusedWindow() => _focusedPanel;
 
-    public static TreePath[]? GetSelectedItems(int window)
+    public static (Item?[] files, DirectoryInfo root) GetSelectedItems()
     {
-        return window switch
+        var selection = _focusedPanel == 1 ? _leftIconView.SelectedItems : _rightIconView.SelectedItems; 
+        if (selection == null) return (null, null)!;
+        
+        var store = _focusedPanel == 1 ? LeftStore : RightStore;
+        var root = _focusedPanel == 1 ? LeftRoot : RightRoot;
+        var files = new Item?[selection.Length];
+
+        for (var i = 0; i < selection.Length; i += 1)
         {
-            1 => _leftIconView.SelectedItems,
-            2 => _rightIconView.SelectedItems,
-            _ => null
-        };
+            store.GetIter(out var treeIterator, selection[i]);
+            files[i] = new Item(store.GetValue(treeIterator, ColPath).ToString(),
+                store.GetValue(treeIterator, ColDisplayName).ToString(),
+                (bool) store.GetValue(treeIterator, ColIsDirectory));
+        }
+
+        return (files!, root);
     }
 }
