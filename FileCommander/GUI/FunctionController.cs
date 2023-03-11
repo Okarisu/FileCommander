@@ -8,13 +8,13 @@ using System.IO;
 using Gtk;
 using static App;
 
-public class FunctionController
+public abstract class FunctionController
 {
     #region Navigation
 
-    public static DirectoryInfo OnHomeClicked(object? sender, EventArgs e, DirectoryInfo root, ListStore store)
+    public static DirectoryInfo OnHomeClicked(object? sender, EventArgs e, ListStore store)
     {
-        root = new DirectoryInfo(Environment.GetFolderPath(
+        var root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
         FillStore(store, root);
         return root;
@@ -59,7 +59,7 @@ public class FunctionController
 
     private static string GetPath(string dialogTitle)
     {
-        new InputPathDialogWindow(dialogTitle);
+        var inputPathDialogWindow = new InputPathDialogWindow(dialogTitle);
         var path = InputPathDialogWindow.GetPath();
         NullPath();
         return path;
@@ -79,7 +79,7 @@ public class FunctionController
     public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
 
         string destinationPath;
         do
@@ -140,7 +140,7 @@ public class FunctionController
     public static void OnMoveClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
 
         string destinationPath;
         do
@@ -166,7 +166,7 @@ public class FunctionController
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
 
         var consent = PromptConfirmDialogWindow.IsConfirmed();
         if (!consent) return;
@@ -189,7 +189,7 @@ public class FunctionController
     public static void OnRenameClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
         var newFilename = GetPath("Rename to...");
 
@@ -215,7 +215,7 @@ public class FunctionController
     public static void OnExtractClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
 
         string destinationPath = GetPath("Extract to...");
         if (!Directory.Exists(destinationPath))
@@ -237,7 +237,7 @@ public class FunctionController
     public static void OnCompressClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files == null) return;
+        //if (items.files == null) return;
 
         string destinationPath;
         do

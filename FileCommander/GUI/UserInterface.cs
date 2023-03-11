@@ -37,8 +37,8 @@ public class App : Window
         SetDefaultSize(1280, 720);
         Maximize();
         SetPosition(WindowPosition.Center);
-        DeleteEvent += (sender, _) => Application.Quit();
 
+        DeleteEvent += (_, _) => Application.Quit();
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
@@ -96,6 +96,7 @@ public class App : Window
 
         #region LeftTwinBar
 
+        //TODO disk list
         HBox leftTwinToolbox = new HBox();
 
         //LEVÁ LIŠTA
@@ -104,7 +105,7 @@ public class App : Window
 
         var leftHomeButton = new ToolButton(Stock.Home);
         leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(sender, args, LeftRoot, LeftStore);
+        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(sender, args, LeftStore);
 
         var leftUpButton = new ToolButton(Stock.GoUp);
         leftToolbar.Insert(leftUpButton, 1);
@@ -141,7 +142,7 @@ public class App : Window
 
         var rightHomeButton = new ToolButton(Stock.Home);
         rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(sender, args, RightRoot, RightStore);
+        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(sender, args, RightStore);
 
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
@@ -189,7 +190,7 @@ public class App : Window
         _leftIconView.TextColumn = ColDisplayName;
         _leftIconView.PixbufColumn = ColPixbuf;
         _leftIconView.ItemActivated += (_, args) => LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-        _leftIconView.FocusInEvent += (o, args) => _focusedPanel = 1;
+        _leftIconView.FocusInEvent += (_, _) => _focusedPanel = 1;
 
 
         _leftScrolledWindow.Add(_leftIconView);
@@ -206,8 +207,8 @@ public class App : Window
         _rightIconView.SelectionMode = SelectionMode.Multiple;
         _rightIconView.TextColumn = ColDisplayName;
         _rightIconView.PixbufColumn = ColPixbuf;
-        _rightIconView.ItemActivated += (sender, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
-        _rightIconView.FocusInEvent += (o, args) => _focusedPanel = 2;
+        _rightIconView.ItemActivated += (_, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
+        _rightIconView.FocusInEvent += (_, _) => _focusedPanel = 2;
 
         _rightScrolledWindow.Add(_rightIconView);
 
@@ -225,7 +226,7 @@ public class App : Window
     }
 
 
-    public static Gdk.Pixbuf GetIcon(string name) => IconTheme.Default.LoadIcon(name, 48, 0);
+    private static Gdk.Pixbuf GetIcon(string name) => IconTheme.Default.LoadIcon(name, 48, 0);
 
     private static ListStore CreateStore()
     {
@@ -261,8 +262,7 @@ public class App : Window
 
     private static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
     {
-        TreeIter iter;
-        store.GetIter(out iter, a.Path);
+        store.GetIter(out var iter, a.Path);
         var path = (string) store.GetValue(iter, ColPath);
         var isDir = (bool) store.GetValue(iter, ColIsDirectory);
 
@@ -285,6 +285,8 @@ public class App : Window
         var root = _focusedPanel == 1 ? LeftRoot : RightRoot;
         var files = new Item?[selection.Length];
 
+        
+        //TODO Possible null reference argument for parameter 'path' in 'FileCommander.Item.Item'
         for (var i = 0; i < selection.Length; i += 1)
         {
             store.GetIter(out var treeIterator, selection[i]);
@@ -293,6 +295,6 @@ public class App : Window
                 (bool) store.GetValue(treeIterator, ColIsDirectory));
         }
 
-        return (files!, root);
+        return (files, root);
     }
 }
