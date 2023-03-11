@@ -1,3 +1,5 @@
+using System.IO.Compression;
+
 namespace FileCommander.GUI;
 
 using static InputPathDialogWindow;
@@ -89,8 +91,6 @@ public class FunctionController
         {
             if (item!.IsDirectory)
             {
-                //https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
-
                 RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath, item.Name), true);
             }
             else
@@ -102,7 +102,13 @@ public class FunctionController
         Refresh();
     }
 
-    static void RecursiveCopyDirectory(string sourceDir, string destinationDir, bool recursive)
+    /*
+     * MICROSOFT. How to: Copy directories. Microsoft: Microsoft Learn [online]. [cit. 2023-03-11].
+     * Dostupné z: https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories.
+     * Upraveno.
+     */
+
+    private static void RecursiveCopyDirectory(string sourceDir, string destinationDir, bool recursive)
     {
         // Get information about the source directory
         var dir = new DirectoryInfo(sourceDir);
@@ -208,10 +214,50 @@ public class FunctionController
 
     public static void OnExtractClicked(object sender, EventArgs e)
     {
+        var items = GetSelectedItems();
+        if (items.files == null) return;
+
+        string destinationPath = GetPath("Extract to...");
+        if (!Directory.Exists(destinationPath))
+        {
+            Directory.CreateDirectory(destinationPath);
+        }
+
+        foreach (var item in items.files)
+        {
+            if (!item!.IsDirectory && item.Name.EndsWith(".zip"))
+            {
+                ZipFile.ExtractToDirectory(item.Path, destinationPath);
+            }
+
+            Refresh();
+        }
     }
 
     public static void OnCompressClicked(object sender, EventArgs e)
     {
+        var items = GetSelectedItems();
+        if (items.files == null) return;
+
+        string destinationPath;
+        do
+        {
+            destinationPath = GetPath("Copy to...");
+        } while (!Directory.Exists(destinationPath));
+
+        foreach (var item in items.files)
+        {
+            if (item!.IsDirectory)
+            {
+                ZipFile.CreateFromDirectory(item.Path, Path.Combine(destinationPath, item.Name + ".zip"));
+            }
+            else
+            {
+                //TODO
+            }
+        }
+
+        Refresh();
     }
 
     private static void Refresh()
