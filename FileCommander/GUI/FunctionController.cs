@@ -1,6 +1,6 @@
 namespace FileCommander.GUI;
 
-using static InputDialogWindow;
+using static InputPathDialogWindow;
 using System;
 using System.IO;
 using Gtk;
@@ -57,8 +57,8 @@ public class FunctionController
 
     private static string GetPath(string dialogTitle)
     {
-        new InputDialogWindow(dialogTitle);
-        var path = InputDialogWindow.GetPath();
+        new InputPathDialogWindow(dialogTitle);
+        var path = InputPathDialogWindow.GetPath();
         NullPath();
         return path;
     }
@@ -79,36 +79,131 @@ public class FunctionController
         var items = GetSelectedItems();
         if (items.files == null) return;
 
-        var path = GetPath("Copy to...");
-
-        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
-
+        string destinationPath;
+        do
+        {
+            destinationPath = GetPath("Copy to...");
+        } while (!Directory.Exists(destinationPath));
 
         foreach (var item in items.files)
         {
             if (item!.IsDirectory)
             {
                 //https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+
+                RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath, item.Name), true);
             }
             else
             {
-                File.Copy(item.Path, Path.Combine(path, item.Filename));
+                File.Copy(item.Path, Path.Combine(destinationPath, item.Name));
             }
         }
 
         Refresh();
     }
 
+    static void RecursiveCopyDirectory(string sourceDir, string destinationDir, bool recursive)
+    {
+        // Get information about the source directory
+        var dir = new DirectoryInfo(sourceDir);
+
+        // Cache directories before we start copying
+        DirectoryInfo[] dirs = dir.GetDirectories();
+
+        // Create the destination directory
+        Directory.CreateDirectory(destinationDir);
+
+        // Get the files in the source directory and copy to the destination directory
+        foreach (FileInfo file in dir.GetFiles())
+        {
+            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            file.CopyTo(targetFilePath);
+        }
+
+        // If recursive and copying subdirectories, recursively call this method
+        if (recursive)
+        {
+            foreach (DirectoryInfo subDir in dirs)
+            {
+                string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                RecursiveCopyDirectory(subDir.FullName, newDestinationDir, true);
+            }
+        }
+    }
+
     public static void OnMoveClicked(object sender, EventArgs e)
     {
+        var items = GetSelectedItems();
+        if (items.files == null) return;
+
+        string destinationPath;
+        do
+        {
+            destinationPath = GetPath("Move to...");
+        } while (!Directory.Exists(destinationPath));
+
+        foreach (var item in items.files)
+        {
+            if (item!.IsDirectory)
+            {
+                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
+            }
+            else
+            {
+                File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+            }
+        }
+
+        Refresh();
     }
 
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
+        var items = GetSelectedItems();
+        if (items.files == null) return;
+
+        var consent = PromptConfirmDialogWindow.IsConfirmed();
+        if (!consent) return;
+
+        foreach (var item in items.files)
+        {
+            if (item!.IsDirectory)
+            {
+                Directory.Delete(item.Path, true);
+            }
+            else
+            {
+                File.Delete(item.Path);
+            }
+        }
+
+        Refresh();
     }
 
     public static void OnRenameClicked(object sender, EventArgs e)
     {
+        var items = GetSelectedItems();
+        if (items.files == null) return;
+        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
+        var newFilename = GetPath("Rename to...");
+
+        var destinationPath = Path.Combine(root.ToString(), newFilename);
+        Console.WriteLine(destinationPath);
+
+
+        foreach (var item in items.files)
+        {
+            if (item!.IsDirectory)
+            {
+                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
+            }
+            else
+            {
+                File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+            }
+        }
+
+        Refresh();
     }
 
     public static void OnExtractClicked(object sender, EventArgs e)

@@ -2,13 +2,12 @@ namespace FileCommander.GUI;
 
 using Gtk;
 
-public class InputDialogWindow : Dialog
+public class InputPathDialogWindow : Dialog
 {
+    private static Dialog _dialog { get; set; }
     private static string _path { get; set; }
 
-    private static Dialog _dialog { get; set; }
-
-    public InputDialogWindow(string title)
+    public InputPathDialogWindow(string title)
     {
         _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
@@ -23,7 +22,6 @@ public class InputDialogWindow : Dialog
 
         _dialog.Response += delegate(object o, ResponseArgs args)
         {
-            Console.WriteLine(args.ResponseId.ToString());
             if ((int) args.ResponseId == 1) //OK
             {
                 _path = entry.Text;

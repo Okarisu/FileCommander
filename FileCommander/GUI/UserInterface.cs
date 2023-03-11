@@ -65,7 +65,7 @@ public class App : Window
         toolbar.Insert(toolMoveButton, 8);
         toolMoveButton.Clicked += OnMoveClicked!;
 
-        var toolRenameButton = new ToolButton(Stock.Network); //Icon TBA
+        var toolRenameButton = new ToolButton(Stock.Edit); //Icon TBA
         toolbar.Insert(toolRenameButton, 9);
         toolRenameButton.Clicked += OnRenameClicked!;
 
@@ -209,11 +209,6 @@ public class App : Window
         _rightIconView.ItemActivated += (sender, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
         _rightIconView.FocusInEvent += (o, args) => _focusedPanel = 2;
 
-        foreach (var item in LeftStore)
-        {
-            Console.WriteLine(item.GetHashCode());
-        }
-
         _rightScrolledWindow.Add(_rightIconView);
 
         #endregion
@@ -283,9 +278,9 @@ public class App : Window
 
     public static (Item?[] files, DirectoryInfo root) GetSelectedItems()
     {
-        var selection = _focusedPanel == 1 ? _leftIconView.SelectedItems : _rightIconView.SelectedItems; 
+        var selection = _focusedPanel == 1 ? _leftIconView.SelectedItems : _rightIconView.SelectedItems;
         if (selection == null) return (null, null)!;
-        
+
         var store = _focusedPanel == 1 ? LeftStore : RightStore;
         var root = _focusedPanel == 1 ? LeftRoot : RightRoot;
         var files = new Item?[selection.Length];
