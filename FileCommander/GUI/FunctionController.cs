@@ -73,12 +73,22 @@ public abstract class FunctionController
     public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            if (items.files.Length == 0) new UserPromptDialogWindow("No files selected.");
+
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
 
         var destinationPath = GetPath("Copy to...");
         if (!Directory.Exists(destinationPath.path) && !destinationPath.cancel)
         {
             new UserPromptDialogWindow("Path does not exist.");
+        }
+        else if (destinationPath.cancel)
+        {
+            return;
         }
         else
         {
@@ -136,7 +146,11 @@ public abstract class FunctionController
     public static void OnMoveClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
 
         var destinationPath = GetPath("Move to...");
 
@@ -144,17 +158,22 @@ public abstract class FunctionController
         {
             new UserPromptDialogWindow("Path does not exist.");
         }
-
-
-        foreach (var item in items.files)
+        else if (destinationPath.cancel)
         {
-            if (item!.IsDirectory)
+            return;
+        }
+        else
+        {
+            foreach (var item in items.files)
             {
-                Directory.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
-            }
-            else
-            {
-                File.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
+                if (item!.IsDirectory)
+                {
+                    Directory.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
+                }
+                else
+                {
+                    File.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
+                }
             }
         }
 
@@ -164,7 +183,11 @@ public abstract class FunctionController
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
 
         var consent = PromptConfirmDialogWindow.IsConfirmed();
         if (!consent) return;
@@ -187,23 +210,37 @@ public abstract class FunctionController
     public static void OnRenameClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
+
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
         var newFilename = GetPath("Rename to...");
 
         var destinationPath = Path.Combine(root.ToString(), newFilename.path);
         Console.WriteLine(destinationPath);
-
-
-        foreach (var item in items.files)
+        if (!Directory.Exists(destinationPath) && !newFilename.cancel)
         {
-            if (item!.IsDirectory)
+            new UserPromptDialogWindow("Path does not exist.");
+        }
+        else if (newFilename.cancel)
+        {
+            return;
+        }
+        else
+        {
+            foreach (var item in items.files)
             {
-                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
-            }
-            else
-            {
-                File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                if (item!.IsDirectory)
+                {
+                    Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                }
+                else
+                {
+                    File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                }
             }
         }
 
@@ -213,7 +250,11 @@ public abstract class FunctionController
     public static void OnExtractClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
 
         var destinationPath = GetPath("Extract to...");
         if (!Directory.Exists(destinationPath.path))
@@ -235,7 +276,11 @@ public abstract class FunctionController
     public static void OnCompressClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        //if (items.files == null) return;
+        if (items.files.Length == 0)
+        {
+            new UserPromptDialogWindow("No files selected.");
+            return;
+        }
 
         var destinationPath = GetPath("Compress to...");
 
