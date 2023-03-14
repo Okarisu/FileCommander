@@ -6,6 +6,7 @@ public class InputPathDialogWindow : Dialog
 {
     private static Dialog _dialog { get; set; }
     private static string _path { get; set; }
+    private static bool _cancel { get; set; }
 
     public InputPathDialogWindow(string title)
     {
@@ -13,8 +14,8 @@ public class InputPathDialogWindow : Dialog
             ButtonsType.Ok);
         _dialog.Resizable = false;
 
-        var requestLabel = new Label("Folder name");
-        _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
+        //var requestLabel = new Label("Folder name");
+        //_dialog.ContentArea.PackStart(requestLabel, true, true, 0);
         var entry = new Entry();
         _dialog.ContentArea.PackStart(entry, true, true, 0);
         
@@ -29,6 +30,8 @@ public class InputPathDialogWindow : Dialog
             else
             {
                 NullPath();
+                _cancel = true;
+                _dialog.Destroy();
             }
         };
         _dialog.ShowAll();
@@ -36,7 +39,7 @@ public class InputPathDialogWindow : Dialog
         _dialog.Destroy();
     }
 
-    public static string GetPath() => _path;
+    public static (string path, bool cancel) GetPath() => (_path, _cancel);
 
     public static void NullPath()
     {

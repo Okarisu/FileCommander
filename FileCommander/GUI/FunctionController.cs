@@ -1,12 +1,12 @@
-using System.IO.Compression;
-
 namespace FileCommander.GUI;
 
-using static InputPathDialogWindow;
 using System;
 using System.IO;
+using System.IO.Compression;
 using Gtk;
 using static App;
+using static InputPathDialogWindow;
+using static UserPromptDialogWindow;
 
 public abstract class FunctionController
 {
@@ -57,21 +57,15 @@ public abstract class FunctionController
 
     #endregion
 
-    private static string GetPath(string dialogTitle)
-    {
-        var inputPathDialogWindow = new InputPathDialogWindow(dialogTitle);
-        var path = InputPathDialogWindow.GetPath();
-        NullPath();
-        return path;
-    }
+    #region Functions
 
     public static void OnNewClicked(object sender, EventArgs e)
     {
-        var path = GetPath("New folder");
+        var newFolderName = GetPath("New folder");
 
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 
-        var newDirectoryPath = Path.Combine(root.ToString(), path);
+        var newDirectoryPath = Path.Combine(root.ToString(), newFolderName.path);
         Directory.CreateDirectory(newDirectoryPath);
         Refresh();
     }
@@ -81,21 +75,23 @@ public abstract class FunctionController
         var items = GetSelectedItems();
         //if (items.files == null) return;
 
-        string destinationPath;
-        do
+        var destinationPath = GetPath("Copy to...");
+        if (!Directory.Exists(destinationPath.path) && !destinationPath.cancel)
         {
-            destinationPath = GetPath("Copy to...");
-        } while (!Directory.Exists(destinationPath));
-
-        foreach (var item in items.files)
+            new UserPromptDialogWindow("Path does not exist.");
+        }
+        else
         {
-            if (item!.IsDirectory)
+            foreach (var item in items.files)
             {
-                RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath, item.Name), true);
-            }
-            else
-            {
-                File.Copy(item.Path, Path.Combine(destinationPath, item.Name));
+                if (item!.IsDirectory)
+                {
+                    RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath.path, item.Name), true);
+                }
+                else
+                {
+                    File.Copy(item.Path, Path.Combine(destinationPath.path, item.Name));
+                }
             }
         }
 
@@ -142,21 +138,23 @@ public abstract class FunctionController
         var items = GetSelectedItems();
         //if (items.files == null) return;
 
-        string destinationPath;
-        do
+        var destinationPath = GetPath("Move to...");
+
+        if (!Directory.Exists(destinationPath.path) && !destinationPath.cancel)
         {
-            destinationPath = GetPath("Move to...");
-        } while (!Directory.Exists(destinationPath));
+            new UserPromptDialogWindow("Path does not exist.");
+        }
+
 
         foreach (var item in items.files)
         {
             if (item!.IsDirectory)
             {
-                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                Directory.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
             }
             else
             {
-                File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                File.Move(item.Path, Path.Combine(destinationPath.path, item.Name));
             }
         }
 
@@ -193,7 +191,7 @@ public abstract class FunctionController
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
         var newFilename = GetPath("Rename to...");
 
-        var destinationPath = Path.Combine(root.ToString(), newFilename);
+        var destinationPath = Path.Combine(root.ToString(), newFilename.path);
         Console.WriteLine(destinationPath);
 
 
@@ -217,17 +215,17 @@ public abstract class FunctionController
         var items = GetSelectedItems();
         //if (items.files == null) return;
 
-        string destinationPath = GetPath("Extract to...");
-        if (!Directory.Exists(destinationPath))
+        var destinationPath = GetPath("Extract to...");
+        if (!Directory.Exists(destinationPath.path))
         {
-            Directory.CreateDirectory(destinationPath);
+            Directory.CreateDirectory(destinationPath.path);
         }
 
         foreach (var item in items.files)
         {
             if (!item!.IsDirectory && item.Name.EndsWith(".zip"))
             {
-                ZipFile.ExtractToDirectory(item.Path, destinationPath);
+                ZipFile.ExtractToDirectory(item.Path, destinationPath.path);
             }
 
             Refresh();
@@ -239,25 +237,35 @@ public abstract class FunctionController
         var items = GetSelectedItems();
         //if (items.files == null) return;
 
-        string destinationPath;
-        do
-        {
-            destinationPath = GetPath("Copy to...");
-        } while (!Directory.Exists(destinationPath));
+        var destinationPath = GetPath("Compress to...");
 
         foreach (var item in items.files)
         {
             if (item!.IsDirectory)
             {
-                ZipFile.CreateFromDirectory(item.Path, Path.Combine(destinationPath, item.Name + ".zip"));
+                ZipFile.CreateFromDirectory(item.Path, Path.Combine(destinationPath.path, item.Name + ".zip"));
             }
             else
             {
-                //TODO
+                var tmpDir = item.Path + "_tmp";
+                Directory.CreateDirectory(tmpDir);
+                File.Copy(item.Path, Path.Combine(tmpDir, item.Name));
+                ZipFile.CreateFromDirectory(tmpDir, Path.Combine(destinationPath.path, item.Name + ".zip"));
+                Directory.Delete(tmpDir, true);
             }
         }
 
         Refresh();
+    }
+
+    #endregion
+
+    private static (string path, bool cancel) GetPath(string dialogTitle)
+    {
+        var inputPathDialogWindow = new InputPathDialogWindow(dialogTitle);
+        var path = InputPathDialogWindow.GetPath();
+        NullPath();
+        return (path.path, path.cancel);
     }
 
     private static void Refresh()
