@@ -103,9 +103,10 @@ public class App : Window
         var leftToolbar = new Toolbar();
         leftToolbar.ToolbarStyle = ToolbarStyle.Both;
 
+        
         var leftHomeButton = new ToolButton(Stock.Home);
         leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(sender, args, LeftStore);
+        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(args, LeftStore);
 
         var leftUpButton = new ToolButton(Stock.GoUp);
         leftToolbar.Insert(leftUpButton, 1);
@@ -142,7 +143,7 @@ public class App : Window
 
         var rightHomeButton = new ToolButton(Stock.Home);
         rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(sender, args, RightStore);
+        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(args, RightStore);
 
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
