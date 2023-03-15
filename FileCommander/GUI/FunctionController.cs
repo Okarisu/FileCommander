@@ -1,5 +1,6 @@
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+// ReSharper disable ObjectCreationAsStatement
+
+using System.Globalization;
 
 namespace FileCommander.GUI;
 
@@ -10,7 +11,6 @@ using Gtk;
 using static App;
 using static InputPathDialogWindow;
 
-[SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
 public abstract class FunctionController
 {
     #region Navigation
@@ -76,7 +76,7 @@ public abstract class FunctionController
     public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -84,45 +84,26 @@ public abstract class FunctionController
 
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString(); //Prohození cílové složky
 
-        foreach (var item in items.files)
+        foreach (var item in items)
         {
-            if (item!.IsDirectory)
+            var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
+
+            if (item.IsDirectory)
             {
-                RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath, item.Name));
+                if (Directory.Exists(childDestinationPath))
+                    childDestinationPath += String.Join("_moved_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                RecursiveCopyDirectory(item.Path, childDestinationPath);
             }
             else
             {
-                File.Copy(item.Path, Path.Combine(destinationPath, item.Name));
+                if (File.Exists(childDestinationPath))
+                    childDestinationPath += String.Join("_moved_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                File.Copy(item.Path, childDestinationPath);
             }
         }
 
         Refresh();
         new UserPromptDialogWindow("Finished copying files.");
-
-        /*
-        var destinationPath = GetPath("Copy to...");
-        if (!Directory.Exists(destinationPath.path) && !destinationPath.cancel)
-        {
-            new UserPromptDialogWindow("Path does not exist.");
-        }
-        else if (destinationPath.cancel)
-        {
-            return;
-        }
-        else
-        {
-            foreach (var item in items.files)
-            {
-                if (item!.IsDirectory)
-                {
-                    RecursiveCopyDirectory(item.Path, Path.Combine(destinationPath.path, item.Name), true);
-                }
-                else
-                {
-                    File.Copy(item.Path, Path.Combine(destinationPath.path, item.Name));
-                }
-            }
-        }*/
     }
 
     /*
@@ -159,7 +140,7 @@ public abstract class FunctionController
     public static void OnMoveClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -168,15 +149,20 @@ public abstract class FunctionController
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
 
-        foreach (var item in items.files)
+        foreach (var item in items)
         {
-            if (item!.IsDirectory)
+            var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
+            if (item.IsDirectory)
             {
-                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                if (Directory.Exists(childDestinationPath))
+                    childDestinationPath += String.Join("_copy_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                Directory.Move(item.Path, childDestinationPath);
             }
             else
             {
-                File.Move(item.Path, Path.Combine(destinationPath, item.Name));
+                if (File.Exists(childDestinationPath))
+                    childDestinationPath += String.Join("_copy_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                File.Move(item.Path, childDestinationPath);
             }
         }
 
@@ -187,7 +173,7 @@ public abstract class FunctionController
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -197,7 +183,7 @@ public abstract class FunctionController
         var consent = PromptConfirmDialogWindow.IsConfirmed();
         if (!consent) return;
 
-        foreach (var item in items.files)
+        foreach (var item in items)
         {
             if (item!.IsDirectory)
             {
@@ -216,7 +202,7 @@ public abstract class FunctionController
     public static void OnRenameClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -226,27 +212,21 @@ public abstract class FunctionController
         var newFilename = GetPath("Rename to...");
 
         var destinationPath = Path.Combine(root.ToString(), newFilename.path);
-        Console.WriteLine(destinationPath);
-        if (!Directory.Exists(destinationPath) && !newFilename.cancel)
-        {
-            new UserPromptDialogWindow("Path does not exist.");
-        }
-        else if (newFilename.cancel)
+
+        if (newFilename.cancel)
         {
             return;
         }
-        else
+
+        foreach (var item in items)
         {
-            foreach (var item in items.files)
+            if (item!.IsDirectory)
             {
-                if (item!.IsDirectory)
-                {
-                    Directory.Move(item.Path, Path.Combine(destinationPath, item.Name));
-                }
-                else
-                {
-                    File.Move(item.Path, Path.Combine(destinationPath, item.Name));
-                }
+                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name!));
+            }
+            else
+            {
+                File.Move(item.Path, Path.Combine(destinationPath, item.Name!));
             }
         }
 
@@ -256,7 +236,7 @@ public abstract class FunctionController
     public static void OnExtractClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -271,9 +251,9 @@ public abstract class FunctionController
             Directory.CreateDirectory(destinationPath.path);
         }
 
-        foreach (var item in items.files)
+        foreach (var item in items)
         {
-            if (!item!.IsDirectory && item.Name.EndsWith(".zip"))
+            if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
             {
                 ZipFile.ExtractToDirectory(item.Path, destinationPath.path);
             }
@@ -285,7 +265,7 @@ public abstract class FunctionController
     public static void OnCompressClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
-        if (items.files.Length == 0)
+        if (items.Length == 0)
         {
             new UserPromptDialogWindow("No files selected.");
             return;
@@ -293,7 +273,7 @@ public abstract class FunctionController
 
         var destinationPath = GetPath("Compress to...");
 
-        foreach (var item in items.files)
+        foreach (var item in items)
         {
             if (item!.IsDirectory)
             {
@@ -303,7 +283,7 @@ public abstract class FunctionController
             {
                 var tmpDir = item.Path + "_tmp";
                 Directory.CreateDirectory(tmpDir);
-                File.Copy(item.Path, Path.Combine(tmpDir, item.Name));
+                File.Copy(item.Path, Path.Combine(tmpDir, item.Name!));
                 ZipFile.CreateFromDirectory(tmpDir, Path.Combine(destinationPath.path, item.Name + ".zip"));
                 Directory.Delete(tmpDir, true);
             }

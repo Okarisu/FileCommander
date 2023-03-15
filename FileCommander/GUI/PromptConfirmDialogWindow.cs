@@ -29,7 +29,7 @@ public class PromptConfirmDialogWindow : Dialog
                 //TODO
             }
         };
-        _dialog.ShowAll();
+        //_dialog.ShowAll();
         _dialog.Run();
         _dialog.Destroy();
     }

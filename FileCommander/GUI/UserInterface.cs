@@ -277,10 +277,10 @@ public class App : Window
 
     public static int GetFocusedWindow() => _focusedPanel;
 
-    public static (Item?[] files, DirectoryInfo root) GetSelectedItems()
+    public static Item?[] GetSelectedItems()
     {
         var selection = _focusedPanel == 1 ? _leftIconView.SelectedItems : _rightIconView.SelectedItems;
-        if (selection == null) return (null, null)!;
+        if (selection == null) return null;
 
         var store = _focusedPanel == 1 ? LeftStore : RightStore;
         var root = _focusedPanel == 1 ? LeftRoot : RightRoot;
@@ -296,6 +296,6 @@ public class App : Window
                 (bool) store.GetValue(treeIterator, ColIsDirectory));
         }
 
-        return (files, root);
+        return files;
     }
 }
