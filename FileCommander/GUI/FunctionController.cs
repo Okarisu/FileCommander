@@ -1,12 +1,11 @@
 // ReSharper disable ObjectCreationAsStatement
 
-using System.Globalization;
-
 namespace FileCommander.GUI;
 
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Globalization;
 using Gtk;
 using static App;
 using static InputPathDialogWindow;
@@ -112,30 +111,29 @@ public abstract class FunctionController
      * Upraveno.
      */
 
-    private static void RecursiveCopyDirectory(string sourceDir, string destinationDir)
+    private static void RecursiveCopyDirectory(string sourceDirectory, string destinationDirectory)
     {
-        // Get information about the source directory
-        var dir = new DirectoryInfo(sourceDir);
+        var dir = new DirectoryInfo(sourceDirectory);
 
         // Cache directories before we start copying
         DirectoryInfo[] dirs = dir.GetDirectories();
 
-        // Create the destination directory
-        Directory.CreateDirectory(destinationDir);
+        Directory.CreateDirectory(destinationDirectory);
 
-        // Get the files in the source directory and copy to the destination directory
         foreach (FileInfo file in dir.GetFiles())
         {
-            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            var targetFilePath = Path.Combine(destinationDirectory, file.Name);
             file.CopyTo(targetFilePath);
         }
 
         foreach (DirectoryInfo subDir in dirs)
         {
-            var newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+            var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);
             RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
         }
     }
+
+    /*Konec citace*/
 
     public static void OnMoveClicked(object sender, EventArgs e)
     {
@@ -199,6 +197,7 @@ public abstract class FunctionController
         new UserPromptDialogWindow("Finished deleting files.");
     }
 
+    //TODO
     public static void OnRenameClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -242,20 +241,22 @@ public abstract class FunctionController
             return;
         }
 
-        var destinationPath = GetPath("Extract to...");
+        var promptedDestinationPath = GetPath("Extract to...");
+        if (promptedDestinationPath.cancel) return;
+        var root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
 
-        if (destinationPath.cancel) return;
+        var destinationPath = Path.Combine(root, promptedDestinationPath.path);
 
-        if (!Directory.Exists(destinationPath.path))
+        if (!Directory.Exists(destinationPath))
         {
-            Directory.CreateDirectory(destinationPath.path);
+            Directory.CreateDirectory(destinationPath);
         }
 
         foreach (var item in items)
         {
             if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
             {
-                ZipFile.ExtractToDirectory(item.Path, destinationPath.path);
+                ZipFile.ExtractToDirectory(item.Path, destinationPath);
             }
 
             Refresh();
