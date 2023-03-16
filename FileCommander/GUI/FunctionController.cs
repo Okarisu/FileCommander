@@ -81,7 +81,8 @@ public abstract class FunctionController
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString(); //Prohození cílové složky
+        //Fucus na levém panelu => přesouvá se do pravého
+        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString(); 
 
         foreach (var item in items)
         {
@@ -90,13 +91,26 @@ public abstract class FunctionController
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
-                    childDestinationPath += String.Join("_moved_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                {
+                    new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.");
+                    var consent = PromptConfirmDialogWindow.IsConfirmed();
+                    if (!consent) continue;
+                    childDestinationPath += "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
+                    
+                }
                 RecursiveCopyDirectory(item.Path, childDestinationPath);
             }
             else
             {
                 if (File.Exists(childDestinationPath))
-                    childDestinationPath += String.Join("_moved_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                {
+                    new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.");
+                    var consent = PromptConfirmDialogWindow.IsConfirmed();
+                    if (!consent) continue;
+                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    childDestinationPath = Path.Combine(destinationPath, cleanFilename[0] + "_copy_"+ DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")+ "."+ cleanFilename[1]);
+
+                }
                 File.Copy(item.Path, childDestinationPath);
             }
         }
@@ -115,7 +129,7 @@ public abstract class FunctionController
     {
         var dir = new DirectoryInfo(sourceDirectory);
 
-        // Cache directories before we start copying
+        // Cache directories before start of copying
         DirectoryInfo[] dirs = dir.GetDirectories();
 
         Directory.CreateDirectory(destinationDirectory);
@@ -133,7 +147,7 @@ public abstract class FunctionController
         }
     }
 
-    /*Konec citace*/
+    /** Konec citace **/
 
     public static void OnMoveClicked(object sender, EventArgs e)
     {
@@ -177,7 +191,7 @@ public abstract class FunctionController
             return;
         }
 
-        new PromptConfirmDialogWindow("Are you sure?");
+        new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.");
         var consent = PromptConfirmDialogWindow.IsConfirmed();
         if (!consent) return;
 
