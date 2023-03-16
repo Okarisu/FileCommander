@@ -8,7 +8,7 @@ using System.IO.Compression;
 using System.Globalization;
 using Gtk;
 using static App;
-using static InputPathDialogWindow;
+using static PromptPathInputDialogWindow;
 
 public abstract class FunctionController
 {
@@ -63,7 +63,7 @@ public abstract class FunctionController
 
     public static void OnNewClicked(object sender, EventArgs e)
     {
-        var newFolderName = GetPath("New folder");
+        var newFolderName = GetPath("New folder", false);
 
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 
@@ -169,13 +169,14 @@ public abstract class FunctionController
             {
                 if (Directory.Exists(childDestinationPath))
                 {
+                    //TODO prompt don't ask again
                     new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.");
                     var consent = PromptConfirmDialogWindow.IsConfirmed();
                     if (!consent) continue;
                     childDestinationPath += "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
                 }
+
                 Directory.Move(item.Path, childDestinationPath);
-                    
             }
             else
             {
@@ -238,15 +239,34 @@ public abstract class FunctionController
         }
 
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
-        var newFilename = GetPath("Rename to...");
+        (string Path, bool Cancel, bool addSuffix) newFilename;
+        if (items.Length == 1)
+        {
+            newFilename = GetPath("Rename to...", false);
+        }
+        else
+        {
+            newFilename = GetPath("Rename to...", true);
+        }
 
-        var destinationPath = Path.Combine(root.ToString(), newFilename.path);
-
-        if (newFilename.cancel)
+        if (newFilename.Cancel)
         {
             return;
         }
 
+        var destinationPath = Path.Combine(root.ToString(), newFilename.Path);
+
+        if (newFilename.addSuffix)
+        {
+            List<int> fileSuffixes = new List<int>();
+            List<int> folderSuffixes = new List<int>();
+            
+            for(var i = 0; i < items.Length; i++)
+            {
+                fileSuffixes.Add(i);
+                folderSuffixes.Add(i);
+            }
+        }
         foreach (var item in items)
         {
             if (item!.IsDirectory)
@@ -262,6 +282,10 @@ public abstract class FunctionController
         Refresh();
     }
 
+    public static void RenameMultiplefiles()
+    {
+    }
+
     public static void OnExtractClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -271,7 +295,8 @@ public abstract class FunctionController
             return;
         }
 
-        var promptedDestinationPath = GetPath("Extract to...");
+        var promptedDestinationPath = GetPath("Extract to...", false
+        );
         if (promptedDestinationPath.cancel) return;
         var root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
 
@@ -302,7 +327,7 @@ public abstract class FunctionController
             return;
         }
 
-        var destinationPath = GetPath("Compress to...");
+        var destinationPath = GetPath("Compress to...", false);
 
         foreach (var item in items)
         {
@@ -325,13 +350,13 @@ public abstract class FunctionController
 
     #endregion
 
-    private static (string path, bool cancel) GetPath(string dialogTitle)
+    private static (string path, bool cancel, bool addSuffix) GetPath(string dialogTitle, bool promptSuffix)
     {
-        new InputPathDialogWindow(dialogTitle);
-        var path = InputPathDialogWindow.GetPath();
+        new PromptPathInputDialogWindow(dialogTitle, promptSuffix);
+        var path = PromptPathInputDialogWindow.GetPath();
         NullPath();
 
-        return (path.path, path.cancel);
+        return (path.path, path.cancel, path.addSuffix);
     }
 
     private static void Refresh()
