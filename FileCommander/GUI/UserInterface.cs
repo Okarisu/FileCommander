@@ -31,7 +31,7 @@ public class App : Window
 
     private static int _focusedPanel;
 
-    //TODO ?? Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
+    //TODO Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
     public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
@@ -283,11 +283,8 @@ public class App : Window
         if (selection == null) return null;
 
         var store = _focusedPanel == 1 ? LeftStore : RightStore;
-        var root = _focusedPanel == 1 ? LeftRoot : RightRoot;
         var files = new Item?[selection.Length];
 
-        
-        //TODO Possible null reference argument for parameter 'path' in 'FileCommander.Item.Item'
         for (var i = 0; i < selection.Length; i += 1)
         {
             store.GetIter(out var treeIterator, selection[i]);

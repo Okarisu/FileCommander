@@ -24,10 +24,7 @@ public class PromptConfirmDialogWindow : Dialog
             {
                 _isConfirmed = true;
             }
-            else
-            {
-                //TODO
-            }
+            
         };
         _dialog.ShowAll();
         _dialog.Run();
