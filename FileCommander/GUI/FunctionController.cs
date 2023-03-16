@@ -228,7 +228,6 @@ public abstract class FunctionController
         new UserPromptDialogWindow("Finished deleting files.");
     }
 
-    //TODO
     public static void OnRenameClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -239,7 +238,7 @@ public abstract class FunctionController
         }
 
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
-        (string Path, bool Cancel, bool addSuffix) newFilename;
+        (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
             newFilename = GetPath("Rename to...", false);
@@ -254,36 +253,46 @@ public abstract class FunctionController
             return;
         }
 
-        var destinationPath = Path.Combine(root.ToString(), newFilename.Path);
+        var destinationPath = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
 
+        var fileSuffixes = new Queue<int>();
+        var folderSuffixes = new Queue<int>();
         if (newFilename.addSuffix)
         {
-            List<int> fileSuffixes = new List<int>();
-            List<int> folderSuffixes = new List<int>();
-            
-            for(var i = 0; i < items.Length; i++)
+            for (var i = 1; i <= items.Length; i++)
             {
-                fileSuffixes.Add(i);
-                folderSuffixes.Add(i);
+                fileSuffixes.Enqueue(i);
+                folderSuffixes.Enqueue(i);
             }
         }
+
         foreach (var item in items)
         {
+            var childDestinationPath = Path.Combine(destinationPath, newFilename.Name);
+
             if (item!.IsDirectory)
             {
-                Directory.Move(item.Path, Path.Combine(destinationPath, item.Name!));
+                if (newFilename.addSuffix)
+                {
+                    childDestinationPath += "_"+folderSuffixes.Dequeue();
+                }
+
+                Directory.Move(item.Path, childDestinationPath);
             }
             else
             {
-                File.Move(item.Path, Path.Combine(destinationPath, item.Name!));
+                if (newFilename.addSuffix)
+                {
+                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    childDestinationPath = Path.Combine(destinationPath,
+                        cleanFilename[0] + "_" + fileSuffixes.Dequeue() + "." +
+                        cleanFilename[1]);
+                }
+                File.Move(item.Path, childDestinationPath);
             }
         }
 
         Refresh();
-    }
-
-    public static void RenameMultiplefiles()
-    {
     }
 
     public static void OnExtractClicked(object sender, EventArgs e)
