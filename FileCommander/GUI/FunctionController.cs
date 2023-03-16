@@ -82,7 +82,7 @@ public abstract class FunctionController
         }
 
         //Fucus na levém panelu => přesouvá se do pravého
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString(); 
+        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
         foreach (var item in items)
         {
@@ -96,8 +96,8 @@ public abstract class FunctionController
                     var consent = PromptConfirmDialogWindow.IsConfirmed();
                     if (!consent) continue;
                     childDestinationPath += "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
-                    
                 }
+
                 RecursiveCopyDirectory(item.Path, childDestinationPath);
             }
             else
@@ -108,9 +108,11 @@ public abstract class FunctionController
                     var consent = PromptConfirmDialogWindow.IsConfirmed();
                     if (!consent) continue;
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
-                    childDestinationPath = Path.Combine(destinationPath, cleanFilename[0] + "_copy_"+ DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")+ "."+ cleanFilename[1]);
-
+                    childDestinationPath = Path.Combine(destinationPath,
+                        cleanFilename[0] + "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
+                        cleanFilename[1]);
                 }
+
                 File.Copy(item.Path, childDestinationPath);
             }
         }
@@ -148,7 +150,6 @@ public abstract class FunctionController
     }
 
     /** Konec citace **/
-
     public static void OnMoveClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -167,13 +168,28 @@ public abstract class FunctionController
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
-                    childDestinationPath += String.Join("_copy_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                {
+                    new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.");
+                    var consent = PromptConfirmDialogWindow.IsConfirmed();
+                    if (!consent) continue;
+                    childDestinationPath += "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
+                }
                 Directory.Move(item.Path, childDestinationPath);
+                    
             }
             else
             {
                 if (File.Exists(childDestinationPath))
-                    childDestinationPath += String.Join("_copy_", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+                {
+                    new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.");
+                    var consent = PromptConfirmDialogWindow.IsConfirmed();
+                    if (!consent) continue;
+                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    childDestinationPath = Path.Combine(destinationPath,
+                        cleanFilename[0] + "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
+                        cleanFilename[1]);
+                }
+
                 File.Move(item.Path, childDestinationPath);
             }
         }

@@ -34,5 +34,12 @@ public class PromptConfirmDialogWindow : Dialog
         _dialog.Destroy();
     }
     
-    public static bool IsConfirmed() => _isConfirmed;
+    public static bool IsConfirmed()
+    {
+        var consent = _isConfirmed;
+        _isConfirmed = false;
+        return consent;
+    }
+
+    
 }
