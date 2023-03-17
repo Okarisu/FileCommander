@@ -10,6 +10,7 @@
     <ItemGroup>
       <PackageReference Include="GtkSharp" Version="3.24.24.38" />
       <PackageReference Include="PackageRestore" Version="1.0.0" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0-preview.2.23128.3" />
       <PackageReference Include="Terminal.Gui" Version="1.8.2" />
     </ItemGroup>
 

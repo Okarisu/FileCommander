@@ -5,10 +5,10 @@ namespace FileCommander.GUI;
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Globalization;
 using Gtk;
 using static App;
 using static PromptPathInputDialogWindow;
+using static Settings;
 
 public abstract class FunctionController
 {
@@ -68,7 +68,16 @@ public abstract class FunctionController
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 
         var newDirectoryPath = Path.Combine(root.ToString(), newFolderName.path);
-        Directory.CreateDirectory(newDirectoryPath);
+        if (Directory.Exists(newDirectoryPath))
+        {
+            new UserPromptDialogWindow("Folder with this name already exists.");
+            return;
+        }
+        else
+        {
+            Directory.CreateDirectory(newDirectoryPath);
+        }
+
         Refresh();
     }
 
@@ -87,14 +96,20 @@ public abstract class FunctionController
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
+            bool promptAskAgain = GetBoolValueSetting("PromptDuplicitFileCopy");
 
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
                 {
-                    new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.");
-                    var consent = PromptConfirmDialogWindow.IsConfirmed();
-                    if (!consent) continue;
+                    if (promptAskAgain)
+                    {
+                        new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
+                            "PromptDuplicitFileCopy");
+                        var consent = PromptConfirmDialogWindow.IsConfirmed();
+                        if (!consent) continue;
+                    }
+
                     childDestinationPath += "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
                 }
 
@@ -104,10 +119,16 @@ public abstract class FunctionController
             {
                 if (File.Exists(childDestinationPath))
                 {
-                    new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.");
-                    var consent = PromptConfirmDialogWindow.IsConfirmed();
-                    if (!consent) continue;
+                    if (promptAskAgain)
+                    {
+                        new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
+                            "PromptDuplicitFileCopy");
+                        var consent = PromptConfirmDialogWindow.IsConfirmed();
+                        if (!consent) continue;
+                    }
+
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+
                     childDestinationPath = Path.Combine(destinationPath,
                         cleanFilename[0] + "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
                         cleanFilename[1]);
@@ -165,14 +186,19 @@ public abstract class FunctionController
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
+            bool promptAskAgain = GetBoolValueSetting("PromptDuplicitFileCopy");
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
                 {
-                    //TODO prompt don't ask again
-                    new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.");
-                    var consent = PromptConfirmDialogWindow.IsConfirmed();
-                    if (!consent) continue;
+                    if (promptAskAgain)
+                    {
+                        new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
+                            "PromptDuplicitMoveCopy");
+                        var consent = PromptConfirmDialogWindow.IsConfirmed();
+                        if (!consent) continue;
+                    }
+
                     childDestinationPath += "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
                 }
 
@@ -182,9 +208,14 @@ public abstract class FunctionController
             {
                 if (File.Exists(childDestinationPath))
                 {
-                    new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.");
-                    var consent = PromptConfirmDialogWindow.IsConfirmed();
-                    if (!consent) continue;
+                    if (promptAskAgain)
+                    {
+                        new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
+                            "PromptDuplicitMoveCopy");
+                        var consent = PromptConfirmDialogWindow.IsConfirmed();
+                        if (!consent) continue;
+                    }
+
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                     childDestinationPath = Path.Combine(destinationPath,
                         cleanFilename[0] + "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
@@ -208,7 +239,7 @@ public abstract class FunctionController
             return;
         }
 
-        new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.");
+        new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", "PromptDeletion");
         var consent = PromptConfirmDialogWindow.IsConfirmed();
         if (!consent) return;
 
@@ -274,7 +305,7 @@ public abstract class FunctionController
             {
                 if (newFilename.addSuffix)
                 {
-                    childDestinationPath += "_"+folderSuffixes.Dequeue();
+                    childDestinationPath += "_" + folderSuffixes.Dequeue();
                 }
 
                 Directory.Move(item.Path, childDestinationPath);
@@ -288,6 +319,7 @@ public abstract class FunctionController
                         cleanFilename[0] + "_" + fileSuffixes.Dequeue() + "." +
                         cleanFilename[1]);
                 }
+
                 File.Move(item.Path, childDestinationPath);
             }
         }
