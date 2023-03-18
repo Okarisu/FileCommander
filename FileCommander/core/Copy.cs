@@ -98,7 +98,6 @@ public partial class Core
             RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
         }
     }
-
-    /** Konec citace **/
-
+    
+    /* Konec citace */
 }

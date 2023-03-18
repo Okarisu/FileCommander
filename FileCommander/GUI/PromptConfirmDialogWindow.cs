@@ -15,12 +15,18 @@ public class PromptConfirmDialogWindow : Dialog
 
         _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
-        _dialog.Resizable = false;
+        _dialog.Resizable = true;
         //_dialog.DefaultSize = new Gdk.Size(150, 100);
 
         var requestLabel = new Label(prompt);
         _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
 
+        if (GetBoolValueSetting(promptSettingsKey))
+        {
+            var promptSettingsButton = new CheckButton("Don't ask again");
+            promptSettingsButton.Toggled += OnToggle;
+            _dialog.ContentArea.PackStart(promptSettingsButton, true, true, 0);
+        }
 
         _dialog.Response += delegate(object _, ResponseArgs args)
         {
@@ -30,11 +36,6 @@ public class PromptConfirmDialogWindow : Dialog
             }
         };
         
-        if (GetBoolValueSetting(promptSettingsKey))
-        {
-            var promptSettingsButton = new CheckButton("Don't ask again");
-            promptSettingsButton.Toggled += OnToggle;
-        }
 
         _dialog.ShowAll();
         _dialog.Run();
