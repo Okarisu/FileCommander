@@ -3,6 +3,8 @@
 
 namespace FileCommander.GUI;
 
+
+using static core.Core;
 using static FunctionController;
 using System;
 using System.IO;

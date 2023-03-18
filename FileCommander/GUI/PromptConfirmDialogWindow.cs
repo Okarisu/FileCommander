@@ -1,8 +1,6 @@
 namespace FileCommander.GUI;
 
 using Gtk;
-using System.Configuration;
-using System.Collections.Specialized;
 using static Settings;
 
 public class PromptConfirmDialogWindow : Dialog
@@ -18,7 +16,7 @@ public class PromptConfirmDialogWindow : Dialog
         _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
         _dialog.Resizable = false;
-        _dialog.DefaultSize = new Gdk.Size(150, 100);
+        //_dialog.DefaultSize = new Gdk.Size(150, 100);
 
         var requestLabel = new Label(prompt);
         _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
@@ -31,12 +29,12 @@ public class PromptConfirmDialogWindow : Dialog
                 _isConfirmed = true;
             }
         };
-        /*
+        
         if (GetBoolValueSetting(promptSettingsKey))
         {
             var promptSettingsButton = new CheckButton("Don't ask again");
             promptSettingsButton.Toggled += OnToggle;
-        }*/
+        }
 
         _dialog.ShowAll();
         _dialog.Run();
