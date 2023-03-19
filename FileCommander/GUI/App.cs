@@ -1,11 +1,14 @@
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
+using FileCommander.GUI.Controllers;
+using FileCommander.GUI.Toolbars;
+
 namespace FileCommander.GUI;
 
 
-using static core.Core;
-using static FunctionController;
+
+using static NavigationController;
 using System;
 using System.IO;
 using Gtk;
@@ -45,50 +48,10 @@ public class App : Window
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
 
-        #region Toolbar
-
-        //Vytvoření hlavní nástrojové lišty
-        var toolbar = new Toolbar();
-        toolbar.ToolbarStyle = ToolbarStyle.Both;
-
-        var toolRefreshButton = new ToolButton(Stock.Refresh);
-        toolbar.Insert(toolRefreshButton, 0);
-        toolRefreshButton.Clicked += OnRefreshClicked!;
-
-        var toolNewButton = new ToolButton(Stock.New);
-        toolbar.Insert(toolNewButton, 6);
-        toolNewButton.Clicked += OnNewClicked!;
-
-        var toolCopyButton = new ToolButton(Stock.Copy);
-        toolbar.Insert(toolCopyButton, 7);
-        toolCopyButton.Clicked += OnCopyClicked!;
-
-        var toolMoveButton = new ToolButton(Stock.Dnd); //Icon TBA
-        toolbar.Insert(toolMoveButton, 8);
-        toolMoveButton.Clicked += OnMoveClicked!;
-
-        var toolRenameButton = new ToolButton(Stock.Edit); //Icon TBA
-        toolbar.Insert(toolRenameButton, 9);
-        toolRenameButton.Clicked += OnRenameClicked!;
-
-        var toolDeleteButton = new ToolButton(Stock.Delete);
-        toolbar.Insert(toolDeleteButton, 10);
-        toolDeleteButton.Clicked += OnDeleteClicked!;
-
-        var toolExtractButton = new ToolButton(Stock.Execute); //Icon TBA
-        toolbar.Insert(toolExtractButton, 12);
-        toolExtractButton.Clicked += OnExtractClicked!;
-
-        var toolCompressButton = new ToolButton(Stock.Execute); //Icon TBA
-        toolbar.Insert(toolCompressButton, 12);
-        toolCompressButton.Clicked += OnCompressClicked!;
-
-        toolbar.Insert(new SeparatorToolItem(), 5);
-        toolbar.Insert(new SeparatorToolItem(), 11);
-
+        var toolbar = ToolbarMain.DrawToolbar();
         windowVerticalBox.PackStart(toolbar, false, false, 0);
 
-        #endregion
+        
 
         #region TwinToolbox
 
@@ -102,82 +65,19 @@ public class App : Window
         HBox leftTwinToolbox = new HBox();
 
         //LEVÁ LIŠTA
-        var leftToolbar = new Toolbar();
-        leftToolbar.ToolbarStyle = ToolbarStyle.Both;
-
-        
-        var leftHomeButton = new ToolButton(Stock.Home);
-        leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(args, LeftStore);
-
-        var leftUpButton = new ToolButton(Stock.GoUp);
-        leftToolbar.Insert(leftUpButton, 1);
-        leftUpButton.Clicked += (_, _) => LeftRoot = OnUpClicked(LeftRoot, LeftStore);
-
-        leftToolbar.Insert(new SeparatorToolItem(), 2);
-
-        var leftToolBackButton = new ToolButton(Stock.GoBack);
-        leftToolbar.Insert(leftToolBackButton, 3);
-        leftToolBackButton.Clicked += OnBackClicked!;
-
-        var leftToolForwardButton = new ToolButton(Stock.GoForward);
-        leftToolbar.Insert(leftToolForwardButton, 4);
-        leftToolForwardButton.Clicked += OnForwardClicked!;
-
-        var leftToolUndoButton = new ToolButton(Stock.Undo);
-        leftToolbar.Insert(leftToolUndoButton, 5);
-        leftToolUndoButton.Clicked += OnUndoClicked!;
-
-        var leftToolRedoButton = new ToolButton(Stock.Redo);
-        leftToolbar.Insert(leftToolRedoButton, 5);
-        leftToolRedoButton.Clicked += OnRedoClicked!;
-
-
+        Toolbar leftToolbar = ToolbarLeft.DrawLeftToolbar();
         twinPanelToolbox.PackStart(leftToolbar, true, true, 0);
 
         #endregion
 
-        #region RightTwinBar
-
-        //PRAVÁ LIŠTA
-        var rightPanelBar = new Toolbar();
-        rightPanelBar.ToolbarStyle = ToolbarStyle.Both;
-
-        var rightHomeButton = new ToolButton(Stock.Home);
-        rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(args, RightStore);
-
-        var rightUpButton = new ToolButton(Stock.GoUp);
-        rightPanelBar.Insert(rightUpButton, 1);
-        rightUpButton.Clicked += (_, _) => RightRoot = OnUpClicked(RightRoot, RightStore);
-
-        rightPanelBar.Insert(new SeparatorToolItem(), 2);
-
-        var rightToolBackButton = new ToolButton(Stock.GoBack);
-        rightPanelBar.Insert(rightToolBackButton, 3);
-        rightToolBackButton.Clicked += OnBackClicked!;
-
-        var rightToolForwardButton = new ToolButton(Stock.GoForward);
-        rightPanelBar.Insert(rightToolForwardButton, 4);
-        rightToolForwardButton.Clicked += OnForwardClicked!;
-
-        var rightToolUndoButton = new ToolButton(Stock.Undo);
-        rightPanelBar.Insert(rightToolUndoButton, 5);
-        rightToolUndoButton.Clicked += OnUndoClicked!;
-
-
-        var rightToolRedoButton = new ToolButton(Stock.Redo);
-        rightPanelBar.Insert(rightToolRedoButton, 6);
-        rightToolRedoButton.Clicked += OnRedoClicked!;
-
-
+        Toolbar rightPanelBar = ToolbarRight.DrawRightToolbar();
         twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
 
         #endregion
 
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
-        #endregion
+        
 
         #region TwinWindows
 

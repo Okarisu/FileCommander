@@ -1,4 +1,6 @@
-namespace FileCommander.GUI;
+using FileCommander.GUI.Dialogs;
+
+namespace FileCommander.GUI.Controllers;
 
 using static PromptPathInputDialogWindow;
 using static App;

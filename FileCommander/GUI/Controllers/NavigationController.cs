@@ -1,17 +1,13 @@
 // ReSharper disable ObjectCreationAsStatement
 
-namespace FileCommander.GUI;
-
-using System;
-using System.IO;
 using Gtk;
+
+namespace FileCommander.GUI.Controllers;
+
 using static App;
-using static PromptPathInputDialogWindow;
 
-public abstract class FunctionController
+public abstract class NavigationController
 {
-    #region Navigation
-
     public static DirectoryInfo OnHomeClicked(EventArgs e, ListStore store)
     {
         var root = new DirectoryInfo(Environment.GetFolderPath(
@@ -54,8 +50,6 @@ public abstract class FunctionController
     {
         //viz výše
     }
-
-    #endregion
 
 
     public static void Refresh()

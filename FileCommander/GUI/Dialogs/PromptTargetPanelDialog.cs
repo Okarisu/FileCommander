@@ -1,6 +1,6 @@
 using Gtk;
 
-namespace FileCommander.GUI;
+namespace FileCommander.GUI.Dialogs;
 
 public class PromptTargetPanelDialog : Dialog
 {

@@ -2,13 +2,15 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using static FileCommander.GUI.TargetController;
+using FileCommander.GUI.Controllers;
+using FileCommander.GUI.Dialogs;
+using static FileCommander.GUI.Controllers.TargetController;
 
 namespace FileCommander.core;
 
 using GUI;
 using static GUI.App;
-using static GUI.FunctionController;
+using static NavigationController;
 
 public partial class Core
 {

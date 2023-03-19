@@ -1,11 +1,15 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
+
+using FileCommander.GUI.Controllers;
+using FileCommander.GUI.Dialogs;
+
 namespace FileCommander.core;
 
 using GUI;
 using static GUI.App;
-using static GUI.FunctionController;
+using static NavigationController;
 public partial class Core
 {
     public static void OnMoveClicked(object sender, EventArgs e)

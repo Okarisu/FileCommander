@@ -1,11 +1,12 @@
-namespace FileCommander.GUI;
-
 using Gtk;
+
+namespace FileCommander.GUI.Dialogs;
+
 using static Settings;
 
-public class PromptConfirmDialogWindow : Dialog
+public class PromptConfirmDialogWindow : Gtk.Dialog
 {
-    private static Dialog _dialog;
+    private static Gtk.Dialog _dialog;
     private static bool _isConfirmed = false;
     private static string PromptSettingsKey { get; set; }
 
@@ -13,7 +14,7 @@ public class PromptConfirmDialogWindow : Dialog
     {
         PromptSettingsKey = promptSettingsKey;
 
-        _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
+        _dialog = new Gtk.Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
         _dialog.Resizable = false;
         //_dialog.DefaultSize = new Gdk.Size(150, 100);

@@ -1,5 +1,6 @@
-namespace FileCommander.GUI;
 using Gtk;
+
+namespace FileCommander.GUI.Dialogs;
 
 public class PromptUserDialogWindow : Dialog
 {
