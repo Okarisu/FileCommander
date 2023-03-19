@@ -6,8 +6,6 @@ using FileCommander.GUI.Toolbars;
 
 namespace FileCommander.GUI;
 
-
-
 using static NavigationController;
 using System;
 using System.IO;
@@ -15,10 +13,10 @@ using Gtk;
 
 public class App : Window
 {
-    const int ColPath = 0;
-    const int ColDisplayName = 1;
-    const int ColPixbuf = 2;
-    const int ColIsDirectory = 3;
+    public const int ColPath = 0;
+    public const int ColDisplayName = 1;
+    public const int ColPixbuf = 2;
+    public const int ColIsDirectory = 3;
 
 
     public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
@@ -28,15 +26,17 @@ public class App : Window
 
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
-    private static ScrolledWindow _leftScrolledWindow = new();
-    private static ScrolledWindow _rightScrolledWindow = new();
+    public static ScrolledWindow LeftScrolledWindow = new();
+    public static ScrolledWindow RightScrolledWindow = new();
 
-    private static IconView _leftIconView = new(LeftStore);
-    private static IconView _rightIconView = new(RightStore);
+    public static IconView LeftIconView = new(LeftStore);
+    public static IconView RightIconView = new(RightStore);
 
-    private static int _focusedPanel;
+    public static int FocusedPanel;
 
-    //TODO Nastavení v menu/tools -> YAML nebo XML https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
+    public static string LeftRootLabel = LeftRoot.ToString();
+    public static string RightRootLabel = RightRoot.ToString();
+
     public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
@@ -44,6 +44,7 @@ public class App : Window
         SetPosition(WindowPosition.Center);
 
         DeleteEvent += (_, _) => Application.Quit();
+        
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
@@ -51,76 +52,60 @@ public class App : Window
         var toolbar = ToolbarMain.DrawToolbar();
         windowVerticalBox.PackStart(toolbar, false, false, 0);
 
+
+        //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
+        
+        HBox twinPanelToolbox = new HBox();
+
+
+        
+        
+        HBox leftTwinToolbox = new HBox();
+        var leftToolbar = ToolbarLeft.DrawLeftToolbar();
+        leftTwinToolbox.PackStart(leftToolbar, true, true, 0);
+        var leftDisksList = new HBox();
+        leftTwinToolbox.PackStart(leftDisksList, true, true, 0);
+
+        var leftCompactBox = new VBox();
+        leftCompactBox.PackStart(leftTwinToolbox, true, true, 0);
+        var leftRootLabel = new Label("Current directory: "+LeftRoot);
+        leftCompactBox.PackStart(leftRootLabel, true, true, 0);
         
 
-        #region TwinToolbox
+        HBox rightTwinToolbox = new HBox();
+        var rightPanelBar = ToolbarRight.DrawRightToolbar();
+        rightTwinToolbox.PackStart(rightPanelBar, true, true, 0);
+        var rightDisksList = new HBox();
+        rightTwinToolbox.PackStart(rightDisksList, true, true, 0);
 
-        //Vytvoření lišty správy adresářových panelů
-        HBox twinPanelToolbox = new HBox();
-        //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
-
-        #region LeftTwinBar
-
-        //TODO disk list
-        HBox leftTwinToolbox = new HBox();
-
-        //LEVÁ LIŠTA
-        Toolbar leftToolbar = ToolbarLeft.DrawLeftToolbar();
-        twinPanelToolbox.PackStart(leftToolbar, true, true, 0);
-
-        #endregion
-
-        Toolbar rightPanelBar = ToolbarRight.DrawRightToolbar();
-        twinPanelToolbox.PackStart(rightPanelBar, true, true, 0);
-
-        #endregion
+        var rightCompactBox = new VBox();
+        rightCompactBox.PackStart(rightTwinToolbox, true, true, 0);
+        var rightRootLabel = new Label("Current directory: "+RightRootLabel);
+        Pango.FontDescription fd = Pango.FontDescription.FromString("Purisa 15");
+        rightRootLabel.ModifyFont(fd);
+        rightCompactBox.PackStart(rightRootLabel, false, false, 0);
+        
+        
+        twinPanelToolbox.PackStart(leftCompactBox, true, true, 0);
+        twinPanelToolbox.PackStart(rightCompactBox, true, true, 0);
 
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
-        
 
         #region TwinWindows
 
-        #region LeftIconView
+        TwinPanels.LeftTwinPanel.DrawLeftPanel();
+        TwinPanels.RightTwinPanel.DrawRightPanel();
+        
+        //Nefunguje 
+        //LeftRoot = DrawTwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, 1);
+        //RightRoot = DrawTwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, 2);
 
-        //Levý panel
-        //_leftScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        _leftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        FillStore(LeftStore, LeftRoot);
-
-        _leftIconView.GrabFocus();
-        _leftIconView.SelectionMode = SelectionMode.Multiple;
-        _leftIconView.TextColumn = ColDisplayName;
-        _leftIconView.PixbufColumn = ColPixbuf;
-        _leftIconView.ItemActivated += (_, args) => LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-        _leftIconView.FocusInEvent += (_, _) => _focusedPanel = 1;
-
-
-        _leftScrolledWindow.Add(_leftIconView);
-
-        #endregion
-
-        #region RightIconView
-
-        //Pravý panel
-        //_rightScrolledWindow.ShadowType = ShadowType.EtchedIn;
-        _rightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        FillStore(RightStore, RightRoot);
-
-        _rightIconView.SelectionMode = SelectionMode.Multiple;
-        _rightIconView.TextColumn = ColDisplayName;
-        _rightIconView.PixbufColumn = ColPixbuf;
-        _rightIconView.ItemActivated += (_, args) => RightRoot = OnItemActivated(args, RightRoot, RightStore);
-        _rightIconView.FocusInEvent += (_, _) => _focusedPanel = 2;
-
-        _rightScrolledWindow.Add(_rightIconView);
-
-        #endregion
 
         HBox twinPanelsBox = new HBox(false, 0);
-        twinPanelsBox.PackStart(_leftScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(LeftScrolledWindow, true, true, 0);
         twinPanelsBox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
-        twinPanelsBox.PackStart(_rightScrolledWindow, true, true, 0);
+        twinPanelsBox.PackStart(RightScrolledWindow, true, true, 0);
 
         #endregion
 
@@ -163,7 +148,7 @@ public class App : Window
         }
     }
 
-    private static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
+    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
     {
         store.GetIter(out var iter, a.Path);
         var path = (string) store.GetValue(iter, ColPath);
@@ -177,14 +162,14 @@ public class App : Window
         return root;
     }
 
-    public static int GetFocusedWindow() => _focusedPanel;
+    public static int GetFocusedWindow() => FocusedPanel;
 
     public static Item?[] GetSelectedItems()
     {
-        var selection = _focusedPanel == 1 ? _leftIconView.SelectedItems : _rightIconView.SelectedItems;
+        var selection = FocusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
         if (selection == null) return null;
 
-        var store = _focusedPanel == 1 ? LeftStore : RightStore;
+        var store = FocusedPanel == 1 ? LeftStore : RightStore;
         var files = new Item?[selection.Length];
 
         for (var i = 0; i < selection.Length; i += 1)
