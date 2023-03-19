@@ -20,6 +20,8 @@ public partial class Core
             return;
         }
 
+        //TODO copy here or there
+        //var destinationPath = GetPath("Compress to...", false, true);
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
@@ -40,7 +42,7 @@ public partial class Core
                         if (!consent) continue;
                     }
 
-                    childDestinationPath += "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss");
+                    childDestinationPath += " (copy)";
                 }
 
                 RecursiveCopyDirectory(item.Path, childDestinationPath);
@@ -58,10 +60,17 @@ public partial class Core
                     }
 
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    var extension = cleanFilename[^1]; //koncovka souboru; ^1 = poslední prvek pole
+                    var filename = cleanFilename[0]; //jméno souboru bez koncovky
+                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
+                    {
+                        for(var i = 0; i < cleanFilename.Length - 2; i++)
+                            filename += "." + cleanFilename[i];
+                    }
 
                     childDestinationPath = Path.Combine(destinationPath,
-                        cleanFilename[0] + "_copy_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
-                        cleanFilename[1]);
+                        filename + " (copy)." +
+                        extension);
                 }
 
                 File.Copy(item.Path, childDestinationPath);

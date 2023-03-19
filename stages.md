@@ -67,8 +67,8 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 - [x] UC2
 - [x] UC3
 - [x] UC4
-- [ ] UC5
-- [ ] UC6
+- [x] UC5
+- [x] UC6
 - [ ] UC7
 - [ ] UC8
 

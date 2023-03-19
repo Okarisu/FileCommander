@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="GtkSharp" Version="3.24.24.38"/>
-        <PackageReference Include="PackageRestore" Version="1.0.0"/>
-        <PackageReference Include="YamlDotNet" Version="13.0.2"/>
+        <PackageReference Include="GtkSharp" Version="3.24.24.38" />
+        <PackageReference Include="PackageRestore" Version="1.0.0" />
+        <PackageReference Include="YamlDotNet" Version="13.0.2" />
     </ItemGroup>
     
     <ItemGroup>
@@ -20,8 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll"/>
-        <Content Include="bin\Debug\net6.0\YamlDotNet.dll"/>
+        <Content Include="bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll" />
+        <Content Include="bin\Debug\net6.0\YamlDotNet.dll" />
     </ItemGroup>
 
 </Project>

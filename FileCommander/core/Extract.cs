@@ -19,23 +19,33 @@ public partial class Core
             return;
         }
 
-        var promptedDestinationPath = GetPath("Extract to...", false
-        );
+        var promptedDestinationPath = new PromptArchiveTargetPathDialog("Extract to...").GetTargetPanel();
         if (promptedDestinationPath.cancel) return;
-        var root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
 
-        var destinationPath = Path.Combine(root, promptedDestinationPath.path);
-
-        if (!Directory.Exists(destinationPath))
+        string root;
+        if (promptedDestinationPath.targetHere)
         {
-            Directory.CreateDirectory(destinationPath);
+            root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+        }
+        else
+        {
+            root = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
         }
 
+        
         foreach (var item in items)
         {
+            var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+            var filename = cleanFilename[0]; //jméno souboru bez koncovky
+            if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
+            {
+                for(var i = 0; i < cleanFilename.Length - 2; i++)
+                    filename += "." + cleanFilename[i];
+            }
+
             if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
             {
-                ZipFile.ExtractToDirectory(item.Path, destinationPath);
+                ZipFile.ExtractToDirectory(item.Path, Path.Combine(root, filename));
             }
 
             Refresh();

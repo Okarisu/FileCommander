@@ -1,9 +1,6 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
-
-using System.Runtime.CompilerServices;
-
 namespace FileCommander.core;
 
 using GUI;
