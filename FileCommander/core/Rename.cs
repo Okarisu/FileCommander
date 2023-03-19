@@ -1,11 +1,15 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
+
+using System.Runtime.CompilerServices;
+
 namespace FileCommander.core;
 
 using GUI;
 using static GUI.App;
 using static GUI.FunctionController;
+
 public partial class Core
 {
     public static void OnRenameClicked(object sender, EventArgs e)
@@ -48,10 +52,9 @@ public partial class Core
 
         foreach (var item in items)
         {
-            var childDestinationPath = Path.Combine(destinationPath, newFilename.Name);
-
             if (item!.IsDirectory)
             {
+                var childDestinationPath = Path.Combine(destinationPath, newFilename.Name);
                 if (newFilename.addSuffix)
                 {
                     childDestinationPath += "_" + folderSuffixes.Dequeue();
@@ -61,11 +64,13 @@ public partial class Core
             }
             else
             {
+                var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                var childDestinationPath = Path.Combine(destinationPath, newFilename.Name + "." +
+                    cleanFilename[cleanFilename.Length - 1]);
                 if (newFilename.addSuffix)
                 {
-                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                     childDestinationPath = Path.Combine(destinationPath,
-                        cleanFilename[0] + "_" + fileSuffixes.Dequeue() + "." +
+                        newFilename.Name + "_" + fileSuffixes.Dequeue() + "." +
                         cleanFilename[1]);
                 }
 
@@ -75,6 +80,4 @@ public partial class Core
 
         Refresh();
     }
-
-
 }

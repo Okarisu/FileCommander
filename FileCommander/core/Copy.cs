@@ -25,7 +25,7 @@ public partial class Core
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
-            var promptAskAgain = Settings.GetBoolValueSetting("PromptDuplicitFileCopy");
+            var promptAskAgain = Settings.GetConf("PromptDuplicitFileCopy");
 
             if (item.IsDirectory)
             {

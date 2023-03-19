@@ -6,14 +6,12 @@ using Gtk;
 
 static class Program
 {
-    public static bool IS_RUNNING;
     public static void Main()
     {
         Application.Init();
-        var APP = new App();
+        // ReSharper disable once HeapView.ObjectAllocation.Evident
+        // ReSharper disable once ObjectCreationAsStatement
+        new App();
         Application.Run();
-
-        IS_RUNNING = APP.IsActive;
-        
     }
 }

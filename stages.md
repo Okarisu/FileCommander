@@ -65,8 +65,8 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 
 ### MS2. - 2.3.
 - [x] UC2
-- [ ] UC3
-- [ ] UC4
+- [x] UC3
+- [x] UC4
 - [ ] UC5
 - [ ] UC6
 - [ ] UC7

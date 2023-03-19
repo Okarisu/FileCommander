@@ -16,10 +16,14 @@ public partial class Core
             new PromptUserDialogWindow("No files selected.");
             return;
         }
-
-        new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", "PromptDeletion");
-        var consent = PromptConfirmDialogWindow.IsConfirmed();
-        if (!consent) return;
+        var promptAskAgain = Settings.GetConf("PromptDelete");
+        
+        if (promptAskAgain)
+        {
+            new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", "PromptDelete");
+            var consent = PromptConfirmDialogWindow.IsConfirmed();
+            if (!consent) return;
+        }
 
         foreach (var item in items)
         {

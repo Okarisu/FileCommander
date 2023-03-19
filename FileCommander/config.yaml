@@ -1,0 +1,4 @@
+settings:
+  PromptDuplicitFileCopy: true
+  PromptDuplicitFileMove: true
+  PromptDelete: true

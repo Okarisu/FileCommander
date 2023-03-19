@@ -23,7 +23,7 @@ public partial class Core
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
-            var promptAskAgain = Settings.GetBoolValueSetting("PromptDuplicitFileCopy");
+            var promptAskAgain = Settings.GetConf("PromptDuplicitFileCopy");
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
@@ -31,7 +31,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
-                            "PromptDuplicitMoveCopy");
+                            "PromptDuplicitFileMove");
                         var consent = PromptConfirmDialogWindow.IsConfirmed();
                         if (!consent) continue;
                     }
@@ -48,15 +48,23 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
-                            "PromptDuplicitMoveCopy");
+                            "PromptDuplicitFileMove");
                         var consent = PromptConfirmDialogWindow.IsConfirmed();
                         if (!consent) continue;
                     }
 
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    var extension = cleanFilename[^1]; //koncovka souboru; ^1 = poslední prvek pole
+                    var filename = cleanFilename[0]; //jméno souboru bez koncovky
+                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
+                    {
+                        for(var i = 0; i < cleanFilename.Length - 2; i++)
+                            filename += "." + cleanFilename[i];
+                    }
+
                     childDestinationPath = Path.Combine(destinationPath,
-                        cleanFilename[0] + "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
-                        cleanFilename[1]);
+                        filename + "_move_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." +
+                        extension);
                 }
 
                 File.Move(item.Path, childDestinationPath);
