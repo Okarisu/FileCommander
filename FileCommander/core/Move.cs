@@ -10,6 +10,7 @@ public partial class Core
 {
     public static void OnMoveClicked(object sender, EventArgs e)
     {
+        const string promptMkey = "PromptDuplicitFileMove";
         var items = GetSelectedItems();
         if (items.Length == 0)
         {
@@ -23,7 +24,7 @@ public partial class Core
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
-            var promptAskAgain = Settings.GetConf("PromptDuplicitFileCopy");
+            var promptAskAgain = Settings.GetConf(promptMkey);
             if (item.IsDirectory)
             {
                 if (Directory.Exists(childDestinationPath))
@@ -31,7 +32,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
-                            "PromptDuplicitFileMove");
+                            promptMkey);
                         var consent = PromptConfirmDialogWindow.IsConfirmed();
                         if (!consent) continue;
                     }
@@ -48,7 +49,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
-                            "PromptDuplicitFileMove");
+                            promptMkey);
                         var consent = PromptConfirmDialogWindow.IsConfirmed();
                         if (!consent) continue;
                     }

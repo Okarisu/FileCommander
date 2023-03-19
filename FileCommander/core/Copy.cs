@@ -10,6 +10,7 @@ using static GUI.PromptConfirmDialogWindow;
 
 public partial class Core
 {
+    const string promptCkey = "PromptDuplicitFileCopy";
         public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -25,7 +26,7 @@ public partial class Core
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
-            var promptAskAgain = Settings.GetConf("PromptDuplicitFileCopy");
+            var promptAskAgain = Settings.GetConf(promptCkey);
 
             if (item.IsDirectory)
             {
@@ -34,7 +35,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
-                            "PromptDuplicitFileCopy");
+                            promptCkey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }
@@ -51,7 +52,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
-                            "PromptDuplicitFileCopy");
+                            promptCkey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }

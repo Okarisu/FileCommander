@@ -10,17 +10,18 @@ public partial class Core
 {
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
+        const string promptDkey = "PromptDelete";
         var items = GetSelectedItems();
         if (items.Length == 0)
         {
             new PromptUserDialogWindow("No files selected.");
             return;
         }
-        var promptAskAgain = Settings.GetConf("PromptDelete");
+        var promptAskAgain = Settings.GetConf(promptDkey);
         
         if (promptAskAgain)
         {
-            new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", "PromptDelete");
+            new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", promptDkey);
             var consent = PromptConfirmDialogWindow.IsConfirmed();
             if (!consent) return;
         }
