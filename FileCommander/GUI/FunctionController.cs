@@ -58,15 +58,6 @@ public abstract class FunctionController
     #endregion
 
 
-    public static (string path, bool cancel, bool addSuffix) GetPath(string dialogTitle, bool promptSuffix)
-    {
-        new PromptPathInputDialogWindow(dialogTitle, promptSuffix);
-        var path = PromptPathInputDialogWindow.GetPath();
-        NullPath();
-
-        return (path.path, path.cancel, path.addSuffix);
-    }
-
     public static void Refresh()
     {
         FillStore(LeftStore, LeftRoot);

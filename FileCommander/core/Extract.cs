@@ -18,21 +18,12 @@ public partial class Core
             new PromptUserDialogWindow("No files selected.");
             return;
         }
-
-        var promptedDestinationPath = new PromptArchiveTargetPathDialog("Extract to...").GetTargetPanel();
-        if (promptedDestinationPath.cancel) return;
-
-        string root;
-        if (promptedDestinationPath.targetHere)
-        {
-            root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
-        }
-        else
-        {
-            root = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-        }
-
         
+        
+
+        var promptedTarget = TargetController.GetTargetPanel("Extract");
+        if (promptedTarget.cancel) return;
+
         foreach (var item in items)
         {
             var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
@@ -45,7 +36,7 @@ public partial class Core
 
             if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
             {
-                ZipFile.ExtractToDirectory(item.Path, Path.Combine(root, filename));
+                ZipFile.ExtractToDirectory(item.Path, Path.Combine(promptedTarget.root, filename));
             }
 
             Refresh();

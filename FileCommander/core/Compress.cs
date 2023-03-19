@@ -1,6 +1,7 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
+
 namespace FileCommander.core;
 
 using GUI;
@@ -10,7 +11,6 @@ using System.IO.Compression;
 
 public partial class Core
 {
-    
     public static void OnCompressClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -20,24 +20,36 @@ public partial class Core
             return;
         }
 
-        var destinationPath = GetPath("Compress to...", false);
+        var promptedTarget = TargetController.GetTargetPanel("Compress");
+        if (promptedTarget.cancel) return;
 
-        foreach (var item in items)
+        if (items.Length == 1 && items[0]!.IsDirectory)
         {
-            if (item!.IsDirectory)
-            {
-                ZipFile.CreateFromDirectory(item.Path, Path.Combine(destinationPath.path, item.Name + ".zip"));
-            }
-            else
-            {
-                var tmpDir = item.Path + "_tmp";
-                Directory.CreateDirectory(tmpDir);
-                File.Copy(item.Path, Path.Combine(tmpDir, item.Name!));
-                ZipFile.CreateFromDirectory(tmpDir, Path.Combine(destinationPath.path, item.Name + ".zip"));
-                Directory.Delete(tmpDir, true);
-            }
+            ZipFile.CreateFromDirectory(items[0]!.Path, Path.Combine(promptedTarget.root, items[0]!.Name + ".zip"));
         }
+        else
+        {
+            var archiveName = TargetController.GetTargetPath("Archive name:", false);
+            if (archiveName.cancel) return;
+            var tmpDirPath = Path.Combine(promptedTarget.root, archiveName.path);
+            Directory.CreateDirectory(tmpDirPath);
+            
+            foreach (var item in items)
+            {
+                if (item!.IsDirectory)
+                {
+                    RecursiveCopyDirectory(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                }
+                else
+                {
+                    File.Copy(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                }
+            }
 
+            ZipFile.CreateFromDirectory(tmpDirPath, Path.Combine(promptedTarget.root, archiveName.path + ".zip"));
+            Directory.Delete(tmpDirPath, true);
+        }
+        
         Refresh();
     }
 }

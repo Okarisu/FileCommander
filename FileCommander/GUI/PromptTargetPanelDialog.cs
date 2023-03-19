@@ -2,16 +2,16 @@ using Gtk;
 
 namespace FileCommander.GUI;
 
-public class PromptArchiveTargetPathDialog : Dialog
+public class PromptTargetPanelDialog : Dialog
 {
     private static Dialog _dialog { get; set; }
     private static bool _targetHere { get; set; }
     private static bool _cancel { get; set; }
 
-    public PromptArchiveTargetPathDialog(string title)
+    public PromptTargetPanelDialog(string operation)
     {
-        _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel,
-            "Extract aside", ButtonsType.YesNo, "Extract here", ButtonsType.Ok);
+        _dialog = new Dialog(operation, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel,
+            operation+" aside", ButtonsType.YesNo, operation+" here", ButtonsType.Ok);
         _dialog.Resizable = false;
 
 

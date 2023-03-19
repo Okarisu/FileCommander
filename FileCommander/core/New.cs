@@ -12,7 +12,7 @@ public partial class Core
 {
     public static void OnNewClicked(object sender, EventArgs e)
     {
-        var newFolderName = GetPath("New folder", false);
+        var newFolderName = TargetController.GetTargetPath("New folder", false);
 
         var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 

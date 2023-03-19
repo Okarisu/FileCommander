@@ -1,6 +1,9 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
+
+using static FileCommander.GUI.TargetController;
+
 namespace FileCommander.core;
 
 using GUI;
@@ -22,11 +25,11 @@ public partial class Core
         (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
-            newFilename = GetPath("Rename to...", false);
+            newFilename = GetTargetPath("Rename to...", false);
         }
         else
         {
-            newFilename = GetPath("Rename to...", true);
+            newFilename = GetTargetPath("Rename to...", true);
         }
 
         if (newFilename.Cancel)

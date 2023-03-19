@@ -21,7 +21,7 @@ public partial class Core
         }
 
         //TODO copy here or there
-        //var destinationPath = GetPath("Compress to...", false, true);
+        //var destinationPath = GetTargetPath("Compress to...", false, true);
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
