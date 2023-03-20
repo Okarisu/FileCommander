@@ -15,11 +15,19 @@ public class ToolbarLeft
         
         var leftHomeButton = new ToolButton(Stock.Home);
         leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += (sender, args) => LeftRoot = OnHomeClicked(args, LeftStore);
+        leftHomeButton.Clicked += (sender, args) =>
+        {
+            LeftRoot = OnHomeClicked(args, LeftStore);
+            leftRootLabel.Text = "Current directory: "+LeftRoot;
+        };
 
         var leftUpButton = new ToolButton(Stock.GoUp);
         leftToolbar.Insert(leftUpButton, 1);
-        leftUpButton.Clicked += (_, _) => LeftRoot = OnUpClicked(LeftRoot, LeftStore);
+        leftUpButton.Clicked += (_, _) =>
+        {
+            LeftRoot = OnUpClicked(LeftRoot, LeftStore);
+            leftRootLabel.Text = "Current directory: "+LeftRoot;
+        };
 
         leftToolbar.Insert(new SeparatorToolItem(), 2);
 

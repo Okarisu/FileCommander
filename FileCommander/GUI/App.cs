@@ -34,8 +34,8 @@ public class App : Window
 
     public static int FocusedPanel;
 
-    public static string LeftRootLabel = LeftRoot.ToString();
-    public static string RightRootLabel = RightRoot.ToString();
+    public static Label leftRootLabel= new ("Current directory: "+LeftRoot);
+    public static Label rightRootLabel= new ("Current directory: "+LeftRoot);
 
     public App() : base("File Commander")
     {
@@ -50,7 +50,7 @@ public class App : Window
         Add(windowVerticalBox);
 
         var toolbar = ToolbarMain.DrawToolbar();
-        windowVerticalBox.PackStart(toolbar, false, false, 0);
+        windowVerticalBox.PackStart(toolbar, false, true, 0);
 
 
         //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
@@ -62,27 +62,23 @@ public class App : Window
         
         HBox leftTwinToolbox = new HBox();
         var leftToolbar = ToolbarLeft.DrawLeftToolbar();
-        leftTwinToolbox.PackStart(leftToolbar, true, true, 0);
+        leftTwinToolbox.PackStart(leftToolbar, false, true, 0);
         var leftDisksList = new HBox();
-        leftTwinToolbox.PackStart(leftDisksList, true, true, 0);
+        leftTwinToolbox.PackStart(leftDisksList, false, true, 0);
 
         var leftCompactBox = new VBox();
-        leftCompactBox.PackStart(leftTwinToolbox, true, true, 0);
-        var leftRootLabel = new Label("Current directory: "+LeftRoot);
-        leftCompactBox.PackStart(leftRootLabel, true, true, 0);
+        leftCompactBox.PackStart(leftTwinToolbox, false, true, 0);
+        leftCompactBox.PackStart(leftRootLabel, false, true, 0);
         
 
         HBox rightTwinToolbox = new HBox();
         var rightPanelBar = ToolbarRight.DrawRightToolbar();
-        rightTwinToolbox.PackStart(rightPanelBar, true, true, 0);
+        rightTwinToolbox.PackStart(rightPanelBar, false, true, 0);
         var rightDisksList = new HBox();
-        rightTwinToolbox.PackStart(rightDisksList, true, true, 0);
+        rightTwinToolbox.PackStart(rightDisksList, false, true, 0);
 
         var rightCompactBox = new VBox();
-        rightCompactBox.PackStart(rightTwinToolbox, true, true, 0);
-        var rightRootLabel = new Label("Current directory: "+RightRootLabel);
-        Pango.FontDescription fd = Pango.FontDescription.FromString("Purisa 15");
-        rightRootLabel.ModifyFont(fd);
+        rightCompactBox.PackStart(rightTwinToolbox, false, true, 0);
         rightCompactBox.PackStart(rightRootLabel, false, false, 0);
         
         

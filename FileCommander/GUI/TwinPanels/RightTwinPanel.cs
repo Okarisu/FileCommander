@@ -16,7 +16,7 @@ public class RightTwinPanel
         RightIconView.ItemActivated += (_, args) =>
         {
             RightRoot = OnItemActivated(args, RightRoot, RightStore);
-            RightRootLabel = RightRoot.ToString();
+            rightRootLabel.Text = "Current directory: "+RightRoot;
         };
         RightIconView.FocusInEvent += (_, _) => FocusedPanel = 2;
 

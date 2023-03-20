@@ -17,7 +17,7 @@ public class LeftTwinPanel
         LeftIconView.ItemActivated += (_, args) =>
         {
             LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-            LeftRootLabel = LeftRoot.ToString();
+            leftRootLabel.Text = "Current directory: "+LeftRoot;
         };
         LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
 

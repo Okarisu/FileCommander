@@ -2,14 +2,12 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using FileCommander.GUI.Controllers;
-using FileCommander.GUI.Dialogs;
-
 namespace FileCommander.core;
 
-using GUI;
+using GUI.Controllers;
+using GUI.Dialogs;
 using static GUI.App;
-using static NavigationController;
+using static GUI.Controllers.NavigationController;
 using System.IO.Compression;
 
 public partial class Core
@@ -26,17 +24,35 @@ public partial class Core
         var promptedTarget = TargetController.GetTargetPanel("Compress");
         if (promptedTarget.cancel) return;
 
+
         if (items.Length == 1 && items[0]!.IsDirectory)
         {
-            ZipFile.CreateFromDirectory(items[0]!.Path, Path.Combine(promptedTarget.root, items[0]!.Name + ".zip"));
+            var targetPath = Path.Combine(promptedTarget.root, items[0]!.Name + ".zip");
+            if (File.Exists(targetPath))
+            {
+                new PromptUserDialogWindow("Archive with this name already exists.");
+            }
+            else
+            {
+                ZipFile.CreateFromDirectory(items[0]!.Path, targetPath);
+            }
         }
         else
         {
             var archiveName = TargetController.GetTargetPath("Archive name:", false);
             if (archiveName.cancel) return;
-            var tmpDirPath = Path.Combine(promptedTarget.root, archiveName.path);
-            Directory.CreateDirectory(tmpDirPath);
+            var archiveTargetPath = Path.Combine(promptedTarget.root, archiveName.path + ".zip");
+
+            if (File.Exists(archiveTargetPath))
+            {
+                new PromptUserDialogWindow("Archive with this name already exists.");
+                return;
+            }
             
+            var tmpDirPath = Path.Combine(promptedTarget.root, archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            Directory.CreateDirectory(tmpDirPath);
+
             foreach (var item in items)
             {
                 if (item!.IsDirectory)
@@ -48,11 +64,10 @@ public partial class Core
                     File.Copy(item.Path, Path.Combine(tmpDirPath, item.Name!));
                 }
             }
-
-            ZipFile.CreateFromDirectory(tmpDirPath, Path.Combine(promptedTarget.root, archiveName.path + ".zip"));
+            ZipFile.CreateFromDirectory(tmpDirPath, archiveTargetPath);
             Directory.Delete(tmpDirPath, true);
         }
-        
+
         Refresh();
     }
 }

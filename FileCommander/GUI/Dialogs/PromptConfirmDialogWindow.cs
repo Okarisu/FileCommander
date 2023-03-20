@@ -17,11 +17,26 @@ public class PromptConfirmDialogWindow : Gtk.Dialog
         _dialog = new Gtk.Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
         _dialog.Resizable = false;
-        //_dialog.DefaultSize = new Gdk.Size(150, 100);
+
 
         var requestLabel = new Label(prompt);
         _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
 
+
+        KeyPressEvent += (o, args) =>
+        {
+            var key = Console.ReadKey();
+            switch (key.Key)
+            {
+                case ConsoleKey.Enter:
+                    _isConfirmed = true;
+                    break;
+                case ConsoleKey.Escape:
+                    _dialog.Destroy();
+                    break;
+            }
+        };
+        
         if (GetConf(promptSettingsKey))
         {
             var promptSettingsButton = new CheckButton("Don't ask again");
@@ -36,7 +51,7 @@ public class PromptConfirmDialogWindow : Gtk.Dialog
                 _isConfirmed = true;
             }
         };
-        
+
 
         _dialog.ShowAll();
         _dialog.Run();
@@ -57,6 +72,10 @@ public class PromptConfirmDialogWindow : Gtk.Dialog
         if (button.Active)
         {
             SetConf(PromptSettingsKey, false);
+        }
+        else
+        {
+            SetConf(PromptSettingsKey, true);
         }
     }
 }

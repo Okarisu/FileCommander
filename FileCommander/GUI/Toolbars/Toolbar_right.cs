@@ -15,11 +15,19 @@ public class ToolbarRight
 
         var rightHomeButton = new ToolButton(Stock.Home);
         rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += (sender, args) => RightRoot = OnHomeClicked(args, RightStore);
+        rightHomeButton.Clicked += (sender, args) =>
+        {
+            RightRoot = OnHomeClicked(args, RightStore);
+            rightRootLabel.Text = "Current directory: "+RightRoot;
+        };
 
         var rightUpButton = new ToolButton(Stock.GoUp);
         rightPanelBar.Insert(rightUpButton, 1);
-        rightUpButton.Clicked += (_, _) => RightRoot = OnUpClicked(RightRoot, RightStore);
+        rightUpButton.Clicked += (_, _) =>
+        {
+            RightRoot = OnUpClicked(RightRoot, RightStore);
+            rightRootLabel.Text = "Current directory: "+RightRoot;
+        };
 
         rightPanelBar.Insert(new SeparatorToolItem(), 2);
 

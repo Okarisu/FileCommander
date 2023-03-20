@@ -13,5 +13,7 @@ static class Program
         // ReSharper disable once ObjectCreationAsStatement
         new App();
         Application.Run();
+        
+        
     }
 }
