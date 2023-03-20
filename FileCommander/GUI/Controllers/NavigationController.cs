@@ -30,28 +30,6 @@ public abstract class NavigationController
         Refresh();
     }
 
-    public static void OnBackClicked(object sender, EventArgs e)
-    {
-        //TODO logging historie cest? - Queue<Path>, to bude blivajz
-    }
-
-    public static void OnForwardClicked(object sender, EventArgs e)
-    {
-        //viz výše
-    }
-
-    public static void OnUndoClicked(object sender, EventArgs e)
-    {
-        //TODO logging provedených akcí - command pattern
-        //https://stackoverflow.com/questions/3448943/best-design-pattern-for-undo-feature
-    }
-
-    public static void OnRedoClicked(object sender, EventArgs e)
-    {
-        //viz výše
-    }
-
-
     public static void Refresh()
     {
         FillStore(LeftStore, LeftRoot);

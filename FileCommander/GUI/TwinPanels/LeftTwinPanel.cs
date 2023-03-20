@@ -17,10 +17,10 @@ public class LeftTwinPanel
         LeftIconView.ItemActivated += (_, args) =>
         {
             LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-            leftRootLabel.Text = "Current directory: "+LeftRoot;
+            LeftRootLabel.Text = "Current directory: "+LeftRoot;
         };
         LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
-
+        
         LeftScrolledWindow.Add(LeftIconView);
     }
 }

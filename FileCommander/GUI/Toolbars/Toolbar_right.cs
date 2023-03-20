@@ -18,7 +18,7 @@ public class ToolbarRight
         rightHomeButton.Clicked += (sender, args) =>
         {
             RightRoot = OnHomeClicked(args, RightStore);
-            rightRootLabel.Text = "Current directory: "+RightRoot;
+            RightRootLabel.Text = "Current directory: "+RightRoot;
         };
 
         var rightUpButton = new ToolButton(Stock.GoUp);
@@ -26,27 +26,8 @@ public class ToolbarRight
         rightUpButton.Clicked += (_, _) =>
         {
             RightRoot = OnUpClicked(RightRoot, RightStore);
-            rightRootLabel.Text = "Current directory: "+RightRoot;
+            RightRootLabel.Text = "Current directory: "+RightRoot;
         };
-
-        rightPanelBar.Insert(new SeparatorToolItem(), 2);
-
-        var rightToolBackButton = new ToolButton(Stock.GoBack);
-        rightPanelBar.Insert(rightToolBackButton, 3);
-        rightToolBackButton.Clicked += OnBackClicked!;
-
-        var rightToolForwardButton = new ToolButton(Stock.GoForward);
-        rightPanelBar.Insert(rightToolForwardButton, 4);
-        rightToolForwardButton.Clicked += OnForwardClicked!;
-
-        var rightToolUndoButton = new ToolButton(Stock.Undo);
-        rightPanelBar.Insert(rightToolUndoButton, 5);
-        rightToolUndoButton.Clicked += OnUndoClicked!;
-
-
-        var rightToolRedoButton = new ToolButton(Stock.Redo);
-        rightPanelBar.Insert(rightToolRedoButton, 6);
-        rightToolRedoButton.Clicked += OnRedoClicked!;
 
         return rightPanelBar;
     }

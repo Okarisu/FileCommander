@@ -1,26 +1,22 @@
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
-using FileCommander.GUI.Controllers;
-using FileCommander.GUI.Toolbars;
-
 namespace FileCommander.GUI;
 
-using static NavigationController;
+using Toolbars;
 using System;
 using System.IO;
 using Gtk;
 
 public class App : Window
 {
-    public const int ColPath = 0;
+    private const int ColPath = 0;
     public const int ColDisplayName = 1;
     public const int ColPixbuf = 2;
-    public const int ColIsDirectory = 3;
+    private const int ColIsDirectory = 3;
 
 
-    //public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-    public static DirectoryInfo LeftRoot = new DirectoryInfo(@"/run/media/toohka/Elements/Programy/OS/");
+    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
     private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
@@ -35,32 +31,44 @@ public class App : Window
 
     public static int FocusedPanel;
 
-    public static Label leftRootLabel= new ("Current directory: "+LeftRoot);
-    public static Label rightRootLabel= new ("Current directory: "+LeftRoot);
+    public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
+    public static Label RightRootLabel = new("Current directory: " + RightRoot);
 
     public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
         Maximize();
         SetPosition(WindowPosition.Center);
-
         DeleteEvent += (_, _) => Application.Quit();
-        
+
         //Vytvoření kontejneru vnitřního obsahu okna
         VBox windowVerticalBox = new VBox(false, 0);
         Add(windowVerticalBox);
 
         var toolbar = ToolbarMain.DrawToolbar();
         windowVerticalBox.PackStart(toolbar, false, true, 0);
+/*
+        var compactTwinBox = new HBox();
+        windowVerticalBox.PackStart(compactTwinBox, true, true, 0);
+
+        var leftTwinPanel = new VBox();
+        var leftTwinToolbox = TwinToolboxes.TwinToolboxLeft.DrawLeftToolbox();
+        leftTwinPanel.PackStart(leftTwinToolbox, true, true, 0);
+        leftTwinPanel.PackStart(LeftScrolledWindow, true, true, 0);
+        compactTwinBox.PackStart(leftTwinPanel, true, true, 0);
+
+        var rightTwinPanel = new VBox();
+        var rightTwinToolbox = TwinToolboxes.TwinToolboxRight.DrawRightToolbox();
+        rightTwinPanel.PackStart(rightTwinToolbox, true, true, 0);
+        rightTwinPanel.PackStart(RightScrolledWindow, true, true, 0);
+        compactTwinBox.PackStart(rightTwinPanel, true, true, 0);
+
+        ShowAll();*/
 
 
-        //TODO list dostupných disků - https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?redirectedfrom=MSDN&view=net-7.0#System_IO_DriveInfo_GetDrives
         
         HBox twinPanelToolbox = new HBox();
 
-
-        
-        
         HBox leftTwinToolbox = new HBox();
         var leftToolbar = ToolbarLeft.DrawLeftToolbar();
         leftTwinToolbox.PackStart(leftToolbar, false, true, 0);
@@ -69,8 +77,11 @@ public class App : Window
 
         var leftCompactBox = new VBox();
         leftCompactBox.PackStart(leftTwinToolbox, false, true, 0);
-        leftCompactBox.PackStart(leftRootLabel, false, true, 0);
-        
+        leftCompactBox.PackStart(LeftRootLabel, false, true, 0);
+
+        twinPanelToolbox.PackStart(leftCompactBox, true, true, 0);
+
+        twinPanelToolbox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
 
         HBox rightTwinToolbox = new HBox();
         var rightPanelBar = ToolbarRight.DrawRightToolbar();
@@ -80,31 +91,22 @@ public class App : Window
 
         var rightCompactBox = new VBox();
         rightCompactBox.PackStart(rightTwinToolbox, false, true, 0);
-        rightCompactBox.PackStart(rightRootLabel, false, false, 0);
-        
-        
-        twinPanelToolbox.PackStart(leftCompactBox, true, true, 0);
+        rightCompactBox.PackStart(RightRootLabel, false, false, 0);
+
         twinPanelToolbox.PackStart(rightCompactBox, true, true, 0);
 
         windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
 
-
-        #region TwinWindows
-
         TwinPanels.LeftTwinPanel.DrawLeftPanel();
         TwinPanels.RightTwinPanel.DrawRightPanel();
-        
-        //Nefunguje 
+
         //LeftRoot = DrawTwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, 1);
         //RightRoot = DrawTwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, 2);
-
 
         HBox twinPanelsBox = new HBox(false, 0);
         twinPanelsBox.PackStart(LeftScrolledWindow, true, true, 0);
         twinPanelsBox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
         twinPanelsBox.PackStart(RightScrolledWindow, true, true, 0);
-
-        #endregion
 
         windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
         ShowAll();
@@ -161,22 +163,21 @@ public class App : Window
 
     public static int GetFocusedWindow() => FocusedPanel;
 
-    public static Item?[] GetSelectedItems()
+    public static Item[] GetSelectedItems()
     {
         var selection = FocusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
-        if (selection == null) return null;
 
         var store = FocusedPanel == 1 ? LeftStore : RightStore;
-        var files = new Item?[selection.Length];
+        var files = new Item[selection.Length];
 
         for (var i = 0; i < selection.Length; i += 1)
         {
             store.GetIter(out var treeIterator, selection[i]);
-            files[i] = new Item(store.GetValue(treeIterator, ColPath).ToString(),
+            files[i] = new Item(store.GetValue(treeIterator, ColPath).ToString()!,
                 store.GetValue(treeIterator, ColDisplayName).ToString(),
                 (bool) store.GetValue(treeIterator, ColIsDirectory));
         }
 
-        return files;
+        return files!;
     }
 }
