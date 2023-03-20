@@ -24,11 +24,11 @@ public class ToolbarMain
         toolbar.Insert(toolCopyButton, 7);
         toolCopyButton.Clicked += OnCopyClicked!;
 
-        var toolMoveButton = new ToolButton(Stock.Dnd); //Icon TBA
+        var toolMoveButton = new ToolButton(new Image(Stock.File, IconSize.SmallToolbar), "move"); 
         toolbar.Insert(toolMoveButton, 8);
         toolMoveButton.Clicked += OnMoveClicked!;
 
-        var toolRenameButton = new ToolButton(Stock.Edit); //Icon TBA
+        var toolRenameButton = new ToolButton(new Image(Stock.Edit, IconSize.SmallToolbar), "Rename");
         toolbar.Insert(toolRenameButton, 9);
         toolRenameButton.Clicked += OnRenameClicked!;
 
@@ -36,11 +36,11 @@ public class ToolbarMain
         toolbar.Insert(toolDeleteButton, 10);
         toolDeleteButton.Clicked += OnDeleteClicked!;
 
-        var toolExtractButton = new ToolButton(Stock.Execute); //Icon TBA
+        var toolExtractButton = new ToolButton(new Image(Stock.GoUp, IconSize.SmallToolbar), "Extract");
         toolbar.Insert(toolExtractButton, 12);
         toolExtractButton.Clicked += OnExtractClicked!;
 
-        var toolCompressButton = new ToolButton(Stock.Execute); //Icon TBA
+        var toolCompressButton = new ToolButton(new Image(Stock.GoDown, IconSize.SmallToolbar), "Compress");
         toolbar.Insert(toolCompressButton, 12);
         toolCompressButton.Clicked += OnCompressClicked!;
 

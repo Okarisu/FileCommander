@@ -24,10 +24,13 @@ public partial class Core
             return;
         }
 
-        //TODO copy here or there
-        //var destinationPath = GetTargetPath("Compress to...", false, true);
+        
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+
+        
+        //Thread thread = new Thread(ProgressBarDialogWindow.StartCopyBar);
+        //thread.Start();
 
         foreach (var item in items)
         {
@@ -81,6 +84,7 @@ public partial class Core
             }
         }
 
+        //thread.Interrupt();
         Refresh();
         new PromptUserDialogWindow("Finished copying files.");
     }

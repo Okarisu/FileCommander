@@ -1,19 +1,19 @@
-﻿using FileCommander.GUI;
-
-namespace FileCommander;
+﻿namespace FileCommander;
 
 using Gtk;
+using GUI;
+using static GUI.Dialogs.ProgressBarDialogWindow;
 
 static class Program
 {
     public static void Main()
     {
+        
         Application.Init();
-        // ReSharper disable once HeapView.ObjectAllocation.Evident
-        // ReSharper disable once ObjectCreationAsStatement
         new App();
         Application.Run();
         
-        
     }
+
+    
 }

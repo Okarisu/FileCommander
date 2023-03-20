@@ -15,7 +15,6 @@ public partial class Core
 {
     public static void OnMoveClicked(object sender, EventArgs e)
     {
-        const string promptMkey = "PromptDuplicitFileMove";
         var items = GetSelectedItems();
         if (items.Length == 0)
         {
@@ -25,8 +24,11 @@ public partial class Core
 
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
-
         var duplicityFilesOccured = false;
+
+        //Thread thread = new Thread(ProgressBarDialogWindow.StartMoveBar);
+        //thread.Start();
+        
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
@@ -53,6 +55,8 @@ public partial class Core
 
         }
 
+        //thread.Interrupt();
+        
         Refresh();
         if (duplicityFilesOccured)
             new PromptUserDialogWindow("Several file with the same name already exist.");

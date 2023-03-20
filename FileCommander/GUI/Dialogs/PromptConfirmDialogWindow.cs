@@ -4,7 +4,7 @@ namespace FileCommander.GUI.Dialogs;
 
 using static Settings;
 
-public class PromptConfirmDialogWindow : Gtk.Dialog
+public class PromptConfirmDialogWindow : Dialog
 {
     private static Gtk.Dialog _dialog;
     private static bool _isConfirmed = false;

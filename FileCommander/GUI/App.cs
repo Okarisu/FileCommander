@@ -19,10 +19,11 @@ public class App : Window
     public const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    //public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    public static DirectoryInfo LeftRoot = new DirectoryInfo(@"/run/media/toohka/Elements/Programy/OS/");
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
-    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Open);
+    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
 
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
