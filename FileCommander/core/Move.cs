@@ -24,7 +24,7 @@ public partial class Core
 
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
-        var duplicityFilesOccured = false;
+        var duplicateFilesOccured = false;
 
         //Thread thread = new Thread(ProgressBarDialogWindow.StartMoveBar);
         //thread.Start();
@@ -36,7 +36,7 @@ public partial class Core
             {
                 if (Directory.Exists(childDestinationPath))
                 {
-                    duplicityFilesOccured = true;
+                    duplicateFilesOccured = true;
                     continue;
                 }
 
@@ -46,7 +46,7 @@ public partial class Core
             {
                 if (File.Exists(childDestinationPath))
                 {
-                    duplicityFilesOccured = true;
+                    duplicateFilesOccured = true;
                     continue;
                 }
 
@@ -58,7 +58,7 @@ public partial class Core
         //thread.Interrupt();
         
         Refresh();
-        if (duplicityFilesOccured)
+        if (duplicateFilesOccured)
             new PromptUserDialogWindow("Several file with the same name already exist.");
         new PromptUserDialogWindow("Finished moving files.");
     }

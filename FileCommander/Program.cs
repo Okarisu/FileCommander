@@ -2,7 +2,6 @@
 
 using Gtk;
 using GUI;
-using static GUI.Dialogs.ProgressBarDialogWindow;
 
 static class Program
 {

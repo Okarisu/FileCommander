@@ -28,7 +28,7 @@ public partial class Core
         if (promptedTarget.cancel) return;
 
         var notArchiveFilesOccured = false;
-        var duplicityArchiveFilesOccured = false;
+        var duplicateArchiveFilesOccured = false;
         foreach (var item in items)
         {
             var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
@@ -44,7 +44,7 @@ public partial class Core
             {
                 if (Directory.Exists(targetDirectoryPath))
                 {
-                    duplicityArchiveFilesOccured = true;
+                    duplicateArchiveFilesOccured = true;
                     continue;
                 }
 
@@ -58,7 +58,7 @@ public partial class Core
 
         if (notArchiveFilesOccured)
             new PromptUserDialogWindow("Several files were not a .zip archive.");
-        if (duplicityArchiveFilesOccured)
+        if (duplicateArchiveFilesOccured)
             new PromptUserDialogWindow("Several directories with the same name already exist.");
         Refresh();
     }

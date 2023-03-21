@@ -15,7 +15,8 @@ using static PromptConfirmDialogWindow;
 public partial class Core
 {
     const string promptCkey = "PromptDuplicitFileCopy";
-        public static void OnCopyClicked(object sender, EventArgs e)
+
+    public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
         if (items.Length == 0)
@@ -24,17 +25,17 @@ public partial class Core
             return;
         }
 
-        
+
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
 
-        
+
         //Thread thread = new Thread(ProgressBarDialogWindow.StartCopyBar);
         //thread.Start();
 
         foreach (var item in items)
         {
-            var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
+            var childDestinationPath = Path.Combine(destinationPath, item.Name!);
             var promptAskAgain = Settings.GetConf(promptCkey);
 
             if (item.IsDirectory)
@@ -49,7 +50,22 @@ public partial class Core
                         if (!consent) continue;
                     }
 
-                    childDestinationPath += " (copy)";
+                    var foldersFound = new DirectoryInfo(destinationPath);
+                    int duplicateFolders = 0;
+                    foreach (DirectoryInfo dir in foldersFound.GetDirectories())
+                    {
+                        if (dir.Name.Contains(item.Name!))
+                            duplicateFolders++;
+                    }
+
+                    childDestinationPath += $" ({duplicateFolders})";
+
+                    while (File.Exists(childDestinationPath))
+                    {
+                        duplicateFolders++;
+                        childDestinationPath += $" ({duplicateFolders})";
+                    }
+
                 }
 
                 RecursiveCopyDirectory(item.Path, childDestinationPath);
@@ -66,18 +82,34 @@ public partial class Core
                         if (!consent) continue;
                     }
 
+
                     var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                     var extension = cleanFilename[^1]; //koncovka souboru; ^1 = poslední prvek pole
                     var filename = cleanFilename[0]; //jméno souboru bez koncovky
                     if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
                     {
-                        for(var i = 0; i < cleanFilename.Length - 2; i++)
+                        for (var i = 0; i < cleanFilename.Length - 2; i++)
                             filename += "." + cleanFilename[i];
                     }
 
-                    childDestinationPath = Path.Combine(destinationPath,
-                        filename + " (copy)." +
-                        extension);
+
+                    var filesFound = new DirectoryInfo(destinationPath);
+                    int duplicateFiles = 0;
+                    foreach (FileInfo file in filesFound.GetFiles())
+                    {
+                        if (file.Name.Contains(filename))
+                            duplicateFiles++;
+                    }
+
+                    childDestinationPath =
+                        Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
+
+                    while (File.Exists(childDestinationPath))
+                    {
+                        duplicateFiles++;
+                        childDestinationPath =
+                            Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
+                    }
                 }
 
                 File.Copy(item.Path, childDestinationPath);
@@ -116,6 +148,6 @@ public partial class Core
             RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
         }
     }
-    
+
     /* Konec citace */
 }
