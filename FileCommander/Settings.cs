@@ -22,25 +22,39 @@ public class Settings
 
             return (string) config[key] == "true";
         }
+        catch (FileLoadException)
+        {
+            throw new FileLoadException();
+        }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            throw;
+            throw new Exception();
         }
     }
 
     public static void SetConf(string key, bool value)
     {
-        var deserializer = new YamlDotNet.Serialization.Deserializer();
-        using var reader = new StreamReader(ConfigFilePath);
-        var obj = deserializer.Deserialize<Dictionary<object, object>>(reader);
-        var config = (Dictionary<object, object>) obj["settings"];
-        reader.Close();
+        try
+        {
+            var deserializer = new YamlDotNet.Serialization.Deserializer();
+            using var reader = new StreamReader(ConfigFilePath);
+            var obj = deserializer.Deserialize<Dictionary<object, object>>(reader);
+            var config = (Dictionary<object, object>) obj["settings"];
+            reader.Close();
 
-        using var writer = new StreamWriter(ConfigFilePath);
-        var serializer = new YamlDotNet.Serialization.Serializer();
-        config[key] = value;
+            using var writer = new StreamWriter(ConfigFilePath);
+            var serializer = new YamlDotNet.Serialization.Serializer();
+            config[key] = value;
 
-        serializer.Serialize(writer, obj);
+            serializer.Serialize(writer, obj);
+        }
+        catch (FileLoadException)
+        {
+            throw new FileLoadException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception();
+        }
     }
 }
