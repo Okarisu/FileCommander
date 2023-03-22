@@ -1,12 +1,15 @@
+using System.Runtime.InteropServices.ComTypes;
 using Gtk;
 
 namespace FileCommander.GUI.Dialogs;
 
 public class PromptTargetPanelDialog : Dialog
 {
+    private const int ResponseIdOk = 1;
+    private const int ResponseIdYes = 4;
     private static Dialog _dialog { get; set; }
     private static bool _targetHere { get; set; }
-    private static bool _cancel { get; set; }
+    private static bool _cancel = false;
 
     public PromptTargetPanelDialog(string operation)
     {
@@ -17,19 +20,17 @@ public class PromptTargetPanelDialog : Dialog
 
         _dialog.Response += delegate(object _, ResponseArgs args)
         {
+            Console.WriteLine(ResponseType.Ok.ToString());
             switch ((int) args.ResponseId)
             {
-                //OK
-                case 1:
+                case ResponseIdOk:
                     _targetHere = true;
                     break;
-                //Yes
-                case 2:
+                case ResponseIdYes:
                     _targetHere = false;
                     break;
                 default:
                     _cancel = true;
-                    //_dialog.Destroy();
                     break;
             }
         };
@@ -39,6 +40,11 @@ public class PromptTargetPanelDialog : Dialog
     }
 
     public (bool targetHere, bool cancel) GetTargetPanel() => (_targetHere, _cancel);
+
+    public static void NullPrompt()
+    {
+        _cancel = false;
+    }
 
     
 }

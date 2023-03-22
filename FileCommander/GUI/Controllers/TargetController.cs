@@ -21,8 +21,10 @@ public class TargetController
             root = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
         }
 
-
-        return (root, promptedTargetPanel.cancel);
+        var cancel = promptedTargetPanel.cancel;
+        PromptTargetPanelDialog.NullPrompt();
+        
+        return (root, cancel);
     }
 
     public static (string path, bool cancel, bool addSuffix) GetTargetPath(string dialogTitle, bool promptSuffix)
