@@ -64,11 +64,11 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 - [x] UC1
 
 ### MS2. - 2.3.
-- [ ] UC2
-- [ ] UC3
-- [ ] UC4
-- [ ] UC5
-- [ ] UC6
+- [x] UC2
+- [x] UC3
+- [x] UC4
+- [x] UC5
+- [x] UC6
 - [ ] UC7
 - [ ] UC8
 
