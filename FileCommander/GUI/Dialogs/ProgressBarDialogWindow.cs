@@ -6,12 +6,14 @@ public class ProgressBarDialogWindow : Dialog
 {
     public static Dialog _dialog;
 
-    public ProgressBarDialogWindow(string prompt)
+    public ProgressBarDialogWindow(double progress)
     {
         _dialog = new MessageDialog(this,
-            DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.None, prompt);
-
+            DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.None, "copying");
         ProgressBar pb = new ProgressBar();
+        pb.Window.ProcessUpdates(true);
+        while(Application.EventsPending()) Application.RunIteration();
+        pb.Fraction = progress/100;
         pb.Pulse();
         _dialog.ContentArea.PackStart(pb, true, true, 0);
         _dialog.GrabFocus();
@@ -19,17 +21,7 @@ public class ProgressBarDialogWindow : Dialog
         _dialog.ShowAll();
         _dialog.Run();
         _dialog.Destroy();
-    }
-
-
-    public static void StartCopyBar()
-    {
-        new ProgressBarDialogWindow("Copying files");
-        Thread.Sleep(5000);
-        _dialog.Destroy();
-    }
-    public static void StartMoveBar()
-    {
-        new ProgressBarDialogWindow("Copying files");
+        
+        
     }
 }

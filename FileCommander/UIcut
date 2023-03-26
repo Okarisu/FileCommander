@@ -1,0 +1,17 @@
+/*
+        var compactTwinBox = new HBox();
+        windowVerticalBox.PackStart(compactTwinBox, true, true, 0);
+
+        var leftTwinPanel = new VBox();
+        var leftTwinToolbox = TwinToolboxes.TwinToolboxLeft.DrawLeftToolbox();
+        leftTwinPanel.PackStart(leftTwinToolbox, true, true, 0);
+        leftTwinPanel.PackStart(LeftScrolledWindow, true, true, 0);
+        compactTwinBox.PackStart(leftTwinPanel, true, true, 0);
+
+        var rightTwinPanel = new VBox();
+        var rightTwinToolbox = TwinToolboxes.TwinToolboxRight.DrawRightToolbox();
+        rightTwinPanel.PackStart(rightTwinToolbox, true, true, 0);
+        rightTwinPanel.PackStart(RightScrolledWindow, true, true, 0);
+        compactTwinBox.PackStart(rightTwinPanel, true, true, 0);
+
+        ShowAll();*/

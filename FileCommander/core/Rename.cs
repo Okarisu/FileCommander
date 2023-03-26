@@ -62,13 +62,51 @@ public partial class Core
                     childDestinationPath += "_" + folderSuffixes.Dequeue();
                 }
 
-                Directory.Move(item.Path, childDestinationPath);
+                try
+                {
+                    Directory.Move(item.Path, childDestinationPath);
+                }
+                catch (ArgumentNullException)
+                {
+                    new PromptUserDialogWindow("Folder name cannot be null.");
+                    return;
+                }
+                catch (PathTooLongException)
+                {
+                    new PromptUserDialogWindow("The specified folder name exceeded the system-defined maximum length.");
+                    return;
+                }
+                catch (ArgumentException)
+                {
+                    new PromptUserDialogWindow("Malformed folder name");
+                    return;
+                }
+                catch (IOException)
+                {
+                    new PromptUserDialogWindow("Parent directory is read-only.");
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    new PromptUserDialogWindow("Access to the path is denied.");
+                    return;
+                }
+                catch (NotSupportedException)
+                {
+                    new PromptUserDialogWindow("The specified folder name is in an invalid format.");
+                    return;
+                }
+                catch (Exception)
+                {
+                    new PromptUserDialogWindow("Unknown error has occured.");
+                    return;
+                }
             }
             else
             {
                 var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                 var childDestinationPath = Path.Combine(destinationPath, newFilename.Name + "." +
-                    cleanFilename[cleanFilename.Length - 1]);
+                                                                         cleanFilename[cleanFilename.Length - 1]);
                 if (newFilename.addSuffix)
                 {
                     childDestinationPath = Path.Combine(destinationPath,
@@ -76,7 +114,45 @@ public partial class Core
                         cleanFilename[1]);
                 }
 
-                File.Move(item.Path, childDestinationPath);
+                try
+                {
+                    File.Move(item.Path, childDestinationPath);
+                }
+                catch (ArgumentNullException)
+                {
+                    new PromptUserDialogWindow("File name cannot be null.");
+                    return;
+                }
+                catch (PathTooLongException)
+                {
+                    new PromptUserDialogWindow("The specified file name exceeded the system-defined maximum length.");
+                    return;
+                }
+                catch (ArgumentException)
+                {
+                    new PromptUserDialogWindow("Malformed file name");
+                    return;
+                }
+                catch (IOException)
+                {
+                    new PromptUserDialogWindow("Parent directory is read-only.");
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    new PromptUserDialogWindow("Access to the path is denied.");
+                    return;
+                }
+                catch (NotSupportedException)
+                {
+                    new PromptUserDialogWindow("The specified file name is in an invalid format.");
+                    return;
+                }
+                catch (Exception)
+                {
+                    new PromptUserDialogWindow("Unknown error has occured.");
+                    return;
+                }
             }
         }
 

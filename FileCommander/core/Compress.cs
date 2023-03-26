@@ -48,10 +48,48 @@ public partial class Core
                 new PromptUserDialogWindow("Archive with this name already exists.");
                 return;
             }
-            
-            var tmpDirPath = Path.Combine(promptedTarget.root, archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            Directory.CreateDirectory(tmpDirPath);
+            var tmpDirPath = Path.Combine(promptedTarget.root,
+                archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            try
+            {
+                Directory.CreateDirectory(tmpDirPath);
+            }
+            catch (ArgumentNullException)
+            {
+                new PromptUserDialogWindow("Archive name cannot be null.");
+                return;
+            }
+            catch (PathTooLongException)
+            {
+                new PromptUserDialogWindow("The specified archive name exceeded the system-defined maximum length.");
+                return;
+            }
+            catch (ArgumentException)
+            {
+                new PromptUserDialogWindow("Malformed archive name");
+                return;
+            }
+            catch (IOException)
+            {
+                new PromptUserDialogWindow("Parent directory is read-only.");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                new PromptUserDialogWindow("Access to the path is denied.");
+                return;
+            }
+            catch (NotSupportedException)
+            {
+                new PromptUserDialogWindow("The specified archive name is in an invalid format.");
+                return;
+            }
+            catch (Exception)
+            {
+                new PromptUserDialogWindow("Unknown error has occured.");
+                return;
+            }
 
             foreach (var item in items)
             {
@@ -64,6 +102,8 @@ public partial class Core
                     File.Copy(item.Path, Path.Combine(tmpDirPath, item.Name!));
                 }
             }
+
+
             ZipFile.CreateFromDirectory(tmpDirPath, archiveTargetPath);
             Directory.Delete(tmpDirPath, true);
         }

@@ -5,7 +5,7 @@ namespace FileCommander.GUI.Dialogs;
 
 public class PromptTargetPanelDialog : Dialog
 {
-    private const int ResponseIdOk = 1;
+    public const int ResponseIdOk = 1;
     private const int ResponseIdYes = 4;
     private static Dialog _dialog { get; set; }
     private static bool _targetHere { get; set; }
@@ -20,7 +20,6 @@ public class PromptTargetPanelDialog : Dialog
 
         _dialog.Response += delegate(object _, ResponseArgs args)
         {
-            Console.WriteLine(ResponseType.Ok.ToString());
             switch ((int) args.ResponseId)
             {
                 case ResponseIdOk:

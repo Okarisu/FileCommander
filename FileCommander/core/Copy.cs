@@ -4,6 +4,8 @@
 
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
+using Microsoft.VisualBasic.FileIO;
 
 namespace FileCommander.core;
 
@@ -28,10 +30,6 @@ public partial class Core
 
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-
-
-        //Thread thread = new Thread(ProgressBarDialogWindow.StartCopyBar);
-        //thread.Start();
 
         foreach (var item in items)
         {
@@ -112,11 +110,25 @@ public partial class Core
                     }
                 }
 
-                File.Copy(item.Path, childDestinationPath);
+                var cp = new CustomFileCopier(item.Path, childDestinationPath);
+                Thread th = new Thread(cp.Copy);
+                th.Start();
+                
+                th.Interrupt();
+                /*CustomFileCopier.OnProgressChanged += (_) =>
+                {
+                    new ProgressBarDialogWindow(cp.Progress);
+                };*/
+                while (th.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
+                //File.Copy(item.Path, childDestinationPath);
             }
         }
 
-        //thread.Interrupt();
+        
         Refresh();
         new PromptUserDialogWindow("Finished copying files.");
     }
@@ -141,6 +153,8 @@ public partial class Core
             var targetFilePath = Path.Combine(destinationDirectory, file.Name);
             file.CopyTo(targetFilePath);
         }
+        
+        //FileSystem.COp
 
         foreach (DirectoryInfo subDir in dirs)
         {
