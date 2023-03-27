@@ -41,7 +41,7 @@ public class ToolbarMain
         toolExtractButton.Clicked += OnExtractClicked!;
 
         var toolCompressButton = new ToolButton(new Image(Stock.GoDown, IconSize.SmallToolbar), "Compress");
-        toolbar.Insert(toolCompressButton, 12);
+        toolbar.Insert(toolCompressButton, 13);
         toolCompressButton.Clicked += OnCompressClicked!;
 
         toolbar.Insert(new SeparatorToolItem(), 5);

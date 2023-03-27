@@ -39,9 +39,12 @@ public class App : Window
 
     public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
+    
+    public static Toolbar LeftDiskBar = new();
+    public static Toolbar RightDiskBar = new();
 
     public static int FocusedPanel;
-    
+
     public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
@@ -51,6 +54,8 @@ public class App : Window
 
         VBox windowContainer = new VBox(false, 0);
         Add(windowContainer);
+        var mb = Toolbars.DrawMenu.DrawMenuBar();
+        windowContainer.PackStart(mb, false, true, 0);
         var toolbar = ToolbarMain.DrawToolbar();
         windowContainer.PackStart(toolbar, false, true, 0);
 
@@ -67,7 +72,7 @@ public class App : Window
 
         //TwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, LeftRootLabel, LeftHistory, LeftHistoryForward, 1);
         //TwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, RightRootLabel, RightHistory, RightHistoryForward, 2);
-        
+
         HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
         leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
@@ -82,14 +87,20 @@ public class App : Window
 
         if (Disks.CheckDisksAvailable())
         {
-           leftTwinPanelHeader.PackStart(Disks.DrawLeftDiskBar(), false, true, 0);
-           rightTwinPanelHeader.PackStart(Disks.DrawRightDiskBar(), false, true, 0);
+            LeftDiskBar = Disks.DrawLeftDiskBar();
+            RightDiskBar = Disks.DrawRightDiskBar();
+
+            leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
+            rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
         }
 
-        //Vytvoření kontejneru pro ikony
-
-
         ShowAll();
+
+        if (!FileCommander.Settings.GetConf("ShowMountedDrives"))
+        {
+            LeftDiskBar.Hide();
+            RightDiskBar.Hide();
+        }
     }
 
 
@@ -116,14 +127,28 @@ public class App : Window
 
         foreach (DirectoryInfo di in root.GetDirectories())
         {
-            if (!di.Name.StartsWith("."))
+            if (FileCommander.Settings.GetConf("ShowHiddenFiles"))
+            {
                 store.AppendValues(di.FullName, di.Name, DirIcon, true);
+            }
+            else
+            {
+                if (!di.Name.StartsWith("."))
+                    store.AppendValues(di.FullName, di.Name, DirIcon, true);
+            }
         }
 
         foreach (FileInfo file in root.GetFiles())
         {
-            if (!file.Name.StartsWith("."))
+            if (FileCommander.Settings.GetConf("ShowHiddenFiles"))
+            {
                 store.AppendValues(file.FullName, file.Name, FileIcon, false);
+            }
+            else
+            {
+                if (!file.Name.StartsWith("."))
+                    store.AppendValues(file.FullName, file.Name, FileIcon, false);
+            }
         }
     }
 

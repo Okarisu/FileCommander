@@ -42,7 +42,7 @@ public partial class Core
             }
         }
 
-        Refresh();
+        RefreshIconViews();
         new PromptUserDialogWindow("Finished deleting files.");
     }
 }

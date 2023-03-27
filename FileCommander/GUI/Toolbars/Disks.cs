@@ -12,9 +12,9 @@ public class Disks
     public static bool CheckDisksAvailable()
     {
         var mountLocation = FileCommander.Settings.GetConfStr("DefaultLinuxDriveMountLocation");
-        if (mountLocation.Contains("{Environment.UserName}"))
+        if (mountLocation.Contains("{UserName}"))
         {
-            mountLocation = mountLocation.Replace("{Environment.UserName}", Environment.UserName);
+            mountLocation = mountLocation.Replace("{UserName}", Environment.UserName);
         }
 
         _mountLocation = mountLocation;
@@ -32,14 +32,14 @@ public class Disks
             var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
             diskButton.Clicked += (_, _) =>
             {
-                var n = mnt.FullName;
+                LeftHistory.Push(LeftRoot);
+                LeftHistoryForward.Clear();
                 LeftRoot = new DirectoryInfo(mnt.FullName);
                 FillStore(LeftStore, LeftRoot);
                 UpdateRootLabel(LeftRootLabel, LeftRoot);
             };
             leftDiskButtons.Add(diskButton);
         }
-        
         for(var i = 0; i < leftDiskButtons.Count; i++)
         {
             leftDiskBar.Insert(leftDiskButtons[i], i);
@@ -49,8 +49,8 @@ public class Disks
     }
     public static Toolbar DrawRightDiskBar()
     {
-        var leftDiskBar = new Toolbar();
-        leftDiskBar.ToolbarStyle = ToolbarStyle.Both;
+        var rightDiskBar = new Toolbar();
+        rightDiskBar.ToolbarStyle = ToolbarStyle.Both;
         var leftDiskButtons = new List<ToolButton>();
 
         foreach (var mnt in new DirectoryInfo(_mountLocation).GetDirectories())
@@ -58,7 +58,8 @@ public class Disks
             var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
             diskButton.Clicked += (_, _) =>
             {
-                var n = mnt.FullName;
+                RightHistory.Push(RightRoot);
+                RightHistoryForward.Clear();
                 RightRoot = new DirectoryInfo(mnt.FullName);
                 FillStore(RightStore, RightRoot);
                 UpdateRootLabel(RightRootLabel, RightRoot);
@@ -68,9 +69,9 @@ public class Disks
         
         for(var i = 0; i < leftDiskButtons.Count; i++)
         {
-            leftDiskBar.Insert(leftDiskButtons[i], i);
+            rightDiskBar.Insert(leftDiskButtons[i], i);
         }
 
-        return leftDiskBar;
+        return rightDiskBar;
     }
 }

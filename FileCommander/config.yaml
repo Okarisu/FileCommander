@@ -2,4 +2,7 @@ settings:
   PromptDuplicitFileCopy: true
   PromptDuplicitFileMove: true
   PromptDelete: true
-  DefaultLinuxDriveMountLocation: /run/media/{Environment.UserName}/
+  ShowHiddenFiles: true
+  DefaultLinuxDriveMountLocation: /run/media/{UserName}/
+  ShowMountedDrives: true
+  

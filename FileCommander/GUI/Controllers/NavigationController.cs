@@ -50,10 +50,10 @@ public abstract class NavigationController
 
     public static void OnRefreshClicked(object sender, EventArgs e)
     {
-        Refresh();
+        RefreshIconViews();
     }
 
-    public static void Refresh()
+    public static void RefreshIconViews()
     {
         FillStore(LeftStore, LeftRoot);
         FillStore(RightStore, RightRoot);

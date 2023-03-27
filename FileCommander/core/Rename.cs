@@ -156,6 +156,6 @@ public partial class Core
             }
         }
 
-        Refresh();
+        RefreshIconViews();
     }
 }

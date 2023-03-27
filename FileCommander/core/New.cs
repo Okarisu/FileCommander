@@ -66,6 +66,6 @@ public partial class Core
             new PromptUserDialogWindow("Unknown error has occured.");
             return;
         }
-        Refresh();
+        RefreshIconViews();
     }
 }

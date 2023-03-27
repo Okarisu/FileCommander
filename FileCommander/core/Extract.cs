@@ -60,6 +60,6 @@ public partial class Core
             new PromptUserDialogWindow("Several files were not a .zip archive.");
         if (duplicateArchiveFilesOccured)
             new PromptUserDialogWindow("Several directories with the same name already exist.");
-        Refresh();
+        RefreshIconViews();
     }
 }

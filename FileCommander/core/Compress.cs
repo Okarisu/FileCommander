@@ -108,6 +108,6 @@ public partial class Core
             Directory.Delete(tmpDirPath, true);
         }
 
-        Refresh();
+        RefreshIconViews();
     }
 }

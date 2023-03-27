@@ -57,7 +57,7 @@ public partial class Core
 
         //thread.Interrupt();
         
-        Refresh();
+        RefreshIconViews();
         if (duplicateFilesOccured)
             new PromptUserDialogWindow("Several file with the same name already exist.");
         new PromptUserDialogWindow("Finished moving files.");
