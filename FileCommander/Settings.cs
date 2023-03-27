@@ -32,6 +32,28 @@ public class Settings
         }
     }
 
+    public static string GetConfStr(string key)
+    {
+        try
+        {
+            var deserializer = new YamlDotNet.Serialization.Deserializer();
+            using var reader = new StreamReader(ConfigFilePath);
+            var obj = deserializer.Deserialize<Dictionary<object, object>>(reader);
+            var config = (Dictionary<object, object>) obj["settings"];
+            reader.Close();
+
+            return config[key].ToString();
+        }
+        catch (FileLoadException)
+        {
+            throw new FileLoadException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception();
+        }
+    }
+
     public static void SetConf(string key, bool value)
     {
         try

@@ -37,11 +37,11 @@ public class App : Window
     public static Stack<DirectoryInfo> RightHistory = new();
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
-    public static int FocusedPanel;
-
     public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
 
+    public static int FocusedPanel;
+    
     public App() : base("File Commander")
     {
         SetDefaultSize(1280, 720);
@@ -62,11 +62,11 @@ public class App : Window
         VBox rightTwinContainer = new VBox(false, 0);
         twinPanelsContainer.PackStart(rightTwinContainer, true, true, 0);
 
-        //TwinPanels.LeftTwinPanel.DrawLeftPanel();
-        //TwinPanels.RightTwinPanel.DrawRightPanel();
+        TwinPanels.LeftTwinPanel.DrawLeftPanel();
+        TwinPanels.RightTwinPanel.DrawRightPanel();
 
-        TwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, LeftRootLabel, LeftHistory, LeftHistoryForward, 1);
-        TwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, RightRootLabel, RightHistory, RightHistoryForward, 2);
+        //TwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, LeftRootLabel, LeftHistory, LeftHistoryForward, 1);
+        //TwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, RightRootLabel, RightHistory, RightHistoryForward, 2);
         
         HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
@@ -80,6 +80,11 @@ public class App : Window
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
+        if (Disks.CheckDisksAvailable())
+        {
+           leftTwinPanelHeader.PackStart(Disks.DrawLeftDiskBar(), false, true, 0);
+           rightTwinPanelHeader.PackStart(Disks.DrawRightDiskBar(), false, true, 0);
+        }
 
         //Vytvoření kontejneru pro ikony
 
