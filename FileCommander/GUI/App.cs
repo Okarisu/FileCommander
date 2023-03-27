@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 
 namespace FileCommander.GUI;
 
-
 using Controllers;
 using Toolbars;
 using System;
@@ -32,7 +31,7 @@ public class App : Window
 
     public static IconView LeftIconView = new(LeftStore);
     public static IconView RightIconView = new(RightStore);
-    
+
     public static Stack<DirectoryInfo> LeftHistory = new();
     public static Stack<DirectoryInfo> LeftHistoryForward = new();
     public static Stack<DirectoryInfo> RightHistory = new();
@@ -50,124 +49,42 @@ public class App : Window
         SetPosition(WindowPosition.Center);
         DeleteEvent += (_, _) => Application.Quit();
 
-        //Vytvoření kontejneru vnitřního obsahu okna
-        VBox windowVerticalBox = new VBox(false, 0);
-        Add(windowVerticalBox);
-
-        var toolbar = ToolbarMain.DrawToolbar();
-        windowVerticalBox.PackStart(toolbar, false, true, 0);
-        
-        HBox twinPanelToolbox = new HBox();
-
-        HBox leftTwinToolbox = new HBox();
-        var leftToolbar = ToolbarLeft.DrawLeftToolbar();
-        leftTwinToolbox.PackStart(leftToolbar, false, true, 0);
-        var leftDisksList = new HBox();
-        leftTwinToolbox.PackStart(leftDisksList, false, true, 0);
-
-        var leftCompactBox = new VBox();
-        leftCompactBox.PackStart(leftTwinToolbox, false, true, 0);
-        leftCompactBox.PackStart(LeftRootLabel, false, true, 0);
-
-        //Ed
-        twinPanelToolbox.PackStart(leftCompactBox, true, true, 0);
-
-        twinPanelToolbox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
-
-        HBox rightTwinToolbox = new HBox();
-        var rightPanelBar = ToolbarRight.DrawRightToolbar();
-        rightTwinToolbox.PackStart(rightPanelBar, false, true, 0);
-        var rightDisksList = new HBox();
-        rightTwinToolbox.PackStart(rightDisksList, false, true, 0);
-
-        var rightCompactBox = new VBox();
-        rightCompactBox.PackStart(rightTwinToolbox, false, true, 0);
-        rightCompactBox.PackStart(RightRootLabel, false, true, 0);
-
-        //Ed
-        twinPanelToolbox.PackStart(rightCompactBox, true, true, 0);
-
-        windowVerticalBox.PackStart(twinPanelToolbox, false, true, 0);
-
-        TwinPanels.LeftTwinPanel.DrawLeftPanel();
-        TwinPanels.RightTwinPanel.DrawRightPanel();
-
-        //LeftRoot = DrawTwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, 1);
-        //RightRoot = DrawTwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, 2);
-
-        HBox twinPanelsBox = new HBox(false, 0);
-        twinPanelsBox.PackStart(LeftScrolledWindow, true, true, 0);
-        twinPanelsBox.PackStart(new Separator(Orientation.Vertical), false, false, 0);
-        twinPanelsBox.PackStart(RightScrolledWindow, true, true, 0);
-
-        windowVerticalBox.PackStart(twinPanelsBox, true, true, 0);
-        ShowAll();
-
-        //Přepis
-/*
         VBox windowContainer = new VBox(false, 0);
         Add(windowContainer);
         var toolbar = ToolbarMain.DrawToolbar();
         windowContainer.PackStart(toolbar, false, true, 0);
-        HBox twinPanels = new HBox();
-        windowContainer.PackStart(twinPanels, false, true, 0);
-        
-        VBox leftTwinPanel = new VBox(false, 0);
-        twinPanels.PackStart(leftTwinPanel, false, true, 0);
-        twinPanels.PackStart(new Separator(Orientation.Vertical), false, false, 0);
-        VBox rightTwinPanel = new VBox();
-        twinPanels.PackStart(rightTwinPanel, false, true, 0);
-        
-        
-        VBox leftTwinPanelToolbar = new VBox(false, 0);
-        leftTwinPanel.PackStart(leftTwinPanelToolbar, false, true, 0);
-        var leftToolbar = new Toolbar();
-        leftTwinPanelToolbar.PackStart(leftToolbar, false, true, 0);
-        
-        leftToolbar.ToolbarStyle = ToolbarStyle.Both;
 
-        var leftHomeButton = new ToolButton(Stock.Home);
-        leftToolbar.Insert(leftHomeButton, 0);
-        leftHomeButton.Clicked += (sender, args) =>
-        {
-            LeftRoot = NavigationController.OnHomeClicked(args, LeftStore);
-            LeftRootLabel.Text = "Current directory: "+LeftRoot;
-        };
+        HBox twinPanelsContainer = new HBox(false, 0); //false?
+        windowContainer.PackStart(twinPanelsContainer, true, true, 0);
+        VBox leftTwinContainer = new VBox(false, 0);
+        twinPanelsContainer.PackStart(leftTwinContainer, true, true, 0);
+        twinPanelsContainer.PackStart(new Separator(Orientation.Vertical), false, false, 0);
+        VBox rightTwinContainer = new VBox(false, 0);
+        twinPanelsContainer.PackStart(rightTwinContainer, true, true, 0);
 
-        var leftUpButton = new ToolButton(Stock.GoUp);
-        leftToolbar.Insert(leftUpButton, 1);
-        leftUpButton.Clicked += (_, _) =>
-        {
-            LeftRoot = NavigationController.OnUpClicked(LeftRoot, LeftStore);
-            LeftRootLabel.Text = "Current directory: "+LeftRoot;
-        };
+        //TwinPanels.LeftTwinPanel.DrawLeftPanel();
+        //TwinPanels.RightTwinPanel.DrawRightPanel();
+
+        TwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, LeftRootLabel, LeftHistory, LeftHistoryForward, 1);
+        TwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, RightRootLabel, RightHistory, RightHistoryForward, 2);
         
-        leftTwinPanelToolbar.PackStart(LeftRootLabel, false, true, 0);
-        
-        leftTwinPanel.PackStart(LeftScrolledWindow, true, true, 0);
-        
-        
-        ShowAll();*/
+        HBox leftTwinPanelHeader = new HBox(true, 0);
+        leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
+        leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
+        leftTwinContainer.PackStart(LeftRootLabel, false, true, 0);
+        leftTwinContainer.PackStart(LeftScrolledWindow, true, true, 0);
 
-/*
-        var compactTwinBox = new HBox(false, 0);
-        windowVerticalBox.PackStart(compactTwinBox, true, true, 0);
+        HBox rightTwinPanelHeader = new HBox(true, 0);
+        rightTwinContainer.PackStart(rightTwinPanelHeader, false, true, 0);
+        rightTwinPanelHeader.PackStart(ToolbarRight.DrawRightToolbar(), false, true, 0);
+        rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
+        rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
-        LeftScrolledWindow.Add(LeftIconView);
-        RightScrolledWindow.Add(RightIconView);
-        var leftTwinPanel = new VBox();
-        var leftTwinToolbox = TwinToolboxes.TwinToolboxLeft.DrawLeftToolbox();
-        leftTwinPanel.PackStart(leftTwinToolbox, true, true, 0);
-        leftTwinPanel.PackStart(LeftScrolledWindow, true, true, 0);
-        compactTwinBox.PackStart(leftTwinPanel, true, true, 0);
 
-        var rightTwinPanel = new VBox();
-        var rightTwinToolbox = TwinToolboxes.TwinToolboxRight.DrawRightToolbox();
-        rightTwinPanel.PackStart(rightTwinToolbox, true, true, 0);
-        rightTwinPanel.PackStart(RightScrolledWindow, true, true, 0);
-        compactTwinBox.PackStart(rightTwinPanel, true, true, 0);
+        //Vytvoření kontejneru pro ikony
 
-        ShowAll();*/
+
+        ShowAll();
     }
 
 
@@ -205,7 +122,8 @@ public class App : Window
         }
     }
 
-    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store, Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward)
+    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store,
+        Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward)
     {
         store.GetIter(out var iter, a.Path);
         var path = (string) store.GetValue(iter, ColPath);
@@ -216,7 +134,7 @@ public class App : Window
 
         history.Push(root);
         historyForward.Clear();
-        
+
         root = new DirectoryInfo(path);
         FillStore(store, root);
 
