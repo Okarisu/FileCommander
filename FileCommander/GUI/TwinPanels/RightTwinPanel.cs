@@ -15,8 +15,8 @@ public class RightTwinPanel
         RightIconView.PixbufColumn = ColPixbuf;
         RightIconView.ItemActivated += (_, args) =>
         {
-            RightRoot = OnItemActivated(args, RightRoot, RightStore);
-            RightRootLabel.Text = "Current directory: "+RightRoot;
+            RightRoot = OnItemActivated(args, RightRoot, RightStore, RightHistory, RightHistoryForward);
+            UpdateRootLabel(RightRootLabel, RightRoot);
         };
         RightIconView.FocusInEvent += (_, _) => FocusedPanel = 2;
 

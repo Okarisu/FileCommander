@@ -109,21 +109,26 @@ public partial class Core
                             Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
                     }
                 }
-
+/*
                 var cp = new CustomFileCopier(item.Path, childDestinationPath);
                 Thread th = new Thread(cp.Copy);
                 th.Start();
                 
-                th.Interrupt();
+                th.Interrupt();*/
                 /*CustomFileCopier.OnProgressChanged += (_) =>
                 {
                     new ProgressBarDialogWindow(cp.Progress);
                 };*/
-                while (th.IsAlive)
+                var cpp = new CustomFileCopier(item.Path, childDestinationPath);
+                var the = new Thread(cpp.Copy);
+                the.Start();
+                
+                while (the.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
                 }
+                
                 //File.Copy(item.Path, childDestinationPath);
             }
         }

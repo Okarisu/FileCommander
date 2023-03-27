@@ -16,8 +16,8 @@ public class LeftTwinPanel
         LeftIconView.PixbufColumn = ColPixbuf;
         LeftIconView.ItemActivated += (_, args) =>
         {
-            LeftRoot = OnItemActivated(args, LeftRoot, LeftStore);
-            LeftRootLabel.Text = "Current directory: "+LeftRoot;
+            LeftRoot = OnItemActivated(args, LeftRoot, LeftStore, LeftHistory, LeftHistoryForward);
+            UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
         LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
         

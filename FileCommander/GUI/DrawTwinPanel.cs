@@ -13,7 +13,7 @@ public class DrawTwinPanel
         view.SelectionMode = SelectionMode.Multiple;
         view.TextColumn = ColDisplayName;
         view.PixbufColumn = ColPixbuf;
-        view.ItemActivated += (_, args) => root = OnItemActivated(args, root, store);
+        //view.ItemActivated += (_, args) => root = OnItemActivated(args, root, store);
         view.FocusInEvent += (_, _) => FocusedPanel = focusInEvent;
 
         window.Add(view);

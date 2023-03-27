@@ -32,6 +32,11 @@ public class App : Window
 
     public static IconView LeftIconView = new(LeftStore);
     public static IconView RightIconView = new(RightStore);
+    
+    public static Stack<DirectoryInfo> LeftHistory = new();
+    public static Stack<DirectoryInfo> LeftHistoryForward = new();
+    public static Stack<DirectoryInfo> RightHistory = new();
+    public static Stack<DirectoryInfo> RightHistoryForward = new();
 
     public static int FocusedPanel;
 
@@ -77,11 +82,7 @@ public class App : Window
 
         var rightCompactBox = new VBox();
         rightCompactBox.PackStart(rightTwinToolbox, false, true, 0);
-        var labelBox = new Box(Orientation.Horizontal, 0);
-        var secondBox = new Box(Orientation.Horizontal, 0);
-        labelBox.PackStart(RightRootLabel, false, false, 0);
-        labelBox.PackStart(secondBox, false, false, 0);
-        rightCompactBox.PackStart(labelBox, false, false, 0);
+        rightCompactBox.PackStart(RightRootLabel, false, true, 0);
 
         //Ed
         twinPanelToolbox.PackStart(rightCompactBox, true, true, 0);
@@ -204,7 +205,7 @@ public class App : Window
         }
     }
 
-    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store)
+    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store, Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward)
     {
         store.GetIter(out var iter, a.Path);
         var path = (string) store.GetValue(iter, ColPath);
@@ -213,8 +214,12 @@ public class App : Window
         if (!isDir)
             return root;
 
+        history.Push(root);
+        historyForward.Clear();
+        
         root = new DirectoryInfo(path);
         FillStore(store, root);
+
         return root;
     }
 
@@ -236,5 +241,10 @@ public class App : Window
         }
 
         return files!;
+    }
+
+    public static void UpdateRootLabel(Label label, DirectoryInfo root)
+    {
+        label.Text = "Current directory: " + root;
     }
 }

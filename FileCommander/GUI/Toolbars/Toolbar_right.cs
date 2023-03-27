@@ -18,7 +18,7 @@ public class ToolbarRight
         rightHomeButton.Clicked += (sender, args) =>
         {
             RightRoot = OnHomeClicked(args, RightStore);
-            RightRootLabel.Text = "Current directory: "+RightRoot;
+            UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
         var rightUpButton = new ToolButton(Stock.GoUp);
@@ -26,7 +26,25 @@ public class ToolbarRight
         rightUpButton.Clicked += (_, _) =>
         {
             RightRoot = OnUpClicked(RightRoot, RightStore);
-            RightRootLabel.Text = "Current directory: "+RightRoot;
+            UpdateRootLabel(RightRootLabel, RightRoot);
+        };
+
+        var rightBackButton = new ToolButton(Stock.GoBack);
+        rightPanelBar.Insert(rightBackButton, 2);
+        rightBackButton.Clicked += (_, _) =>
+        {
+            var tmpRoot = OnBackClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
+            RightRoot = tmpRoot != null ? tmpRoot : RightRoot;
+            UpdateRootLabel(RightRootLabel, RightRoot);
+        };
+
+        var rightForwardButton = new ToolButton(Stock.GoForward);
+        rightPanelBar.Insert(rightForwardButton, 3);
+        rightForwardButton.Clicked += (sender, args) =>
+        {
+            var tmpRoot= OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
+            RightRoot = tmpRoot != null ? tmpRoot : RightRoot;
+            UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
         return rightPanelBar;
