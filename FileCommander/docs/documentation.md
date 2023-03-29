@@ -49,6 +49,6 @@ Posledním způsobem otevření je write-only mód, používaný při zápisu do
 Zápis probíhá stejně jako čtení za pomoci bytestreamu, do kterého (v C# pomocí třídy StreamWriter) zapisujeme jednotlivé znaky nebo řádky a který je poté zapsán do paměti počítače na adresu souboru. Možnost zápisu bloku znaků do streamu již na rozdíl od jeho přečtení není na platformě .NET implementována.
 
 ## Zavření
-Konec souboru se (při čtení) typicky pozná tak, že StreamReader (či jiná třída pro čtení ze streamu) vrátí hodnotu null - na dané pozici streamu už nejsou žádná čitelná data.
+Konec souboru se (při čtení) typicky pozná tak, že StreamReader (či jiná třída pro čtení ze streamu) vrátí hodnotu null - na dané pozici streamu už nejsou žádná čitelná data. Různé jazyky implementují zavření souboru různě - .NET runtime zavře 
 
 Pokud už se souborem dále nepracujeme, je dobré ho z bezpečnostních důvodů zavřít. Pokud by program skončil chybou a soubor by byl stále otevřený, mohl by dojít k jeho nechtěnému poškození ať už samotným programem, nebo systémem. Dalším důvodem je fakt, že systém dovoluje programu držet v paměti jen určité množství souborů a pokud by nebyly po skončení práce zavírány, mohlo by dojít k zahlcení a program by skončil chybou. Toto omezení existuje mimo jiné pro případ chyby v programu, který by mohl kupříkladu otevírat tisíce souborů a systém tak zpomalovat.

@@ -69,6 +69,7 @@ public class Settings
             config[key] = value;
 
             serializer.Serialize(writer, obj);
+            writer.Close(); //Good practice?
         }
         catch (FileLoadException)
         {
