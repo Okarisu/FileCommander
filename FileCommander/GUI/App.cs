@@ -38,6 +38,7 @@ public class App : Window
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
     public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
+    
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
     
     public static Toolbar LeftDiskBar = new();
@@ -76,12 +77,16 @@ public class App : Window
         HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
         leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
+        LeftRootLabel.LineWrap = true;
+        LeftRootLabel.MaxWidthChars = 50;
         leftTwinContainer.PackStart(LeftRootLabel, false, true, 0);
         leftTwinContainer.PackStart(LeftScrolledWindow, true, true, 0);
 
         HBox rightTwinPanelHeader = new HBox(true, 0);
         rightTwinContainer.PackStart(rightTwinPanelHeader, false, true, 0);
         rightTwinPanelHeader.PackStart(ToolbarRight.DrawRightToolbar(), false, true, 0);
+        RightRootLabel.LineWrap = true;
+        RightRootLabel.MaxWidthChars = 50;
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
@@ -193,6 +198,8 @@ public class App : Window
 
     public static void UpdateRootLabel(Label label, DirectoryInfo root)
     {
-        label.Text = "Current directory: " + root;
+        //label.Text = "Current directory: " + root;
+        label.Text = "Current directory: " + root.Name;
+        
     }
 }

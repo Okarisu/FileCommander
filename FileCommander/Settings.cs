@@ -74,7 +74,7 @@ public class Settings
         {
             throw new FileLoadException();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception();
         }

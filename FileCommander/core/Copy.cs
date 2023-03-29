@@ -18,6 +18,7 @@ public partial class Core
 {
     const string promptCkey = "PromptDuplicitFileCopy";
 
+    
     public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -109,26 +110,19 @@ public partial class Core
                             Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
                     }
                 }
-/*
-                var cp = new CustomFileCopier(item.Path, childDestinationPath);
-                Thread th = new Thread(cp.Copy);
-                th.Start();
                 
-                th.Interrupt();*/
-                /*CustomFileCopier.OnProgressChanged += (_) =>
-                {
-                    new ProgressBarDialogWindow(cp.Progress);
-                };*/
-                var cpp = new CustomFileCopier(item.Path, childDestinationPath);
+                var cpp = new FileHandler(item.Path, childDestinationPath);
                 var the = new Thread(cpp.Copy);
                 the.Start();
-                
+
+                var win = new ProgressDialogWindow("Files are being copied...");
                 while (the.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
                 }
-                
+
+                win.Destroy();
                 //File.Copy(item.Path, childDestinationPath);
             }
         }
@@ -159,8 +153,6 @@ public partial class Core
             file.CopyTo(targetFilePath);
         }
         
-        //FileSystem.COp
-
         foreach (DirectoryInfo subDir in dirs)
         {
             var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);

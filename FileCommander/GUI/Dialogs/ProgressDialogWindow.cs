@@ -9,12 +9,12 @@ public class ProgressDialogWindow : Dialog
     public ProgressDialogWindow(string prompt)
     {
         _dialog = new MessageDialog(this,
-            DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Cancel, prompt);
+            DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, prompt);
         _dialog.Resizable = false;
         
         while(Application.EventsPending()) Application.RunIteration();
         _dialog.GrabFocus();
-
+/*
         _dialog.Response += delegate(object _, ResponseArgs args)
         {
             Console.WriteLine(args.ResponseId);
@@ -26,7 +26,7 @@ public class ProgressDialogWindow : Dialog
             {
                 _dialog.Destroy();
             }
-        };
+        }*/
         _dialog.ShowAll();
         _dialog.Run();
         _dialog.Destroy();

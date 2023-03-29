@@ -24,7 +24,7 @@ public class ToolbarMain
         toolbar.Insert(toolCopyButton, 7);
         toolCopyButton.Clicked += OnCopyClicked!;
 
-        var toolMoveButton = new ToolButton(new Image(Stock.File, IconSize.SmallToolbar), "move"); 
+        var toolMoveButton = new ToolButton(new Image(Stock.File, IconSize.SmallToolbar), "Move"); 
         toolbar.Insert(toolMoveButton, 8);
         toolMoveButton.Clicked += OnMoveClicked!;
 
