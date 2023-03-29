@@ -31,12 +31,18 @@ https://askubuntu.com/questions/803434/do-file-extensions-have-any-purpose-in-li
 
 
 # Práce se soubory obecně
-Jakoukoli práci se souborem můžeme rozfázovat na 3 dílčí fáze procesu - otevření, čtení nebo zápis a zavření souboru.
+Jakoukoli práci se souborem můžeme rozdělit podle 3 dílčích fází procesu - otevření, čtení nebo zápis a zavření souboru.
 
 ## Otevření
-Způsob otevření souboru závisí na tom, jak s ním má být nakládáno. Read-only mód se používá, chceme-li ze souboru pouze číst, protože se tím minimalizuje riziko poškození souboru. Program v tomto módu totiž nemá přístup k funkcím, jimiž by do souboru zapisoval. Pokud bychom soubor otevřeli v read-write módu, v němž k těmto funkcím program přístup má, při chybě běhu programu by se do souboru mohla zapsat náhodná data a poškodit jej tak.
+Způsob otevření souboru závisí na tom, jak s ním má být nakládáno. Read-only mód se používá, chceme-li ze souboru pouze číst, protože se tím minimalizuje riziko poškození souboru. Program v tomto módu totiž nemá přístup k funkcím, jimiž by do souboru zapisoval. 
 
-Tento mód otevření se používá
+Pokud bychom soubor otevřeli v read-write módu, v němž k těmto funkcím program přístup má, při chybě běhu programu by se do souboru mohla zapsat náhodná data a poškodit jej tak. Tento mód otevření se proto používá v případě, kdy v jedné funkci ze souboru čteme, načtená data zpracujeme a následně je zapisujeme nazpět. Typickým příkladem může být úprava protokolů nebo přepis dat na základě svých hodnot.
 
-Posledním způsobem otevření je write-only mód používaný při zápisu do souboru. Vzhledem k tomu, že nenačítá soubor do RAM, ale rovnou zapisuje na určené místo na disku, je mnohem efektivnější než read-write mód, který soubor do paměti načítá.
-Od write-only módu je odvozený append mód, který zápis začíná na konci souboru a text pouze připojuje - předchozí obsah souboru tedy nechává netknutý. Write-only mód
+Od read-write módu je odvozený append mód, který zápis začíná na konci souboru a text pouze připojuje - předchozí obsah souboru tedy nechává netknutý.
+
+Posledním způsobem otevření je write-only mód, používaný při zápisu do souboru. Vzhledem k tomu, že nenačítá soubor do RAM, ale rovnou zapisuje na určené místo na disku, je mnohem efektivnější než read-write mód, který soubor do paměti načítá. Pokud soubor, do něhož má zapisovat, neexistuje, sám ho vytvoří a začne zápis. Na rozdíl od append módu však začíná zapisovat na začátek souboru, což znamená, že přepíše veškerý jeho obsah.
+
+## Čtení
+
+
+
