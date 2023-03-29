@@ -59,6 +59,8 @@ Zápis probíhá stejně jako čtení za pomoci bytestreamu, do kterého (v C# p
 Konec souboru se (při čtení) typicky pozná tak, že StreamReader (či jiná třída pro čtení ze streamu) vrátí hodnotu null - na dané pozici streamu už nejsou žádná čitelná data.
 
 Soubor je po skončení práce dobré zavřít z bezpečnostních důvodů. Pokud by program skončil chybou a soubor by byl stále otevřený, mohl by dojít k jeho nechtěnému poškození ať už samotným programem, nebo systémem. Dalším důvodem je fakt, že systém dovoluje programu držet v paměti jen určité množství souborů a pokud by nebyly po skončení práce zavírány, mohlo by dojít k zahlcení a program by skončil chybou. Toto omezení existuje mimo jiné pro případ chyby v programu, který by mohl kupříkladu otevírat tisíce souborů a systém tak zpomalovat.
+https://realpython.com/why-close-file-python/
+ROZŠÍŘIT https://www.tutorialspoint.com/eof-getc-and-feof-in-c FILE HANDLE
 
 Různé jazyky implementují zavření souboru různě - konkrétně C# a .NET runtime zavře StreaReader nebo StreamWriter, s nímž se streamem pracoval, čímž následně .NET nad reader/writer objektem zavolá Dispose() a Flush() metody. Ty uvolní systémové prostředky a zajistí, že se do souboru zapíší jakákoli data, která by čekala na zápis ve vyrovnávací paměti (bufferu). 
 https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
@@ -66,3 +68,6 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=net
 
 
 # Práce se soubory v CS
+
+## FileStream
+Třída FileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Odpovídá tedy kategorii read-write, již jsem popsal výše. 
