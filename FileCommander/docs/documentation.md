@@ -23,13 +23,20 @@ Formát souboru a to, zda je textový, nebo binární, můžeme zpravidla určit
 
 #### Odlišnosti systémů v souvislosti s koncovkami
 Zatímco MS Windows koncovky souborů nutně potřebuje k úspěšnému zpracování dat v souboru (tedy zobrazení jeho obsahu nebo jeho přehrání), linuxové systémy formát souboru určují podle jeho hlavičky. Shell script například nemusí mít koncovku .sh, aby ho systém jako spustitelný script rozpoznal, ale musí pak na první řádce obsahovat sekvenci #!/bin/bash. Pokud ani jednu z těchto podmínek nespoňuje, stává se z něj obyčejný nespustitelný soubor.
+
 Neplatí to však u všech typů souborů - pokud například smažeme koncovku certifikátu .pem, systém ho bude mít za soubor programu MATLAB, přestože jeho obsah zůstal nezměněný. (ověřeno lokálním experimentem)
+
 Některé linuxové programy však navrch kontroly hlavičky provádí i kontrolu koncovky souboru, což může vést k neočekávaným chybám a některé soubory nemusí být rozpoznány, přestože jde o správný formát. Příkladem mohl být prohlížeč obrázků Eye of Gnome, který nedokázal obrázek otevřít, pokud neměl správnou koncovku. (V nejnovější verzi programu už tato chyba/funkcionalita není.) V některých případech koncovku souboru vyžaduje samotný systém - při zpracování seznamu softwarových zdrojů čte kernel pouze ze souborů s koncovkou .list, aby zamezil načtení nežádoucích dat.
 https://askubuntu.com/questions/803434/do-file-extensions-have-any-purpose-in-linux
 
 
 # Práce se soubory obecně
-Práci se soubory bych rozdělil do dvou kategorií, a to čtení a zápis, přičemž jakékoli modifikace včetně změny lokace souboru se jako zápis počítají také.
+Jakoukoli práci se souborem můžeme rozfázovat na 3 dílčí fáze procesu - otevření, čtení nebo zápis a zavření souboru.
 
-## Čtení
-Při čtení se soubor otevírá v read-only módu, 
+## Otevření
+Způsob otevření souboru závisí na tom, jak s ním má být nakládáno. Read-only mód se používá, chceme-li ze souboru pouze číst, protože se tím minimalizuje riziko poškození souboru. Program v tomto módu totiž nemá přístup k funkcím, jimiž by do souboru zapisoval. Pokud bychom soubor otevřeli v read-write módu, v němž k těmto funkcím program přístup má, při chybě běhu programu by se do souboru mohla zapsat náhodná data a poškodit jej tak.
+
+Tento mód otevření se používá
+
+Posledním způsobem otevření je write-only mód používaný při zápisu do souboru. Vzhledem k tomu, že nenačítá soubor do RAM, ale rovnou zapisuje na určené místo na disku, je mnohem efektivnější než read-write mód, který soubor do paměti načítá.
+Od write-only módu je odvozený append mód, který zápis začíná na konci souboru a text pouze připojuje - předchozí obsah souboru tedy nechává netknutý. Write-only mód
