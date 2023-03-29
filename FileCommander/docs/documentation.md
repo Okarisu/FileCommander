@@ -37,6 +37,7 @@ Jakoukoli práci se souborem můžeme rozdělit podle 3 dílčích fází proces
 Způsob otevření souboru závisí na tom, jak s ním má být nakládáno. 
 https://www.tutorialspoint.com/computer_programming/computer_programming_file_io.htm
 https://www.programiz.com/c-programming/c-file-input-output
+https://www.geeksforgeeks.org/basics-file-handling-c/
 
 Read-only mód se používá, chceme-li ze souboru pouze číst, protože se tím minimalizuje riziko poškození souboru. Program v tomto módu totiž nemá přístup k funkcím, jimiž by do souboru zapisoval. 
 
@@ -47,6 +48,8 @@ Od read-write módu je odvozený append mód, který zápis začíná na konci s
 Posledním způsobem otevření je write-only mód, používaný při zápisu do souboru. Vzhledem k tomu, že nenačítá soubor do RAM, ale rovnou zapisuje na určené místo na disku, je mnohem efektivnější než read-write mód, který soubor do paměti načítá. Pokud soubor, do něhož má zapisovat, neexistuje, sám ho vytvoří a začne zápis. Na rozdíl od append módu však začíná zapisovat na začátek souboru, což znamená, že přepíše veškerý jeho obsah.
 
 ## Čtení
+https://softwareengineering.stackexchange.com/questions/216597/what-is-a-byte-stream-actually
+https://stackoverflow.com/questions/43935608/difference-between-buffer-stream-in-c-sharp
 Čtení probíhá díky datovému bytestreamu, který načítá jednotilvé byty tvořící soubor. S tímto streamem můžeme dále pracovat a podle potřeby z něj číst jednotlivé znaky, řádky, bloky o určitém počtu znaků nebo celý obsah streamu - pro jazyk C# je to specificky třída StreamReader, kterou popíši v pozdější části své práce.
 
 ## Zápis
