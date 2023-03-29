@@ -12,6 +12,13 @@ https://cs.wikipedia.org/wiki/Soubor
 Soubory můžeme rozdělit podle jejich typu na textové a binární. Mezi textové se řadí takové soubory, které můžeme otevřit v jakémkoli textovém editoru a jejich obsah bude uživateli buď naprosto čitelný, nebo v něm alespoň rozezná strukturu souboru a některá klíčová slova. Patří sem textové dokumenty jako txt, markdown nebo tex, zdrojové kódy programů a webových standardů (html, css, json), obrázky formátu svg, titulky nebo konfigurační soubory. I když je většina spustitelných souborů binárních, najsou se i výjimky - například dávkový soubor bat systému MS Windows nebo unixový shell script jsou textové povahy a jakýmkoli textovým editorem je lze otevřít.
 
 Binární soubory oproti textovým vyžadují speciální program pro jejich otevření. Pokud bychom se jejich obsah pokusili zobrazit v textovém editoru, dostaneme pouze surová data, ze kterých nic nevyčteme. Binárními soubory jsou například (multi)mediální soubory obrázků (vyjma svg), videí a zvuku, kancelářské dokumenty (PDF, doc, prezentace ppt), archivy jako zip, rar, ISO obrazy nebo spustitelné soubory jako exe a dll.
+https://www.nayuki.io/page/what-are-binary-and-text-files
+
+
++ obrázky
 
 ### Koncovky souborů
-Formát souboru a to, zda je textový, nebo binární, můžeme určit podle jeho koncovky.
+Formát souboru a to, zda je textový, nebo binární, můžeme zpravidla určit podle jeho koncovky. Toho můžeme využít kupříkladu tehdy, chceme-li načíst všechny obrázky v adresáři a zobrazit je v galerii - v tomto případě chceme vyloučit všechny dokumenty a jiné nepodporované soubory, jelikož nemáme kontrolu nad tím, co přesně se v adresáři nalézá. Pokud bychom předpokládali, že jsou v adresáři pouze obrázky, přestože by to tak ve skutečnosti nebylo, program by mohl skončit chybou.
+
+#### Odlišnosti systémů v souvislosti s koncovkami
+Zatímco MS Windows koncovky souborů nutně potřebuje k úspěšnému zpracování dat v souboru (tedy zobrazení jeho obsahu nebo jeho přehrání)
