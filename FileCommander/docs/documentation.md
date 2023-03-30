@@ -76,11 +76,11 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=net
 C# umožňuje použít using statement, jehož výhodou je zavolání Dispose nad instancí, kterou v using definujeme. V praxi to znamená, že po skončení using bloku řeší uvolnění paměti a deskriptorů souboru .NET runtime sám od sebe, kód je tak bezpečnější. Pokud by navíc v bloku došlo k chybě, díky použití using bude nad instancí rozněž Dispose zavoláno a zamezí se tak nežádoucímu chování programu.
 https://learn.microsoft.com/cs-cz/dotnet/standard/garbage-collection/implementing-dispose
 
-Příkladem je užití při jednoduchém načítání dat ze souboru - pokud by při načítání došlo k chybě, instance (zde TextReader) by nebyla ukončena a prostředky by nebyly uvolněny z paměti. Užitím using se tomu však zamezí.
+Příkladem je užití při jednoduchém načítání dat ze souboru - pokud by při načítání došlo k chybě, instance (zde StreamReader) by nebyla ukončena a prostředky by nebyly uvolněny z paměti. Užitím using se tomu však zamezí.
 
 ```cs
 var load = new List<string>();
-using (TextReader reader = new StreamReader(pathToFile)){
+using (StreamReader reader = new StreamReader(pathToFile)){
 	string line;
 	while ((line = reader.ReadLine()) is not null){
 	load.Add(line);
@@ -90,17 +90,17 @@ using (TextReader reader = new StreamReader(pathToFile)){
 
 Bez použití using bychom museli definovat try - finally blok a ve finally části vynutit ukončení instance.
 ```cs
-TextReader? tr = null;  
+StreamReader? sr = null;  
 try  
 {  
-    tr = new StreamReader(pathToFile);  
+    sr = new StreamReader(pathToFile);  
     string line;  
-    while ((line = tr.ReadLine()) is not null)  
+    while ((line = sr.ReadLine()) is not null)  
         load.Add(line);  
 }  
 finally  
 {  
-    tr?.Close();  
+    sr?.Close();  
 }
 ```
 
