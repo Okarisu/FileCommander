@@ -121,7 +121,10 @@ https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/us
 https://zetcode.com/csharp/using/
 
 ### FileStream
-Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika důležitými parametry:
+Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare, Int32)`
+
+#### String
+Určuje cestu k otevíranému souboru.
 
 #### FileAccess
 Tento parametr určuje přístup streamu k souboru a tím pádem způsob, jak s ním pak můžeme pracovat. Může nabývat těchto hodnot:
@@ -134,9 +137,12 @@ Parametr FileMode určuje, jakým způsobem bude soubor otevřen, popřípadě v
 - CreateNew - Vytváří nový soubor, do kterého bude posléze zapisováno, a vyžaduje FileAccess.Write. Pokud již soubor existuje, program končí chybou.
 - Create - Pokud soubor neexistuje, vytvoří nový, v opačném případě přepíše jeho obsah. Je tedy ekvivalentem funkce, která v případě existence souboru použije mód Truncate (viz níže) a v opačném případě použije CreateNew mód.
 - Truncate - V tomto módu FileStream otevírá již existující soubor a veškerý jeho obsah maže. Pokud otevíraný soubor neexistuje, vrací chybu.
+- Append - Otevírá soubor a zápis začíná na jeho konci.
+- Open - Otevírá již existující soubor, přičemž možný způsob práce s ním dále závisí na atributu FileAccess.
+- OpenOrCreate - Pokud soubor neexistuje, konstruktor ho vytvoří, jinak soubor otevře. Vyžaduje atribut FileAccess podle toho, jak má být se souborem nakládáno.
 
 Použijeme-li ho s using direktivou, máme několik možností, jak definovat přístpu k souboru:
 
 ### File.Create()
-Tato metoda volá konstruktor `FileStream(String, FileMode, FileAccess, FileShare, Int32)` s parametry Create pro FileMode, a zabaluje ho do jednodušší
+Tato metoda volá konstruktor  s parametry Create pro FileMode, a zabaluje ho do jednodušší
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.-ctor?view=net-8.0#system-io-filestream-ctor(system-string-system-io-filemode-system-io-fileaccess-system-io-fileshare-system-int32)
