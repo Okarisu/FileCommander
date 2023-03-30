@@ -121,7 +121,9 @@ https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/us
 https://zetcode.com/csharp/using/
 
 ### FileStream
-Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare, Int32)`
+Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare)`, v případě vytváření souboru pak navíc ještě s velikostí bufferu `Int32`
+
+https://cs.wikipedia.org/wiki/Vyrovn%C3%A1vac%C3%AD_pam%C4%9B%C5%A5
 
 #### String
 Určuje cestu k otevíranému souboru.
@@ -140,6 +142,14 @@ Parametr FileMode určuje, jakým způsobem bude soubor otevřen, popřípadě v
 - Append - Otevírá soubor a zápis začíná na jeho konci.
 - Open - Otevírá již existující soubor, přičemž možný způsob práce s ním dále závisí na atributu FileAccess.
 - OpenOrCreate - Pokud soubor neexistuje, konstruktor ho vytvoří, jinak soubor otevře. Vyžaduje atribut FileAccess podle toho, jak má být se souborem nakládáno.
+
+#### FileShare
+FileShare parametr kontroluje to, zda budou mít jiné procesy k otevřenému souboru přístup a pokud ano, tak jaký. Metody jazyka C#, které tento konstruktor zapouzdřují a které popisuji níže, ho volají s parametrem FileShare.None, čímž jakémukoli jinému procesu přístup k souboru zamítají. Výjimku tvoří Asynchronní funkce pro čtení a zápis, které mají jako parametr FileShare.Read.
+
+Dalšími možnými hodnotami tohoto parametru jsou Write, ReadWrite, Delete a Inheritable. Hodnota Inheritable uděluje dědičnému procesu stejná oprávnění, jaká má jeho mateřský proces.
+
+
+
 
 Použijeme-li ho s using direktivou, máme několik možností, jak definovat přístpu k souboru:
 
