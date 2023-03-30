@@ -80,7 +80,7 @@ Příkladem je užití při jednoduchém načítání dat ze souboru - pokud by 
 
 ```cs
 var load = new List<string>();
-using (StreamReader reader = new StreamReader(pathToFile)){
+using (TextReader reader = new StreamReader(pathToFile)){
 	string line;
 	while ((line = reader.ReadLine()) is not null){
 	load.Add(line);
@@ -90,23 +90,23 @@ using (StreamReader reader = new StreamReader(pathToFile)){
 
 Bez použití using bychom museli definovat try - finally blok a ve finally části vynutit ukončení instance.
 ```cs
-StreamReader? sr = null;  
+TextReader? tr = null;  
 try  
 {  
-    sr = new StreamReader(pathToFile);  
+    tr = new StreamReader(pathToFile);  
     string line;  
-    while ((line = sr.ReadLine()) is not null)  
+    while ((line = tr.ReadLine()) is not null)  
         load.Add(line);  
 }  
 finally  
 {  
-    sr?.Close();  
+    tr?.Close();  
 }
 ```
 
 Pozor se musí dávat na to, že po skončení using bloku je instance uvolněna z paměti a pokud bychom ji nad blokem, nikoli v něm, dále v kódu už nebude existovat.
 ```cs
-var reader = new StreamReader(pathToFile);  
+TextReader reader = new StreamReader(pathToFile);  
 using (reader)  
 {  
     Console.WriteLine(r.ReadLine());  
@@ -169,6 +169,10 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openread?view=net-8.
 - File.OpenWrite(string) - Tato metoda volá konstruktor s argumentem FileMode.OpenOrCreate a tudíž s ní můžeme jak otevřít již existující soubor, tak vytvořit soubor nový. Obsah souboru je smazán a přepsán obsahem novým.
 https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openwrite?view=net-8.0
 
+### Metody
+
+
+
 ```cs
 using (FileStream fs = File.OpenRead(pathToFile))  
 {  
@@ -181,3 +185,7 @@ using (FileStream fs = File.OpenRead(pathToFile))
 ```
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0#examples
 
+## StreamReader
+https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=net-8.0
+
+Třída StreamReader implementuje objekt abstraktní třídy TextReader a umožňuje nám číst text z bytového streamu, kterým otevře soubor.
