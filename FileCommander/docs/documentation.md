@@ -124,6 +124,7 @@ https://zetcode.com/csharp/using/
 Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare)`, v případě vytváření souboru pak navíc ještě s velikostí bufferu `Int32`
 
 https://cs.wikipedia.org/wiki/Vyrovn%C3%A1vac%C3%AD_pam%C4%9B%C5%A5
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.-ctor?view=net-8.0#system-io-filestream-ctor(system-string-system-io-filemode-system-io-fileaccess-system-io-fileshare-system-int32)
 
 #### String
 Určuje cestu k otevíranému souboru.
@@ -148,11 +149,19 @@ FileShare parametr kontroluje to, zda budou mít jiné procesy k otevřenému so
 
 Dalšími možnými hodnotami tohoto parametru jsou Write, ReadWrite, Delete a Inheritable. Hodnota Inheritable uděluje dědičnému procesu stejná oprávnění, jaká má jeho mateřský proces.
 
+## Zapouzdřující metody
+C# obsahuje několik metod, které zapouzdřují volání konstruktoru a předávají mu parametry, které bychom jinak museli při volání konstruktoru ve zdrojovém kódu předávat sami. Vrací nám pak nový objekt typu FileStream.
 
-
-
-Použijeme-li ho s using direktivou, máme několik možností, jak definovat přístpu k souboru:
-
-### File.Create()
-Tato metoda volá konstruktor  s parametry Create pro FileMode, a zabaluje ho do jednodušší
-https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.-ctor?view=net-8.0#system-io-filestream-ctor(system-string-system-io-filemode-system-io-fileaccess-system-io-fileshare-system-int32)
+- File.Create(string) - Tato metoda volá konstruktor s parametry FileMode.Create a odpovídajícími parametry FileAccess. Je třeba jí předat argument cesty k souboru.
+https://learn.microsoft.com/en-us/dotnet/api/system.io.file.create?view=net-8.0
+- File.Open(string, FileMode) - Metoda volá konstruktor s argumenty předanými programátorem, ale navíc určuje hodnotu parametru FileAccess podle zadané hodnoty FileMode. Je přetížitelná, takže můžeme specifikovat hodnotu FileAccess sami.
+```cs
+FileStream Open(string path, FileMode mode) => File.Open(path, mode, mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite, FileShare.None);
+```
+https://learn.microsoft.com/en-us/dotnet/api/system.io.file.open?view=net-8.0
+- File.OpenRead(string) - Jediná metoda, která krom toho, že volá konstruktor s argumenty umožňujícími pouze čtení souboru, také oproti ostatním metodám argument FileShare nastavuje na Read, což znamená, že více procesů může v jednu chvíli číst ze stejného souboru.
+```cs
+FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+```
+https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openread?view=net-8.0
+- File.OpenWrite(string) - Tato metoda volá konstruktor s argumentem FileMode.OpenOrCreate a tudíž s ní můžeme jak otevřít již existující soubor, tak vytvořit soubor nový. Obsah souboru je smazán a přepsán obsahem novým.
