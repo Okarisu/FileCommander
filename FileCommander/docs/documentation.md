@@ -64,6 +64,7 @@ https://realpython.com/why-close-file-python/
 ROZŠÍŘIT https://www.tutorialspoint.com/eof-getc-and-feof-in-c FILE HANDLE
 
 Různé jazyky implementují zavření souboru různě - konkrétně C# a .NET runtime zavře StreaReader nebo StreamWriter, s nímž se streamem pracoval, čímž následně .NET nad reader/writer objektem zavolá Dispose() a Flush() metody. Ty uvolní systémové prostředky a zajistí, že se do souboru zapíší jakákoli data, která by čekala na zápis ve vyrovnávací paměti (bufferu). 
+https://cs.wikipedia.org/wiki/Vyrovn%C3%A1vac%C3%AD_pam%C4%9B%C5%A5
 https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=net-7.0
 
@@ -124,6 +125,7 @@ https://zetcode.com/csharp/using/
 Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare)`, v případě vytváření souboru pak navíc ještě s velikostí bufferu `Int32`
 
 https://cs.wikipedia.org/wiki/Vyrovn%C3%A1vac%C3%AD_pam%C4%9B%C5%A5
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.-ctor?view=net-8.0#system-io-filestream-ctor(system-string-system-io-filemode-system-io-fileaccess-system-io-fileshare-system-int32)
 
 #### String
@@ -165,3 +167,17 @@ FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAcce
 ```
 https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openread?view=net-8.0
 - File.OpenWrite(string) - Tato metoda volá konstruktor s argumentem FileMode.OpenOrCreate a tudíž s ní můžeme jak otevřít již existující soubor, tak vytvořit soubor nový. Obsah souboru je smazán a přepsán obsahem novým.
+https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openwrite?view=net-8.0
+
+```cs
+using (FileStream fs = File.OpenRead(pathToFile))  
+{  
+    byte[] b = new byte[1024];  
+    UTF8Encoding temp = new UTF8Encoding(true);  
+  
+    while (fs.Read(b,0,b.Length) > 0)  
+    {        Console.WriteLine(temp.GetString(b));  
+    }}
+```
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0#examples
+
