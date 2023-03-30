@@ -71,7 +71,8 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=net
 # Práce se soubory v CS
 
 ## Práce s obsahem souborů
-C# umožňuje použít using statement, jehož výhodou je zavolání Dispose nad instancí, kterou v using definujeme. V praxi to znamená, že po skončení using bloku řeší uvolnění paměti a deskriptorů souboru .NET runtime sám od sebe. Pokud by navíc v bloku došlo k chybě, díky použití using bude nad instancí rozněž Dispose zavoláno a zamezí se tak nežádoucímu chování programu.
+### Using
+C# umožňuje použít using statement, jehož výhodou je zavolání Dispose nad instancí, kterou v using definujeme. V praxi to znamená, že po skončení using bloku řeší uvolnění paměti a deskriptorů souboru .NET runtime sám od sebe, kód je tak bezpečnější. Pokud by navíc v bloku došlo k chybě, díky použití using bude nad instancí rozněž Dispose zavoláno a zamezí se tak nežádoucímu chování programu.
 https://learn.microsoft.com/cs-cz/dotnet/standard/garbage-collection/implementing-dispose
 
 Příkladem je užití při jednoduchém načítání dat ze souboru - pokud by při načítání došlo k chybě, instance (zde TextReader) by nebyla ukončena a prostředky by nebyly uvolněny z paměti. Užitím using se tomu však zamezí.
@@ -101,12 +102,23 @@ finally
     tr?.Close();  
 }
 ```
+
+Pozor se musí dávat na to, že po skončení using bloku je instance uvolněna z paměti a pokud bychom ji nad blokem, nikoli v něm, dále v kódu už nebude existovat.
+```cs
+var reader = new StreamReader(pathToFile);  
+using (reader)  
+{  
+    Console.WriteLine(r.ReadLine());  
+}  
+Console.WriteLine(r.ReadLine());
+```
+Tento kus kódu sice přečte ze souboru první řádku a vypíše ji do konzole, ale následně nám vrátí chybu: 
+```cs
+Cannot read from a closed TextReader: ThrowObjectDisposedException
+```
+
 https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using
 https://zetcode.com/csharp/using/
-
-
-
-
 
 ### FileStream
 Třída FileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Odpovídá tedy kategorii read-write, již jsem popsal výše. 
