@@ -114,11 +114,29 @@ Console.WriteLine(r.ReadLine());
 ```
 Tento kus kódu sice přečte ze souboru první řádku a vypíše ji do konzole, ale následně nám vrátí chybu: 
 ```cs
-Cannot read from a closed TextReader: ThrowObjectDisposedException
+Nelze číst z uzavřené instance TextReader: ThrowObjectDisposedException
 ```
 
 https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using
 https://zetcode.com/csharp/using/
 
 ### FileStream
-Třída FileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Odpovídá tedy kategorii read-write, již jsem popsal výše. 
+Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika důležitými parametry:
+
+#### FileAccess
+Tento parametr určuje přístup streamu k souboru a tím pádem způsob, jak s ním pak můžeme pracovat. Může nabývat těchto hodnot:
+- Read - Stream má přístup pouze pro čtení.
+- ReadWrite - Stream má přístup pro čtení i zápis.
+- Write - Stream má přístup pouze pro zápis.
+
+#### FileMode
+Parametr FileMode určuje, jakým způsobem bude soubor otevřen, popřípadě vytvořen, a může mít tyto hodnoty:
+- CreateNew - Vytváří nový soubor, do kterého bude posléze zapisováno, a vyžaduje FileAccess.Write. Pokud již soubor existuje, program končí chybou.
+- Create - Pokud soubor neexistuje, vytvoří nový, v opačném případě přepíše jeho obsah. Je tedy ekvivalentem funkce, která v případě existence souboru použije mód Truncate (viz níže) a v opačném případě použije CreateNew mód.
+- Truncate - V tomto módu FileStream otevírá již existující soubor a veškerý jeho obsah maže. Pokud otevíraný soubor neexistuje, vrací chybu.
+
+Použijeme-li ho s using direktivou, máme několik možností, jak definovat přístpu k souboru:
+
+### File.Create()
+Tato metoda volá konstruktor `FileStream(String, FileMode, FileAccess, FileShare, Int32)` s parametry Create pro FileMode, a zabaluje ho do jednodušší
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.-ctor?view=net-8.0#system-io-filestream-ctor(system-string-system-io-filemode-system-io-fileaccess-system-io-fileshare-system-int32)
