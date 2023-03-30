@@ -16,6 +16,7 @@ Binární soubory oproti textovým vyžadují speciální program pro jejich ote
 https://www.nayuki.io/page/what-are-binary-and-text-files
 
 
+
 + obrázky
 
 ### Koncovky souborů
@@ -69,5 +70,25 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.flush?view=net
 
 # Práce se soubory v CS
 
-## FileStream
+## Práce s obsahem souborů
+C# umožňuje použít using statement, jehož výhodou je zavolání Dispose nad instancí, kterou v using definujeme. V praxi to znamená, že po skončení using bloku řeší uvolnění paměti a deskriptorů souboru .NET runtime sám od sebe. Pokud by navíc v bloku došlo k chybě, díky použití using bude nad instancí rozněž Dispose zavoláno a zamezí se tak nežádoucímu chování programu.
+Příkladem je užití při načítání dat ze souboru - pokud by při načítání došlo k chybě, Stream by nebyl uzavřen a prostředky by nebyly uvolněny z paměti. Užitím using se tomu však zamezí.
+
+```cs
+var load = new List<string>
+using (TextReader reader = new StreamReader(pathToFile)){
+	string line;
+	while ((line = reader.ReadLine()) != null){
+	load.Add(line);
+	}
+}
+```
+
+
+
+
+
+
+
+### FileStream
 Třída FileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Odpovídá tedy kategorii read-write, již jsem popsal výše. 
