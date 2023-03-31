@@ -175,9 +175,8 @@ Většina metod třídy FileStream se používá pouze v případě, kdy stream 
 - Read(Byte[], Int32, Int32) - Tato metoda ze streamu přečte data v rozmezí daném dvěma číselnými hodnotami a zapíše je do pole předaného funkci v argumentu (tedy do bufferu). První číselná hodnota označuje pozici ve streamu, na které má čtení začít, a druhá počet bytů, které mají být přečteny.
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.read?view=net-8.0
 - Write(Byte[], Int32, Int32) - Metoda zapisuje do streamu data z předaného bufferu, číselné parametry učujíc počáteční pozici zápisu a maximální zapsatelný počet bytů.
-
-
-
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.write?view=net-8.0
+- (Un)Lock(Int64, Int64) - Zpřístupňuje a znepřístupňuje ostatním procesům danou část streamu pro čtení nebo zápis.
 
 ```cs
  using (FileStream fs = File.Create(pathToFile))
