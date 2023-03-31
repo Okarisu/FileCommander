@@ -13,6 +13,7 @@ public class ToolbarLeft
         leftToolbar.ToolbarStyle = ToolbarStyle.Both;
 
         
+        
         var leftHomeButton = new ToolButton(Stock.Home);
         leftToolbar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += (sender, args) =>

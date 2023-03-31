@@ -32,6 +32,11 @@ public partial class Core
 
         foreach (var item in items)
         {
+            if(item.Path.Contains(Directory.GetCurrentDirectory()))
+            {
+                new PromptUserDialogWindow("Cannot delete system files.");
+                continue;
+            }
             if (item!.IsDirectory)
             {
                 Directory.Delete(item.Path, true);

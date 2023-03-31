@@ -31,6 +31,12 @@ public partial class Core
         
         foreach (var item in items)
         {
+            if(item.Path.Contains(Directory.GetCurrentDirectory()))
+            {
+                new PromptUserDialogWindow("Cannot move system files.");
+                continue;
+            }
+
             var childDestinationPath = Path.Combine(destinationPath, item!.Name!);
             if (item.IsDirectory)
             {

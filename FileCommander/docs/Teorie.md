@@ -177,7 +177,8 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.read?view=net-
 - Write(Byte[], Int32, Int32) - Metoda zapisuje do streamu data z předaného bufferu, číselné parametry učujíc počáteční pozici zápisu a maximální zapsatelný počet bytů.
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.write?view=net-8.0
 - (Un)Lock(Int64, Int64) - Zpřístupňuje a znepřístupňuje ostatním procesům danou část streamu pro čtení nebo zápis.
-
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.lock?view=net-8.0
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.unlock?view=net-8.0
 ```cs
  using (FileStream fs = File.Create(pathToFile))
 {
@@ -199,4 +200,4 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0#e
 ## StreamReader
 https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=net-8.0
 
-Třída StreamReader implementuje objekt abstraktní třídy TextReader a umožňuje nám číst text z bytového streamu, kterým otevře soubor.
+Třída implementuje objekt abstraktní třídy TextReader a umožňuje nám číst text z bytového streamu, kterým otevře soubor.

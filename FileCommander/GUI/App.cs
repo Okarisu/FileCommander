@@ -1,11 +1,8 @@
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
-using System.Runtime.CompilerServices;
-
 namespace FileCommander.GUI;
 
-using Controllers;
 using Toolbars;
 using System;
 using System.IO;
@@ -22,7 +19,9 @@ public class App : Window
     public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
-    private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
+
+    //private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
+    private static readonly Gdk.Pixbuf FileIcon = new ("icons/file.png"), DirIcon = new ("icons/folder.png");
 
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
@@ -60,7 +59,7 @@ public class App : Window
         var toolbar = ToolbarMain.DrawToolbar();
         windowContainer.PackStart(toolbar, false, true, 0);
 
-        HBox twinPanelsContainer = new HBox(false, 0); //false?
+        HBox twinPanelsContainer = new HBox(false, 0);
         windowContainer.PackStart(twinPanelsContainer, true, true, 0);
         VBox leftTwinContainer = new VBox(false, 0);
         twinPanelsContainer.PackStart(leftTwinContainer, true, true, 0);
@@ -68,12 +67,10 @@ public class App : Window
         VBox rightTwinContainer = new VBox(false, 0);
         twinPanelsContainer.PackStart(rightTwinContainer, true, true, 0);
 
-        TwinPanels.LeftTwinPanel.DrawLeftPanel();
-        TwinPanels.RightTwinPanel.DrawRightPanel();
-
-        //TwinPanel.DrawPanel(LeftScrolledWindow, LeftIconView, LeftStore, LeftRoot, LeftRootLabel, LeftHistory, LeftHistoryForward, 1);
-        //TwinPanel.DrawPanel(RightScrolledWindow, RightIconView, RightStore, RightRoot, RightRootLabel, RightHistory, RightHistoryForward, 2);
-
+        TwinPanels.DrawLeftPanel();
+        TwinPanels.DrawRightPanel();
+        
+        
         HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
         leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
@@ -198,8 +195,12 @@ public class App : Window
 
     public static void UpdateRootLabel(Label label, DirectoryInfo root)
     {
-        //label.Text = "Current directory: " + root;
-        label.Text = "Current directory: " + root.Name;
+        //label.Text = $"Current directory: {root}";
+        
+        var parent = root.Parent?.Name is "/" or "" ? "" : root.Parent?.Name;
+        //var optionalSlash = parent is "" ? "" : "/";
+        Console.WriteLine(root.Parent?.Name);
+        label.Text = $"Current directory: {parent}/{root.Name}";
         
     }
 }
