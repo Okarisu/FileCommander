@@ -122,7 +122,7 @@ https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/us
 https://zetcode.com/csharp/using/
 
 ### FileStream
-Konstruktor třídayFileStream vrací datový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare)`, v případě vytváření souboru pak navíc ještě s velikostí bufferu `Int32`
+Konstruktor tříday FileStream vrací bytový stream, který se dá použít jak pro čtení, tak pro zápis dat do souboru. Voláme ho s několika parametry: `FileStream(String, FileMode, FileAccess, FileShare)`, případně ještě s velikostí bufferu `Int32`. Tím, že pracuje s daty v bytové formě, musí být data (nemá-li s nimi program takto pracovat) po přečtení převedena na text kvůli pozdějšímu zpracování, a to samé platí pro zápis. 
 
 https://cs.wikipedia.org/wiki/Vyrovn%C3%A1vac%C3%AD_pam%C4%9B%C5%A5
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0
@@ -170,18 +170,30 @@ https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openread?view=net-8.
 https://learn.microsoft.com/en-us/dotnet/api/system.io.file.openwrite?view=net-8.0
 
 ### Metody
+Většina metod třídy FileStream se používá pouze v případě, kdy stream není začleněn do using statementu. Jak jsem již popsal výše, užití using je v programu bezpečnější, a to mimo jiné i proto, že eliminuje faktor lidské chyby (př. vynechání dispozivní metody) při psaní kódu.  V této části se budu věnovat pouze vybraným metodám jednak z důvodu zbytečnosti zbytku metod za předpokladu použití streamu v using statementu a jednak proto, že jsem za celé své studium s třídou FileStream nepracoval a rád bych se více věnoval třídám, se kterými tomu tak bylo.
+
+- Read(Byte[], Int32, Int32) - Tato metoda ze streamu přečte data v rozmezí daném dvěma číselnými hodnotami a zapíše je do pole předaného funkci v argumentu (tedy do bufferu). První číselná hodnota označuje pozici ve streamu, na které má čtení začít, a druhá počet bytů, které mají být přečteny.
+https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream.read?view=net-8.0
+- Write(Byte[], Int32, Int32) - Metoda zapisuje do streamu data z předaného bufferu, číselné parametry učujíc počáteční pozici zápisu a maximální zapsatelný počet bytů.
+
 
 
 
 ```cs
+ using (FileStream fs = File.Create(pathToFile))
+{
+	byte[] data = new UTF8Encoding(true).GetBytes(text);
+	fs.Write(data, 0, data.Length);
+}
 using (FileStream fs = File.OpenRead(pathToFile))  
 {  
-    byte[] b = new byte[1024];  
-    UTF8Encoding temp = new UTF8Encoding(true);  
+    byte[] data = new byte[1024];  
+    UTF8Encoding enc = new UTF8Encoding(true);  
   
-    while (fs.Read(b,0,b.Length) > 0)  
-    {        Console.WriteLine(temp.GetString(b));  
-    }}
+    while (fs.Read(data,0,data.Length) > 0)  
+    {        Console.WriteLine(enc.GetString(data));  
+    }
+}
 ```
 https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-8.0#examples
 
