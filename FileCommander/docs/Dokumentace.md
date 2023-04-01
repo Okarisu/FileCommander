@@ -51,7 +51,9 @@ Třída ukládá a načítá uživatelské preference ohledně dotazování při
 
 Všechny funkce této třídy nejdříve za pomoci objektu StreamReader deserializují konfigurační soubor, což znamená, že ho rozloží na jednotlivé objekty a ty následně uloží do proměnné typu Dictionary.
 
-Funkce GetConf(Str) vrací konfiguraci jako bool nebo string. V argumentu se jim předá klíč, jehož hodnotu poté v Dictionary najdou a buď rovnou vrátí, nebo ji převedou na typ string a a vrací výsledek porovnání se stringem "true".  
+Funkce GetConf(Str) vrací konfiguraci jako bool nebo string. V argumentu se jim předá klíč, jehož hodnotu poté v Dictionary najdou a buď rovnou vrátí, nebo ji převedou na typ string a a vrací výsledek porovnání se stringem "true".
+
+Funkce SetConf nejdříve deserializuje obsah konfiguračního souboru a následně v Dictionary přepíše hodnotu pod zadaným klíčem na novou hodnotu. Dictionary poté serializuje nazpět a pomocí instance StreamWriter konfiguraci uloží do souboru.
 
 
 
