@@ -1,7 +1,6 @@
 using Gtk;
-using Style = Pango.Style;
-
 namespace FileCommander.GUI.Toolbars;
+
 
 using static App;
 using System.Runtime.InteropServices;
@@ -47,12 +46,15 @@ public abstract class Disks
         {
             foreach (var drive in DriveInfo.GetDrives())
             {
-                var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), drive.VolumeLabel);
+                if(!drive.IsReady)
+                    continue;
+                
+                var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), drive.Name);
                 diskButton.Clicked += (_, _) =>
                 {
                     history.Push(root);
                     historyForward.Clear();
-                    root = new DirectoryInfo(drive.VolumeLabel);
+                    root = new DirectoryInfo(drive.Name);
                     FillStore(store, root);
                     UpdateRootLabel(rootLabel, root);
                 };

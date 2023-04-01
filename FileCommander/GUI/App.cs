@@ -17,7 +17,7 @@ public class App : Window
     private const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo root = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
 
@@ -37,7 +37,7 @@ public class App : Window
     public static Stack<DirectoryInfo> RightHistory = new();
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
-    public static Label LeftRootLabel = new("Current directory: " + root);
+    public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
 
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
 
@@ -90,7 +90,7 @@ public class App : Window
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, root, store, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, store, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
@@ -107,7 +107,7 @@ public class App : Window
 
     public static void UpdateDisks()
     {
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, root, store, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, store, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);

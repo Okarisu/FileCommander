@@ -30,7 +30,7 @@ public partial class Core
 
 
         //Fukus na levém panelu => přesouvá se do pravého
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : root).ToString();
+        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
         new ProgressDialogWindow("Files are being copied...");
 
         foreach (var item in items)

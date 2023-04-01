@@ -9,7 +9,7 @@ public abstract class TwinPanels
     public static void DrawLeftPanel()
     {
         LeftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        FillStore(store, root);
+        FillStore(store, LeftRoot);
 
         LeftIconView.GrabFocus();
         LeftIconView.SelectionMode = SelectionMode.Multiple;
@@ -17,8 +17,8 @@ public abstract class TwinPanels
         LeftIconView.PixbufColumn = ColPixbuf;
         LeftIconView.ItemActivated += (_, args) =>
         {
-            root = OnItemActivated(args, root, store, LeftHistory, LeftHistoryForward);
-            UpdateRootLabel(LeftRootLabel, root);
+            LeftRoot = OnItemActivated(args, LeftRoot, store, LeftHistory, LeftHistoryForward);
+            UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
         LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
         

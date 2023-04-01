@@ -23,7 +23,7 @@ public partial class Core
             return;
         }
 
-        var root = GetFocusedWindow() == 1 ? App.root : RightRoot;
+        var root = GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot;
         (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
@@ -39,7 +39,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? App.root : RightRoot).ToString();
+        var destinationPath = (GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot).ToString();
 
         var fileSuffixes = new Queue<int>();
         var folderSuffixes = new Queue<int>();
