@@ -1,9 +1,11 @@
 // ReSharper disable ObjectCreationAsStatement
 
-using Gtk;
-
 namespace FileCommander.GUI.Controllers;
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gtk;
 using static App;
 
 public abstract class NavigationController

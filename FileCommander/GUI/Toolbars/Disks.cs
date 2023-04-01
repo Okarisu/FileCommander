@@ -1,7 +1,9 @@
 using Gtk;
 namespace FileCommander.GUI.Toolbars;
 
-
+using System;
+using System.Collections.Generic;
+using System.IO;
 using static App;
 using System.Runtime.InteropServices;
 

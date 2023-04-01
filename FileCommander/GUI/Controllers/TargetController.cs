@@ -1,7 +1,10 @@
 using FileCommander.GUI.Dialogs;
 
 namespace FileCommander.GUI.Controllers;
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gtk;
 using static PromptPathInputDialogWindow;
 using static App;
 

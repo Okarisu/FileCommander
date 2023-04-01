@@ -5,6 +5,11 @@ namespace FileCommander.GUI.Toolbars;
 
 using static App;
 using static NavigationController;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 public abstract class ToolbarLeft
 {
     public static Toolbar DrawLeftToolbar()

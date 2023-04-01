@@ -5,6 +5,11 @@ using Gtk;
 namespace FileCommander.GUI.Toolbars;
 
 using static Core;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 public abstract class TopToolbar
 {

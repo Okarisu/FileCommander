@@ -3,6 +3,12 @@ using Gtk;
 
 namespace FileCommander.GUI.Toolbars;
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
 public abstract class DrawMenu
 {
     public static MenuBar DrawMenuBar()
@@ -14,7 +20,7 @@ public abstract class DrawMenu
 
         CheckMenuItem showHiddenFiles = new CheckMenuItem("Show hidden files");
         viewmenu.Append(showHiddenFiles);
-        if(Settings.GetConf("ShowHiddenFiles"))
+        if (Settings.GetConf("ShowHiddenFiles"))
         {
             showHiddenFiles.Active = true;
         }
@@ -22,6 +28,7 @@ public abstract class DrawMenu
         {
             showHiddenFiles.Active = false;
         }
+
         showHiddenFiles.Toggled += (sender, args) =>
         {
             if (showHiddenFiles.Active)
@@ -32,12 +39,13 @@ public abstract class DrawMenu
             {
                 Settings.SetConf("ShowHiddenFiles", false);
             }
+
             NavigationController.RefreshIconViews();
         };
-        
+
         CheckMenuItem showMountedDrives = new CheckMenuItem("Show mounted drives");
         viewmenu.Append(showMountedDrives);
-        if(Settings.GetConf("ShowMountedDrives"))
+        if (Settings.GetConf("ShowMountedDrives"))
         {
             showMountedDrives.Active = true;
         }
@@ -45,6 +53,7 @@ public abstract class DrawMenu
         {
             showMountedDrives.Active = false;
         }
+
         showMountedDrives.Toggled += (sender, args) =>
         {
             if (showMountedDrives.Active)
@@ -60,7 +69,7 @@ public abstract class DrawMenu
                 App.RightDiskBar.Hide();
             }
         };
-        
+
         CheckMenuItem showMountLocation = new CheckMenuItem("Show mount location");
         viewmenu.Append(showMountLocation);
         showMountLocation.Toggled += (sender, args) =>
@@ -76,10 +85,8 @@ public abstract class DrawMenu
         };
 
 
-
-
         menuBar.Append(view);
-        
+
         return menuBar;
-    } 
+    }
 }

@@ -2,14 +2,15 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using FileCommander.GUI;
-using FileCommander.GUI.Controllers;
-using FileCommander.GUI.Dialogs;
-
 namespace FileCommander.core;
 
-using static App;
-using static NavigationController;
+using System;
+using System.IO;
+using GUI;
+using GUI.Controllers;
+using GUI.Dialogs;
+using static GUI.App;
+using static GUI.Controllers.NavigationController;
 
 public partial class Core
 {
@@ -65,6 +66,7 @@ public partial class Core
             new PromptUserDialogWindow("Unknown error has occured.");
             return;
         }
+
         RefreshIconViews();
     }
 }

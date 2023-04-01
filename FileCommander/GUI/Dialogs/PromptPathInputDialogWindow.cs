@@ -1,7 +1,8 @@
-using Gtk;
-
 namespace FileCommander.GUI.Dialogs;
 
+using System;
+using System.IO;
+using Gtk;
 public class PromptPathInputDialogWindow : Dialog
 {
     private static Dialog _dialog { get; set; }

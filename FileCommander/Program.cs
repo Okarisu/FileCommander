@@ -12,14 +12,4 @@ abstract class Program
 
         Application.Run();
     }
-    
-    public static void Quit()
-    {
-        Application.Quit();
-        Application.Init();
-        new App();
-
-        Application.Run();
-
-    }
 }

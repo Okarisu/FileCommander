@@ -5,6 +5,11 @@ namespace FileCommander.GUI.Toolbars;
 
 using static App;
 using static NavigationController;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 public abstract class ToolbarRight
 {
@@ -42,7 +47,7 @@ public abstract class ToolbarRight
         rightPanelBar.Insert(rightForwardButton, 3);
         rightForwardButton.Clicked += (_, _) =>
         {
-            var tmpRoot= OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
+            var tmpRoot = OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
             RightRoot = tmpRoot != null ? tmpRoot : RightRoot;
             UpdateRootLabel(RightRootLabel, RightRoot);
         };

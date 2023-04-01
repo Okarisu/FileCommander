@@ -2,15 +2,15 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using FileCommander.GUI;
-using FileCommander.GUI.Controllers;
-using FileCommander.GUI.Dialogs;
-using static FileCommander.GUI.Controllers.TargetController;
-
 namespace FileCommander.core;
 
-using static App;
-using static NavigationController;
+using System;
+using System.IO;
+using GUI;
+using GUI.Dialogs;
+using static GUI.Controllers.TargetController;
+using static GUI.App;
+using static GUI.Controllers.NavigationController;
 
 public partial class Core
 {
@@ -54,7 +54,7 @@ public partial class Core
 
         foreach (var item in items)
         {
-            if(item.Path.Contains(Directory.GetCurrentDirectory()))
+            if (item.Path.Contains(Directory.GetCurrentDirectory()))
             {
                 new PromptUserDialogWindow("Cannot rename system files.");
                 continue;

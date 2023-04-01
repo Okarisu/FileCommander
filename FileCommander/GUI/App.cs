@@ -5,11 +5,15 @@ using System.Runtime.InteropServices;
 using FileCommander.GUI.Toolbars;
 using Gdk;
 using Gtk;
-using Window = Gtk.Window;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace FileCommander.GUI;
 
-public class App : Window
+public class App : Gtk.Window
 {
     private const int ColPath = 0;
     public const int ColDisplayName = 1;

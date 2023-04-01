@@ -2,6 +2,8 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System;
+using System.IO;
 using System.IO.Compression;
 using FileCommander.GUI;
 using FileCommander.GUI.Controllers;

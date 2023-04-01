@@ -6,6 +6,8 @@ using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
 using Gtk;
+using System;
+using System.IO;
 
 namespace FileCommander.core;
 
