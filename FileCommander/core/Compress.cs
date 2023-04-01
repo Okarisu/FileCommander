@@ -94,7 +94,7 @@ public partial class Core
                 return;
             }
 
-            var win = new ProgressDialogWindow("Compressing...");
+            new ProgressDialogWindow("Compressing...");
             foreach (var item in items)
             {
                 if (item!.IsDirectory)
