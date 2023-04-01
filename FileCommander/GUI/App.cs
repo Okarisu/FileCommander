@@ -24,12 +24,12 @@ public class App : Window
     //private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
     private static readonly Pixbuf FileIcon = new("icons/file.png"), DirIcon = new("icons/folder.png");
 
-    public static ListStore store = CreateStore(), RightStore = CreateStore();
+    public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
     public static ScrolledWindow LeftScrolledWindow = new();
     public static ScrolledWindow RightScrolledWindow = new();
 
-    public static IconView LeftIconView = new(store);
+    public static IconView LeftIconView = new(LeftStore);
     public static IconView RightIconView = new(RightStore);
 
     public static Stack<DirectoryInfo> LeftHistory = new();
@@ -90,7 +90,7 @@ public class App : Window
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, store, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
@@ -107,7 +107,7 @@ public class App : Window
 
     public static void UpdateDisks()
     {
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, store, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
@@ -189,7 +189,7 @@ public class App : Window
     {
         var selection = FocusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
 
-        var store = FocusedPanel == 1 ? App.store : RightStore;
+        var store = FocusedPanel == 1 ? App.LeftStore : RightStore;
         var files = new Item[selection.Length];
 
         for (var i = 0; i < selection.Length; i += 1)

@@ -55,7 +55,7 @@ public abstract class NavigationController
 
     public static void RefreshIconViews()
     {
-        FillStore(store, LeftRoot);
+        FillStore(LeftStore, LeftRoot);
         FillStore(RightStore, RightRoot);
     }
 }

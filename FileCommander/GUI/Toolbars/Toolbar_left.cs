@@ -16,7 +16,7 @@ public abstract class ToolbarLeft
         leftToolbar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += (sender, args) =>
         {
-            LeftRoot = OnHomeClicked(args, store);
+            LeftRoot = OnHomeClicked(args, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
 
@@ -24,7 +24,7 @@ public abstract class ToolbarLeft
         leftToolbar.Insert(leftUpButton, 1);
         leftUpButton.Clicked += (_, _) =>
         {
-            LeftRoot = OnUpClicked(LeftRoot, store);
+            LeftRoot = OnUpClicked(LeftRoot, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
         
@@ -32,7 +32,7 @@ public abstract class ToolbarLeft
         leftToolbar.Insert(leftBackButton, 2);
         leftBackButton.Clicked += (_,_) =>
         {
-            var tmpRoot = OnBackClicked(LeftRoot, LeftHistory, LeftHistoryForward, store);
+            var tmpRoot = OnBackClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
             LeftRoot = tmpRoot != null ? tmpRoot : LeftRoot;
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
@@ -41,7 +41,7 @@ public abstract class ToolbarLeft
         leftToolbar.Insert(leftForwardButton, 3);
         leftForwardButton.Clicked += (sender, args) =>
         {
-            var tmpRoot = OnForwardClicked(LeftRoot, LeftHistory, LeftHistoryForward, store);
+            var tmpRoot = OnForwardClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
             LeftRoot = tmpRoot != null ? tmpRoot : LeftRoot;
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
