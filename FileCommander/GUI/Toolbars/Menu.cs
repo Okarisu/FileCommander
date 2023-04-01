@@ -70,20 +70,6 @@ public abstract class DrawMenu
             }
         };
 
-        CheckMenuItem showMountLocation = new CheckMenuItem("Show mount location");
-        viewmenu.Append(showMountLocation);
-        showMountLocation.Toggled += (sender, args) =>
-        {
-            if (showMountLocation.Active)
-            {
-                Settings.SetConf("ShowMountLocation", true);
-            }
-            else
-            {
-                Settings.SetConf("ShowMountLocation", false);
-            }
-        };
-
 
         menuBar.Append(view);
 

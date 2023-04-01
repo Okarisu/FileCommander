@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public abstract class Disks
 {
-    private static string GetMountLocation()
+    private static (bool available, string location) GetMountLocation()
     {
         var mountLocation = Settings.GetConfStr("DefaultLinuxDriveMountLocation");
         if (mountLocation.Contains("{UserName}"))
@@ -17,7 +17,7 @@ public abstract class Disks
             mountLocation = mountLocation.Replace("{UserName}", Environment.UserName);
         }
 
-        return Directory.Exists(mountLocation) ? mountLocation : "";
+        return (Directory.Exists(mountLocation), Directory.Exists(mountLocation) ? mountLocation : "");
     }
 
     public static Toolbar DrawDiskBar(Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward,
@@ -30,7 +30,12 @@ public abstract class Disks
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            foreach (var mnt in new DirectoryInfo(GetMountLocation()).GetDirectories())
+            var mount = GetMountLocation();
+            if (!mount.available)
+            {
+                return diskBar;
+            }
+            foreach (var mnt in new DirectoryInfo(GetMountLocation().location).GetDirectories())
             {
                 var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
                 diskButton.Clicked += (_, _) =>
