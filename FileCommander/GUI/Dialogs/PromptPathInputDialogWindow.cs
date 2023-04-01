@@ -18,7 +18,7 @@ public class PromptPathInputDialogWindow : Dialog
 
         if (promptSuffix)
         {
-            var requestLabel = new Label("Multiple files selected. Add suffix to all files?");
+            var requestLabel = new Label("Multiple files selected. Suffix will be added to new files.");
             _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
         }
 

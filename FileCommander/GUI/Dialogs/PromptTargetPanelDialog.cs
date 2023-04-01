@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.ComTypes;
 using Gtk;
 
 namespace FileCommander.GUI.Dialogs;
@@ -9,7 +8,7 @@ public class PromptTargetPanelDialog : Dialog
     private const int ResponseIdYes = 4;
     private static Dialog _dialog { get; set; }
     private static bool _targetHere { get; set; }
-    private static bool _cancel = false;
+    private static bool _cancel;
 
     public PromptTargetPanelDialog(string operation)
     {

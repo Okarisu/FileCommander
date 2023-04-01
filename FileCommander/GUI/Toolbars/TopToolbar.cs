@@ -1,11 +1,12 @@
+using FileCommander.core;
 using FileCommander.GUI.Controllers;
 using Gtk;
 
 namespace FileCommander.GUI.Toolbars;
 
-using static core.Core;
+using static Core;
 
-public class ToolbarMain
+public abstract class TopToolbar
 {
     public static Toolbar DrawToolbar()
     {

@@ -14,11 +14,11 @@ public class TargetController
         string root;
         if (promptedTargetPanel.targetHere)
         {
-            root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+            root = (GetFocusedWindow() == 1 ? App.root : RightRoot).ToString();
         }
         else
         {
-            root = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+            root = (GetFocusedWindow() == 1 ? RightRoot : App.root).ToString();
         }
 
         var cancel = promptedTargetPanel.cancel;

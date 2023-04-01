@@ -1,13 +1,16 @@
+using Gtk;
+using Style = Pango.Style;
+
 namespace FileCommander.GUI.Toolbars;
 
-using Gtk;
 using static App;
+using System.Runtime.InteropServices;
 
 public abstract class Disks
 {
     private static string GetMountLocation()
     {
-        var mountLocation = FileCommander.Settings.GetConfStr("DefaultLinuxDriveMountLocation");
+        var mountLocation = Settings.GetConfStr("DefaultLinuxDriveMountLocation");
         if (mountLocation.Contains("{UserName}"))
         {
             mountLocation = mountLocation.Replace("{UserName}", Environment.UserName);
@@ -19,23 +22,42 @@ public abstract class Disks
     public static Toolbar DrawDiskBar(Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward,
         DirectoryInfo root, ListStore store, Label rootLabel)
     {
-        var mountLocation = GetMountLocation();
         var diskBar = new Toolbar();
-        diskBar.ToolbarStyle = ToolbarStyle.Both;
         var diskButtons = new List<ToolButton>();
+        diskBar.ToolbarStyle = ToolbarStyle.Both;
+        DirectoryInfo MNT;
 
-        foreach (var mnt in new DirectoryInfo(mountLocation).GetDirectories())
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
-            diskButton.Clicked += (_, _) =>
+            foreach (var mnt in new DirectoryInfo(GetMountLocation()).GetDirectories())
             {
-                history.Push(root);
-                historyForward.Clear();
-                root = new DirectoryInfo(mnt.FullName);
-                FillStore(store, root);
-                UpdateRootLabel(rootLabel, root);
-            };
-            diskButtons.Add(diskButton);
+                var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
+                diskButton.Clicked += (_, _) =>
+                {
+                    history.Push(root);
+                    historyForward.Clear();
+                    root = new DirectoryInfo(mnt.FullName);
+                    FillStore(store, root);
+                    UpdateRootLabel(rootLabel, root);
+                };
+                diskButtons.Add(diskButton);
+            }
+        }
+        else
+        {
+            foreach (var drive in DriveInfo.GetDrives())
+            {
+                var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), drive.VolumeLabel);
+                diskButton.Clicked += (_, _) =>
+                {
+                    history.Push(root);
+                    historyForward.Clear();
+                    root = new DirectoryInfo(drive.VolumeLabel);
+                    FillStore(store, root);
+                    UpdateRootLabel(rootLabel, root);
+                };
+                diskButtons.Add(diskButton);
+            }
         }
 
         for (var i = 0; i < diskButtons.Count; i++)

@@ -2,14 +2,13 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using System.Net;
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
 
 public partial class Core
@@ -18,7 +17,7 @@ public partial class Core
     {
         var newFolderName = TargetController.GetTargetPath("New folder", false);
 
-        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
+        var root = GetFocusedWindow() == 1 ? App.root : RightRoot;
 
         var newDirectoryPath = Path.Combine(root.ToString(), newFolderName.path);
         if (Directory.Exists(newDirectoryPath))

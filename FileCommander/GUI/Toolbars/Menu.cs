@@ -1,7 +1,9 @@
+using FileCommander.GUI.Controllers;
+using Gtk;
+
 namespace FileCommander.GUI.Toolbars;
 
-using Gtk;
-public class DrawMenu
+public abstract class DrawMenu
 {
     public static MenuBar DrawMenuBar()
     {
@@ -12,7 +14,7 @@ public class DrawMenu
 
         CheckMenuItem showHiddenFiles = new CheckMenuItem("Show hidden files");
         viewmenu.Append(showHiddenFiles);
-        if(FileCommander.Settings.GetConf("ShowHiddenFiles"))
+        if(Settings.GetConf("ShowHiddenFiles"))
         {
             showHiddenFiles.Active = true;
         }
@@ -24,18 +26,18 @@ public class DrawMenu
         {
             if (showHiddenFiles.Active)
             {
-                FileCommander.Settings.SetConf("ShowHiddenFiles", true);
+                Settings.SetConf("ShowHiddenFiles", true);
             }
             else
             {
-                FileCommander.Settings.SetConf("ShowHiddenFiles", false);
+                Settings.SetConf("ShowHiddenFiles", false);
             }
-            Controllers.NavigationController.RefreshIconViews();
+            NavigationController.RefreshIconViews();
         };
         
         CheckMenuItem showMountedDrives = new CheckMenuItem("Show mounted drives");
         viewmenu.Append(showMountedDrives);
-        if(FileCommander.Settings.GetConf("ShowMountedDrives"))
+        if(Settings.GetConf("ShowMountedDrives"))
         {
             showMountedDrives.Active = true;
         }
@@ -47,13 +49,13 @@ public class DrawMenu
         {
             if (showMountedDrives.Active)
             {
-                FileCommander.Settings.SetConf("ShowMountedDrives", true);
+                Settings.SetConf("ShowMountedDrives", true);
                 App.LeftDiskBar.Show();
                 App.RightDiskBar.Show();
             }
             else
             {
-                FileCommander.Settings.SetConf("ShowMountedDrives", false);
+                Settings.SetConf("ShowMountedDrives", false);
                 App.LeftDiskBar.Hide();
                 App.RightDiskBar.Hide();
             }
@@ -65,11 +67,11 @@ public class DrawMenu
         {
             if (showMountLocation.Active)
             {
-                FileCommander.Settings.SetConf("ShowMountLocation", true);
+                Settings.SetConf("ShowMountLocation", true);
             }
             else
             {
-                FileCommander.Settings.SetConf("ShowMountLocation", false);
+                Settings.SetConf("ShowMountLocation", false);
             }
         };
 

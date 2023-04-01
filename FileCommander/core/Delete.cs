@@ -2,30 +2,31 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
 public partial class Core
 {
     public static void OnDeleteClicked(object sender, EventArgs e)
     {
-        const string promptDkey = "PromptDelete";
+        const string? promptDeleteKey = "PromptDelete";
         var items = GetSelectedItems();
         if (items.Length == 0)
         {
             new PromptUserDialogWindow("No files selected.");
             return;
         }
-        var promptAskAgain = Settings.GetConf(promptDkey);
+        var promptAskAgain = Settings.GetConf(promptDeleteKey);
         
         if (promptAskAgain)
         {
-            new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", promptDkey);
+            new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", promptDeleteKey);
             var consent = PromptConfirmDialogWindow.IsConfirmed();
             if (!consent) return;
         }
@@ -39,11 +40,31 @@ public partial class Core
             }
             if (item!.IsDirectory)
             {
-                Directory.Delete(item.Path, true);
+                var handler = new FileHandler(item.Path, null, true);
+                var thread = new Thread(handler.Delete);
+                thread.Start();
+
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
+
+                //Directory.Delete(item.Path, true);
             }
             else
             {
-                File.Delete(item.Path);
+                var handler = new FileHandler(item.Path, null, false);
+                var thread = new Thread(handler.Delete);
+                thread.Start();
+
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
+
+                //File.Delete(item.Path);
             }
         }
 

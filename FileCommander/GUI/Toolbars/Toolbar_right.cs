@@ -6,7 +6,7 @@ namespace FileCommander.GUI.Toolbars;
 using static App;
 using static NavigationController;
 
-public class ToolbarRight
+public abstract class ToolbarRight
 {
     public static Toolbar DrawRightToolbar()
     {
@@ -15,7 +15,7 @@ public class ToolbarRight
 
         var rightHomeButton = new ToolButton(Stock.Home);
         rightPanelBar.Insert(rightHomeButton, 0);
-        rightHomeButton.Clicked += (sender, args) =>
+        rightHomeButton.Clicked += (_, args) =>
         {
             RightRoot = OnHomeClicked(args, RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
@@ -40,7 +40,7 @@ public class ToolbarRight
 
         var rightForwardButton = new ToolButton(Stock.GoForward);
         rightPanelBar.Insert(rightForwardButton, 3);
-        rightForwardButton.Clicked += (sender, args) =>
+        rightForwardButton.Clicked += (_, _) =>
         {
             var tmpRoot= OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
             RightRoot = tmpRoot != null ? tmpRoot : RightRoot;

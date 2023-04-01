@@ -2,21 +2,21 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
 using Gtk;
-using Microsoft.VisualBasic.FileIO;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+
+using static App;
 using static NavigationController;
 using static PromptConfirmDialogWindow;
 
 public partial class Core
 {
-    const string promptCkey = "PromptDuplicitFileCopy";
+    private const string? PromptCopyKey = "PromptDuplicitFileCopy";
 
 
     public static void OnCopyClicked(object sender, EventArgs e)
@@ -30,13 +30,13 @@ public partial class Core
 
 
         //Fukus na levém panelu => přesouvá se do pravého
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-        var win = new ProgressDialogWindow("Files are being copied...");
+        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : root).ToString();
+        new ProgressDialogWindow("Files are being copied...");
 
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item.Name!);
-            var promptAskAgain = Settings.GetConf(promptCkey);
+            var promptAskAgain = Settings.GetConf(PromptCopyKey);
 
             if (item.IsDirectory)
             {
@@ -45,7 +45,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
-                            promptCkey);
+                            PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }
@@ -67,12 +67,11 @@ public partial class Core
                     }
                 }
 
-                var _handler = new FileHandler(item.Path, childDestinationPath, true);
-                var _thread = new Thread(_handler.Copy);
-                _thread.Start();
+                var handler = new FileHandler(item.Path, childDestinationPath, true);
+                var thread = new Thread(handler.Copy);
+                thread.Start();
 
-
-                while (_thread.IsAlive)
+                while (thread.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
@@ -85,7 +84,7 @@ public partial class Core
                     if (promptAskAgain)
                     {
                         new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
-                            promptCkey);
+                            PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }
@@ -120,11 +119,11 @@ public partial class Core
                     }
                 }
 
-                var _handler = new FileHandler(item.Path, childDestinationPath, false);
-                var _thread = new Thread(_handler.Copy);
-                _thread.Start();
+                var handler = new FileHandler(item.Path, childDestinationPath, false);
+                var thread = new Thread(handler.Copy);
+                thread.Start();
 
-                while (_thread.IsAlive)
+                while (thread.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();

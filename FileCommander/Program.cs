@@ -1,7 +1,7 @@
-﻿namespace FileCommander;
-
+﻿using FileCommander.GUI;
 using Gtk;
-using GUI;
+
+namespace FileCommander;
 
 abstract class Program
 {

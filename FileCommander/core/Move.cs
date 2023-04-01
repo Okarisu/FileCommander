@@ -2,14 +2,14 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
 using Gtk;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
 
 public partial class Core
@@ -23,7 +23,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : root).ToString();
         var duplicateFilesOccured = false;
 
         foreach (var item in items)
@@ -76,7 +76,7 @@ public partial class Core
 
         RefreshIconViews();
         if (duplicateFilesOccured)
-            new PromptUserDialogWindow("Several file with the same name already exist.");
+            new PromptUserDialogWindow("File(s) with the same name already exists.");
         new PromptUserDialogWindow("Finished moving files.");
     }
 }

@@ -1,35 +1,37 @@
 using System.IO.Compression;
 using FileCommander.GUI.Dialogs;
 
+// ReSharper disable ObjectCreationAsStatement
+
 namespace FileCommander.core;
 
 public class FileHandler
 {
-    private string _sourcePath { get; set; }
-    private string _targetPath { get; set; }
-    private bool _isDirectory { get; set; }
+    private string SourcePath { get; set; }
+    private string TargetPath { get; set; }
+    private bool IsDirectory { get; set; }
 
     public FileHandler(string sourcePath, string targetPath, bool isDirectory)
     {
-        _sourcePath = sourcePath;
-        _targetPath = targetPath;
-        _isDirectory = isDirectory;
+        SourcePath = sourcePath;
+        TargetPath = targetPath;
+        IsDirectory = isDirectory;
     }
-    
+
     public void Move()
     {
         try
         {
-            if (_isDirectory)
+            if (IsDirectory)
             {
-                Directory.Move(_sourcePath, _targetPath);
+                Directory.Move(SourcePath, TargetPath);
             }
             else
             {
-                File.Move(_sourcePath, _targetPath);
+                File.Move(SourcePath, TargetPath);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             new PromptUserDialogWindow("Unknown error has occured.");
             //continue
@@ -40,22 +42,22 @@ public class FileHandler
     {
         try
         {
-            if (_isDirectory)
+            if (IsDirectory)
             {
-                RecursiveCopyDirectory(_sourcePath, _targetPath);
+                RecursiveCopyDirectory(SourcePath, TargetPath);
             }
             else
             {
-                File.Copy(_sourcePath, _targetPath);
+                File.Copy(SourcePath, TargetPath);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             new PromptUserDialogWindow("Unknown error has occured.");
             //continue
         }
     }
-    
+
     /*
      * MICROSOFT. How to: Copy directories. Microsoft: Microsoft Learn [online]. [cit. 2023-03-11].
      * Dostupné z: https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories.
@@ -73,45 +75,78 @@ public class FileHandler
 
         foreach (FileInfo file in dir.GetFiles())
         {
-            var targetFilePath = Path.Combine(destinationDirectory, file.Name);
-            file.CopyTo(targetFilePath);
+            try
+            {
+                var targetFilePath = Path.Combine(destinationDirectory, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+            catch (Exception)
+            {
+                new PromptUserDialogWindow("Unknown error has occured.");
+                //continue
+            }
         }
-        
+
         foreach (DirectoryInfo subDir in dirs)
         {
-            var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);
-            RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
+            try
+            {
+                var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);
+                RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
+            }
+            catch (Exception)
+            {
+                new PromptUserDialogWindow("Unknown error has occured.");
+                //continue
+            }
         }
     }
     /* Konec citace */
-    
+
+    public void Delete()
+    {
+        try
+        {
+            if (IsDirectory)
+            {
+                Directory.Delete(SourcePath, true);
+            }
+            else
+            {
+                File.Delete(SourcePath);
+            }
+        }
+        catch (Exception)
+        {
+            new PromptUserDialogWindow("Unknown error has occured.");
+            //continue
+        }
+    }
+
     public void Compress()
     {
         try
         {
-            ZipFile.CreateFromDirectory(_sourcePath, _targetPath);
-            Directory.Delete(_sourcePath, true);
-
+            ZipFile.CreateFromDirectory(SourcePath, TargetPath);
+            Directory.Delete(SourcePath, true);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             new PromptUserDialogWindow("Unknown error has occured.");
             //continue
         }
     }
+
     public void Extract()
     {
         try
         {
-            ZipFile.ExtractToDirectory(_sourcePath, _targetPath);
-
+            ZipFile.ExtractToDirectory(SourcePath, TargetPath);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             new PromptUserDialogWindow("Unknown error has occured.");
             //continue
         }
     }
-
-    
 }

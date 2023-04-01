@@ -1,13 +1,13 @@
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
-namespace FileCommander.GUI;
-
-using Toolbars;
-using System;
-using System.IO;
-using Gtk;
 using System.Runtime.InteropServices;
+using FileCommander.GUI.Toolbars;
+using Gdk;
+using Gtk;
+using Window = Gtk.Window;
+
+namespace FileCommander.GUI;
 
 public class App : Window
 {
@@ -17,19 +17,19 @@ public class App : Window
     private const int ColIsDirectory = 3;
 
 
-    public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+    public static DirectoryInfo root = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
 
     //private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
-    private static readonly Gdk.Pixbuf FileIcon = new("icons/file.png"), DirIcon = new("icons/folder.png");
+    private static readonly Pixbuf FileIcon = new("icons/file.png"), DirIcon = new("icons/folder.png");
 
-    public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
+    public static ListStore store = CreateStore(), RightStore = CreateStore();
 
     public static ScrolledWindow LeftScrolledWindow = new();
     public static ScrolledWindow RightScrolledWindow = new();
 
-    public static IconView LeftIconView = new(LeftStore);
+    public static IconView LeftIconView = new(store);
     public static IconView RightIconView = new(RightStore);
 
     public static Stack<DirectoryInfo> LeftHistory = new();
@@ -37,7 +37,7 @@ public class App : Window
     public static Stack<DirectoryInfo> RightHistory = new();
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
-    public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
+    public static Label LeftRootLabel = new("Current directory: " + root);
 
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
 
@@ -58,9 +58,9 @@ public class App : Window
 
         VBox windowContainer = new VBox(false, 0);
         Add(windowContainer);
-        var mb = Toolbars.DrawMenu.DrawMenuBar();
+        var mb = DrawMenu.DrawMenuBar();
         windowContainer.PackStart(mb, false, true, 0);
-        var toolbar = ToolbarMain.DrawToolbar();
+        var toolbar = TopToolbar.DrawToolbar();
         windowContainer.PackStart(toolbar, false, true, 0);
 
         HBox twinPanelsContainer = new HBox(false, 0);
@@ -90,7 +90,7 @@ public class App : Window
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, root, store, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
@@ -98,7 +98,7 @@ public class App : Window
 
         ShowAll();
 
-        if (!FileCommander.Settings.GetConf("ShowMountedDrives"))
+        if (!Settings.GetConf("ShowMountedDrives"))
         {
             LeftDiskBar.Hide();
             RightDiskBar.Hide();
@@ -107,7 +107,7 @@ public class App : Window
 
     public static void UpdateDisks()
     {
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, root, store, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
@@ -116,12 +116,12 @@ public class App : Window
     }
 
 
-    private static Gdk.Pixbuf GetIcon(string name) => IconTheme.Default.LoadIcon(name, 48, 0);
+    private static Pixbuf GetIcon(string name) => IconTheme.Default.LoadIcon(name, 48, 0);
 
     private static ListStore CreateStore()
     {
         ListStore store = new ListStore(typeof(string),
-            typeof(string), typeof(Gdk.Pixbuf), typeof(bool));
+            typeof(string), typeof(Pixbuf), typeof(bool));
 
         store.SetSortColumnId(ColDisplayName, SortType.Ascending);
 
@@ -139,7 +139,7 @@ public class App : Window
 
         foreach (DirectoryInfo di in root.GetDirectories())
         {
-            if (FileCommander.Settings.GetConf("ShowHiddenFiles"))
+            if (Settings.GetConf("ShowHiddenFiles"))
             {
                 store.AppendValues(di.FullName, di.Name, DirIcon, true);
             }
@@ -152,7 +152,7 @@ public class App : Window
 
         foreach (FileInfo file in root.GetFiles())
         {
-            if (FileCommander.Settings.GetConf("ShowHiddenFiles"))
+            if (Settings.GetConf("ShowHiddenFiles"))
             {
                 store.AppendValues(file.FullName, file.Name, FileIcon, false);
             }
@@ -189,7 +189,7 @@ public class App : Window
     {
         var selection = FocusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
 
-        var store = FocusedPanel == 1 ? LeftStore : RightStore;
+        var store = FocusedPanel == 1 ? App.store : RightStore;
         var files = new Item[selection.Length];
 
         for (var i = 0; i < selection.Length; i += 1)

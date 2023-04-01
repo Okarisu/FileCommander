@@ -2,14 +2,14 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
 using static FileCommander.GUI.Controllers.TargetController;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
 
 public partial class Core
@@ -23,7 +23,7 @@ public partial class Core
             return;
         }
 
-        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
+        var root = GetFocusedWindow() == 1 ? App.root : RightRoot;
         (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
@@ -39,7 +39,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+        var destinationPath = (GetFocusedWindow() == 1 ? App.root : RightRoot).ToString();
 
         var fileSuffixes = new Queue<int>();
         var folderSuffixes = new Queue<int>();
@@ -74,17 +74,17 @@ public partial class Core
                 }
                 catch (ArgumentNullException)
                 {
-                    new PromptUserDialogWindow("Folder name cannot be null.");
+                    new PromptUserDialogWindow("Name cannot be null.");
                     return;
                 }
                 catch (PathTooLongException)
                 {
-                    new PromptUserDialogWindow("The specified folder name exceeded the system-defined maximum length.");
+                    new PromptUserDialogWindow("The specified name exceeded the system-defined maximum length.");
                     return;
                 }
                 catch (ArgumentException)
                 {
-                    new PromptUserDialogWindow("Malformed folder name");
+                    new PromptUserDialogWindow("Malformed name");
                     return;
                 }
                 catch (IOException)
@@ -99,7 +99,7 @@ public partial class Core
                 }
                 catch (NotSupportedException)
                 {
-                    new PromptUserDialogWindow("The specified folder name is in an invalid format.");
+                    new PromptUserDialogWindow("The specified name is in an invalid format.");
                     return;
                 }
                 catch (Exception)
@@ -126,17 +126,17 @@ public partial class Core
                 }
                 catch (ArgumentNullException)
                 {
-                    new PromptUserDialogWindow("File name cannot be null.");
+                    new PromptUserDialogWindow("Name cannot be null.");
                     return;
                 }
                 catch (PathTooLongException)
                 {
-                    new PromptUserDialogWindow("The specified file name exceeded the system-defined maximum length.");
+                    new PromptUserDialogWindow("The specified name exceeded the system-defined maximum length.");
                     return;
                 }
                 catch (ArgumentException)
                 {
-                    new PromptUserDialogWindow("Malformed file name");
+                    new PromptUserDialogWindow("Malformed name");
                     return;
                 }
                 catch (IOException)
@@ -151,7 +151,7 @@ public partial class Core
                 }
                 catch (NotSupportedException)
                 {
-                    new PromptUserDialogWindow("The specified file name is in an invalid format.");
+                    new PromptUserDialogWindow("The specified name is in an invalid format.");
                     return;
                 }
                 catch (Exception)

@@ -1,14 +1,15 @@
+using Gtk;
+
 namespace FileCommander.GUI;
 
-using Gtk;
 using static App;
-public class TwinPanels
+public abstract class TwinPanels
 {
     
     public static void DrawLeftPanel()
     {
         LeftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-        FillStore(LeftStore, LeftRoot);
+        FillStore(store, root);
 
         LeftIconView.GrabFocus();
         LeftIconView.SelectionMode = SelectionMode.Multiple;
@@ -16,8 +17,8 @@ public class TwinPanels
         LeftIconView.PixbufColumn = ColPixbuf;
         LeftIconView.ItemActivated += (_, args) =>
         {
-            LeftRoot = OnItemActivated(args, LeftRoot, LeftStore, LeftHistory, LeftHistoryForward);
-            UpdateRootLabel(LeftRootLabel, LeftRoot);
+            root = OnItemActivated(args, root, store, LeftHistory, LeftHistoryForward);
+            UpdateRootLabel(LeftRootLabel, root);
         };
         LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
         

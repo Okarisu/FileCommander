@@ -1,6 +1,6 @@
-namespace FileCommander.GUI.Dialogs;
-
 using Gtk;
+
+namespace FileCommander.GUI.Dialogs;
 
 public class ProgressDialogWindow : Dialog
 {
