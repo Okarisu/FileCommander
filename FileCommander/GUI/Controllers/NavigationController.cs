@@ -52,8 +52,7 @@ public abstract class NavigationController
     public static void OnRefreshClicked(object sender, EventArgs e)
     {
         RefreshIconViews();
-        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
-        RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
+        UpdateDisks();
     }
 
     public static void RefreshIconViews()

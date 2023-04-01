@@ -3,7 +3,7 @@
 using Gtk;
 using GUI;
 
-static class Program
+abstract class Program
 {
     public static void Main()
     {

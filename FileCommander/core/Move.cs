@@ -4,6 +4,7 @@
 
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
 
 namespace FileCommander.core;
 
@@ -23,15 +24,11 @@ public partial class Core
         }
 
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-
         var duplicateFilesOccured = false;
 
-        //Thread thread = new Thread(ProgressBarDialogWindow.StartMoveBar);
-        //thread.Start();
-        
         foreach (var item in items)
         {
-            if(item.Path.Contains(Directory.GetCurrentDirectory()))
+            if (item.Path.Contains(Directory.GetCurrentDirectory()))
             {
                 new PromptUserDialogWindow("Cannot move system files.");
                 continue;
@@ -46,7 +43,15 @@ public partial class Core
                     continue;
                 }
 
-                Directory.Move(item.Path, childDestinationPath);
+                var handler = new FileHandler(item.Path, childDestinationPath, true);
+                var thread = new Thread(handler.Move);
+                thread.Start();
+
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
             else
             {
@@ -56,13 +61,19 @@ public partial class Core
                     continue;
                 }
 
-                File.Move(item.Path, childDestinationPath);
-            }
+                var handler = new FileHandler(item.Path, childDestinationPath, false);
+                var thread = new Thread(handler.Move);
+                thread.Start();
 
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
+            }
         }
 
-        //thread.Interrupt();
-        
+
         RefreshIconViews();
         if (duplicateFilesOccured)
             new PromptUserDialogWindow("Several file with the same name already exist.");

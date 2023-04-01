@@ -1,15 +1,11 @@
-using Object = Atk.Object;
-
 namespace FileCommander.GUI.Toolbars;
 
 using Gtk;
 using static App;
 
-public class Disks
+public abstract class Disks
 {
-    private static string _mountLocation;
-
-    public static string GetMountLocation()
+    private static string GetMountLocation()
     {
         var mountLocation = FileCommander.Settings.GetConfStr("DefaultLinuxDriveMountLocation");
         if (mountLocation.Contains("{UserName}"))

@@ -18,7 +18,7 @@ public partial class Core
 {
     const string promptCkey = "PromptDuplicitFileCopy";
 
-    
+
     public static void OnCopyClicked(object sender, EventArgs e)
     {
         var items = GetSelectedItems();
@@ -31,6 +31,7 @@ public partial class Core
 
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+        var win = new ProgressDialogWindow("Files are being copied...");
 
         foreach (var item in items)
         {
@@ -64,10 +65,18 @@ public partial class Core
                         duplicateFolders++;
                         childDestinationPath += $" ({duplicateFolders})";
                     }
-
                 }
 
-                RecursiveCopyDirectory(item.Path, childDestinationPath);
+                var _handler = new FileHandler(item.Path, childDestinationPath, true);
+                var _thread = new Thread(_handler.Copy);
+                _thread.Start();
+
+
+                while (_thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
             else
             {
@@ -110,55 +119,20 @@ public partial class Core
                             Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
                     }
                 }
-                
-                var cpp = new FileHandler(item.Path, childDestinationPath);
-                var the = new Thread(cpp.Copy);
-                the.Start();
 
-                var win = new ProgressDialogWindow("Files are being copied...");
-                while (the.IsAlive)
+                var _handler = new FileHandler(item.Path, childDestinationPath, false);
+                var _thread = new Thread(_handler.Copy);
+                _thread.Start();
+
+                while (_thread.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
                 }
-
-                win.Destroy();
-                //File.Copy(item.Path, childDestinationPath);
             }
         }
-
-        
         RefreshIconViews();
         new PromptUserDialogWindow("Finished copying files.");
     }
 
-    /*
-     * MICROSOFT. How to: Copy directories. Microsoft: Microsoft Learn [online]. [cit. 2023-03-11].
-     * Dostupné z: https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories.
-     * Upraveno.
-     */
-
-    private static void RecursiveCopyDirectory(string sourceDirectory, string destinationDirectory)
-    {
-        var dir = new DirectoryInfo(sourceDirectory);
-
-        // Cache directories before start of copying
-        DirectoryInfo[] dirs = dir.GetDirectories();
-
-        Directory.CreateDirectory(destinationDirectory);
-
-        foreach (FileInfo file in dir.GetFiles())
-        {
-            var targetFilePath = Path.Combine(destinationDirectory, file.Name);
-            file.CopyTo(targetFilePath);
-        }
-        
-        foreach (DirectoryInfo subDir in dirs)
-        {
-            var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);
-            RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
-        }
-    }
-
-    /* Konec citace */
 }

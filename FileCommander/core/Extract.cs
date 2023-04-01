@@ -4,6 +4,7 @@
 
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
 
 namespace FileCommander.core;
 
@@ -47,8 +48,15 @@ public partial class Core
                     duplicateArchiveFilesOccured = true;
                     continue;
                 }
+                var _handler = new FileHandler(item.Path, targetDirectoryPath, false);
+                var _thread = new Thread(_handler.Extract);
+                _thread.Start();
 
-                ZipFile.ExtractToDirectory(item.Path, targetDirectoryPath);
+                while (_thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
             else
             {

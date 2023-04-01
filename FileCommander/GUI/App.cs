@@ -45,6 +45,9 @@ public class App : Window
     public static Toolbar RightDiskBar = new();
 
     public static int FocusedPanel;
+    
+    private static HBox leftTwinPanelHeader = new HBox(true, 0);
+    private static HBox rightTwinPanelHeader = new HBox(true, 0);
 
     public App() : base("File Commander")
     {
@@ -71,7 +74,7 @@ public class App : Window
         TwinPanels.DrawLeftPanel();
         TwinPanels.DrawRightPanel();
 
-        HBox leftTwinPanelHeader = new HBox(true, 0);
+        //HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
         leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
         LeftRootLabel.LineWrap = true;
@@ -79,7 +82,7 @@ public class App : Window
         leftTwinContainer.PackStart(LeftRootLabel, false, true, 0);
         leftTwinContainer.PackStart(LeftScrolledWindow, true, true, 0);
 
-        HBox rightTwinPanelHeader = new HBox(true, 0);
+        //HBox rightTwinPanelHeader = new HBox(true, 0);
         rightTwinContainer.PackStart(rightTwinPanelHeader, false, true, 0);
         rightTwinPanelHeader.PackStart(ToolbarRight.DrawRightToolbar(), false, true, 0);
         RightRootLabel.LineWrap = true;
@@ -93,16 +96,6 @@ public class App : Window
         leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
         rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
 
-        void RefreshDisks()
-        {
-            LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
-            RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
-
-            leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
-            rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
-
-        }
-
         ShowAll();
 
         if (!FileCommander.Settings.GetConf("ShowMountedDrives"))
@@ -110,6 +103,16 @@ public class App : Window
             LeftDiskBar.Hide();
             RightDiskBar.Hide();
         }
+    }
+
+    public static void UpdateDisks()
+    {
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+        RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
+
+        leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
+        rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
+
     }
 
 

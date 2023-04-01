@@ -2,6 +2,8 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using Gtk;
+
 namespace FileCommander.core;
 
 using GUI.Controllers;
@@ -91,21 +93,48 @@ public partial class Core
                 return;
             }
 
+            var win = new ProgressDialogWindow("Compressing...");
             foreach (var item in items)
             {
                 if (item!.IsDirectory)
                 {
-                    RecursiveCopyDirectory(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                    var handler = new FileHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), true);
+                    var thread = new Thread(handler.Copy);
+                    thread.Start();
+
+
+                    while (thread.IsAlive)
+                    {
+                        while (Application.EventsPending())
+                            Application.RunIteration();
+                    }
+
                 }
                 else
                 {
-                    File.Copy(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                    var handler = new FileHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), false);
+                    var thread = new Thread(handler.Copy);
+                    thread.Start();
+
+
+                    while (thread.IsAlive)
+                    {
+                        while (Application.EventsPending())
+                            Application.RunIteration();
+                    }
+
                 }
             }
+            
+            var zipHandler = new FileHandler(tmpDirPath, archiveTargetPath, false);
+            var zipThread = new Thread(zipHandler.Compress);
+            zipThread.Start();
 
-
-            ZipFile.CreateFromDirectory(tmpDirPath, archiveTargetPath);
-            Directory.Delete(tmpDirPath, true);
+            while (zipThread.IsAlive)
+            {
+                while (Application.EventsPending())
+                    Application.RunIteration();
+            }
         }
 
         RefreshIconViews();
