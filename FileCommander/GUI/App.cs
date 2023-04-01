@@ -215,7 +215,7 @@ public class App : Window
         else
         {
             parent = root.Parent?.Name is "" ? "" : root.Parent?.Name;
-            optionalSlash = parent.EndsWith(":\\") || parent == "" ? "" : "\\";
+            optionalSlash = parent != null && (parent.EndsWith(":\\") || parent == "") ? "" : "\\";
         }
 
         label.Text = $"Current directory: {parent}{optionalSlash}{root.Name}";
