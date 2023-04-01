@@ -16,7 +16,7 @@ Každý panel má nad sebou svoji navigační lištu. Ta obsahuje tlačítko Hom
 Na liště je rovněž zobrazena zkrácená cesta k aktuální složce - název aktuální složky a složky o úroveň výše.
 
 ## Preference
-V menu pod horní lištou celého okna si může uživatel v položce View zvolit, zda chce zobrazovat skryté soubory (začínající tečkou), připnuté disky a 
+V menu pod horní lištou celého okna si může uživatel v položce View zvolit, zda chce zobrazovat skryté soubory (začínající tečkou) a připnuté disky. Volbu provede zaškrtnutím nebo odškrtnutím příslušné položky. 
 
 ### Práce se soubory
 Pokud uživatel vytváří novou složku, děje se tak v panelu, který byl v tu dobu soustředěný, tedy bylo na něj kliknuto myší naposledy.
@@ -38,12 +38,16 @@ Program je rozdělen do dvou hlavních částí - GUI, která vykresluje vešker
 Část GUI se dále dělí na kontrolery, které řeší navigaci a cílové adresáře, část zahrnující veškerá dialogová okna a část vykreslující nástrojové lišty. Obsahuje také hlavní třídu App, která je vstupním bodem celého rozhranní a volá všechny podsložky části GUI.
 
 ## Vstupní třída a samostatné třídy
+#### Program
 Abstraktní třída Program obsahuje jedinou metodu Main(), která na 3 řádcích inicializuje aplikaci, volá konstruktor App a následně aplikaci spouští.
 
-Třída Item slouží k vytvoření objektu Item, kterým jso uvšechny soubory a složky zobrazené v panelech. Ve fieldech konstruktoru Item se definuje cesta k souboru/složce, jméno, které bude později zobrazeno spolu s ikonou, a zda je objekt složkou (tj. lze ho rozkliknout), nebo souborem.
+#### Item
+Třída Item slouží k vytvoření objektu Item, kterým jsou všechny soubory a složky zobrazené v panelech. Ve fieldech konstruktoru Item se definuje cesta k souboru/složce, jméno, které bude později zobrazeno spolu s ikonou, a zda je objekt složkou (tj. lze ho rozkliknout), nebo souborem.
 
-Třída Settings slouží k načítání a ukládání uživatelských nastavení sestávajících z 
+#### Settings
+Abstraktní třída Settings slouží k načítání a ukládání uživatelských nastavení. Používá knihovnu YamlDotNet a preference ukládá do souboru config.yaml jako hodnoty true/false, které knihovna sama převádí na typ bool. Výjimku tvoří položka DefaultLinuxDriveMountLocation, která je typu string. Metody pro čtení a zápis do souboru používají návrhový vzor try/catch pro případ, že by například konfigurační soubor chyběl, nebo kdyby došlo k jiné chybě.
 
+Třída ukládá a načítá uživatelské preference ohledně dotazování při mazání/kopírování/
 
 
 

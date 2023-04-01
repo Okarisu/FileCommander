@@ -8,7 +8,7 @@ using System.Text;
 
 namespace FileCommander;
 
-public class Settings
+public abstract class Settings
 {
     /*
      * STACK OVERFLOW. How to write data to yaml file. [online]. [cit. 2023-03-19].
@@ -34,7 +34,7 @@ public class Settings
         {
             throw new FileLoadException();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception();
         }
@@ -56,7 +56,7 @@ public class Settings
         {
             throw new FileLoadException();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception();
         }

@@ -1,6 +1,5 @@
 settings:
-  PromptDuplicitFileCopy: true
-  PromptDuplicitFileMove: true
+  PromptDuplicityFileCopy: true
   PromptDelete: true
   ShowHiddenFiles: false
   DefaultLinuxDriveMountLocation: /run/media/{UserName}/

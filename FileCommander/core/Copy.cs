@@ -18,7 +18,7 @@ using static PromptConfirmDialogWindow;
 
 public partial class Core
 {
-    private const string? PromptCopyKey = "PromptDuplicitFileCopy";
+    private const string? PromptCopyKey = "PromptDuplicityFileCopy";
 
 
     public static void OnCopyClicked(object sender, EventArgs e)
@@ -33,8 +33,7 @@ public partial class Core
 
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-        new ProgressDialogWindow("Files are being copied...");
-
+        
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item.Name!);
