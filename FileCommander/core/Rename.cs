@@ -54,6 +54,12 @@ public partial class Core
 
         foreach (var item in items)
         {
+            if(item.Path.Contains(Directory.GetCurrentDirectory()))
+            {
+                new PromptUserDialogWindow("Cannot rename system files.");
+                continue;
+            }
+
             if (item!.IsDirectory)
             {
                 var childDestinationPath = Path.Combine(destinationPath, newFilename.Name);

@@ -9,7 +9,7 @@ public class Disks
 {
     private static string _mountLocation;
 
-    public static bool CheckDisksAvailable()
+    public static string GetMountLocation()
     {
         var mountLocation = FileCommander.Settings.GetConfStr("DefaultLinuxDriveMountLocation");
         if (mountLocation.Contains("{UserName}"))
@@ -17,61 +17,36 @@ public class Disks
             mountLocation = mountLocation.Replace("{UserName}", Environment.UserName);
         }
 
-        _mountLocation = mountLocation;
-        return Directory.Exists(mountLocation);
+        return Directory.Exists(mountLocation) ? mountLocation : "";
     }
 
-    public static Toolbar DrawLeftDiskBar()
+    public static Toolbar DrawDiskBar(Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward,
+        DirectoryInfo root, ListStore store, Label rootLabel)
     {
-        var leftDiskBar = new Toolbar();
-        leftDiskBar.ToolbarStyle = ToolbarStyle.Both;
-        var leftDiskButtons = new List<ToolButton>();
+        var mountLocation = GetMountLocation();
+        var diskBar = new Toolbar();
+        diskBar.ToolbarStyle = ToolbarStyle.Both;
+        var diskButtons = new List<ToolButton>();
 
-        foreach (var mnt in new DirectoryInfo(_mountLocation).GetDirectories())
+        foreach (var mnt in new DirectoryInfo(mountLocation).GetDirectories())
         {
             var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
             diskButton.Clicked += (_, _) =>
             {
-                LeftHistory.Push(LeftRoot);
-                LeftHistoryForward.Clear();
-                LeftRoot = new DirectoryInfo(mnt.FullName);
-                FillStore(LeftStore, LeftRoot);
-                UpdateRootLabel(LeftRootLabel, LeftRoot);
+                history.Push(root);
+                historyForward.Clear();
+                root = new DirectoryInfo(mnt.FullName);
+                FillStore(store, root);
+                UpdateRootLabel(rootLabel, root);
             };
-            leftDiskButtons.Add(diskButton);
-        }
-        for(var i = 0; i < leftDiskButtons.Count; i++)
-        {
-            leftDiskBar.Insert(leftDiskButtons[i], i);
+            diskButtons.Add(diskButton);
         }
 
-        return leftDiskBar;
-    }
-    public static Toolbar DrawRightDiskBar()
-    {
-        var rightDiskBar = new Toolbar();
-        rightDiskBar.ToolbarStyle = ToolbarStyle.Both;
-        var leftDiskButtons = new List<ToolButton>();
-
-        foreach (var mnt in new DirectoryInfo(_mountLocation).GetDirectories())
+        for (var i = 0; i < diskButtons.Count; i++)
         {
-            var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
-            diskButton.Clicked += (_, _) =>
-            {
-                RightHistory.Push(RightRoot);
-                RightHistoryForward.Clear();
-                RightRoot = new DirectoryInfo(mnt.FullName);
-                FillStore(RightStore, RightRoot);
-                UpdateRootLabel(RightRootLabel, RightRoot);
-            };
-            leftDiskButtons.Add(diskButton);
-        }
-        
-        for(var i = 0; i < leftDiskButtons.Count; i++)
-        {
-            rightDiskBar.Insert(leftDiskButtons[i], i);
+            diskBar.Insert(diskButtons[i], i);
         }
 
-        return rightDiskBar;
+        return diskBar;
     }
 }

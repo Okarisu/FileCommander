@@ -7,6 +7,7 @@ using Toolbars;
 using System;
 using System.IO;
 using Gtk;
+using System.Runtime.InteropServices;
 
 public class App : Window
 {
@@ -21,7 +22,7 @@ public class App : Window
 
 
     //private static readonly Gdk.Pixbuf FileIcon = GetIcon(Stock.File), DirIcon = GetIcon(Stock.Directory);
-    private static readonly Gdk.Pixbuf FileIcon = new ("icons/file.png"), DirIcon = new ("icons/folder.png");
+    private static readonly Gdk.Pixbuf FileIcon = new("icons/file.png"), DirIcon = new("icons/folder.png");
 
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
 
@@ -37,9 +38,9 @@ public class App : Window
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
     public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
-    
+
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
-    
+
     public static Toolbar LeftDiskBar = new();
     public static Toolbar RightDiskBar = new();
 
@@ -69,8 +70,7 @@ public class App : Window
 
         TwinPanels.DrawLeftPanel();
         TwinPanels.DrawRightPanel();
-        
-        
+
         HBox leftTwinPanelHeader = new HBox(true, 0);
         leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
         leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
@@ -87,13 +87,20 @@ public class App : Window
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
         rightTwinContainer.PackStart(RightScrolledWindow, true, true, 0);
 
-        if (Disks.CheckDisksAvailable())
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+        RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
+
+        leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
+        rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
+
+        void RefreshDisks()
         {
-            LeftDiskBar = Disks.DrawLeftDiskBar();
-            RightDiskBar = Disks.DrawRightDiskBar();
+            LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+            RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
             leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
             rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
+
         }
 
         ShowAll();
@@ -195,12 +202,19 @@ public class App : Window
 
     public static void UpdateRootLabel(Label label, DirectoryInfo root)
     {
-        //label.Text = $"Current directory: {root}";
-        
-        var parent = root.Parent?.Name is "/" or "" ? "" : root.Parent?.Name;
-        //var optionalSlash = parent is "" ? "" : "/";
-        Console.WriteLine(root.Parent?.Name);
-        label.Text = $"Current directory: {parent}/{root.Name}";
-        
+        string parent, optionalSlash;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            parent = root.Parent?.Name is "/" or "" ? "" : root.Parent?.Name;
+            optionalSlash = parent is "" ? "" : "/";
+        }
+        else
+        {
+            parent = root.Parent?.Name is "" ? "" : root.Parent?.Name;
+            optionalSlash = parent.EndsWith(":\\") || parent == "" ? "" : "\\";
+        }
+
+        label.Text = $"Current directory: {parent}{optionalSlash}{root.Name}";
     }
 }

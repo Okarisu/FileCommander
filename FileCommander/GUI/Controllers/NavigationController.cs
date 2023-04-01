@@ -1,6 +1,7 @@
 // ReSharper disable ObjectCreationAsStatement
 
 using System.Security.AccessControl;
+using FileCommander.GUI.Toolbars;
 using Gtk;
 
 namespace FileCommander.GUI.Controllers;
@@ -51,6 +52,8 @@ public abstract class NavigationController
     public static void OnRefreshClicked(object sender, EventArgs e)
     {
         RefreshIconViews();
+        LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
+        RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
     }
 
     public static void RefreshIconViews()

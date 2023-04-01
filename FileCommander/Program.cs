@@ -9,6 +9,17 @@ static class Program
     {
         Application.Init();
         new App();
+
         Application.Run();
+    }
+    
+    public static void Quit()
+    {
+        Application.Quit();
+        Application.Init();
+        new App();
+
+        Application.Run();
+
     }
 }
