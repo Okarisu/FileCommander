@@ -47,7 +47,15 @@ Třída Item slouží k vytvoření objektu Item, kterým jsou všechny soubory 
 #### Settings
 Abstraktní třída Settings slouží k načítání a ukládání uživatelských nastavení. Používá knihovnu YamlDotNet a preference ukládá do souboru config.yaml jako hodnoty true/false, které knihovna sama převádí na typ bool. Výjimku tvoří položka DefaultLinuxDriveMountLocation, která je typu string. Metody pro čtení a zápis do souboru používají návrhový vzor try/catch pro případ, že by například konfigurační soubor chyběl, nebo kdyby došlo k jiné chybě.
 
-Třída ukládá a načítá uživatelské preference ohledně dotazování při mazání/kopírování/
+Třída ukládá a načítá uživatelské preference ohledně dotazování při mazání a kopírování souborů, zobrazování připojených disků a skrytých souborů a v případě linuxového systému i cestu ke složce, kam jsou připojovány disky.
+
+Všechny funkce této třídy nejdříve za pomoci objektu StreamReader deserializují konfigurační soubor, což znamená, že ho rozloží na jednotlivé objekty a ty následně uloží do proměnné typu Dictionary.
+
+Funkce GetConf(Str) vrací konfiguraci jako bool nebo string. V argumentu se jim předá klíč, jehož hodnotu poté v Dictionary najdou a buď rovnou vrátí, nebo ji převedou na typ string a a vrací výsledek porovnání se stringem "true".  
+
+
+
+
 
 
 

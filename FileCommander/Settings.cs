@@ -10,14 +10,14 @@ namespace FileCommander;
 
 public abstract class Settings
 {
+
+    private static readonly string ConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "config.yaml");
+
     /*
      * STACK OVERFLOW. How to write data to yaml file. [online]. [cit. 2023-03-19].
      * Dostupné z: https://stackoverflow.com/questions/62371078/how-to-write-data-to-yaml-file
      * Upraveno.
      */
-
-    private static readonly string ConfigFilePath = Path.Combine(Directory.GetCurrentDirectory(), "config.yaml");
-
     public static bool GetConf(string? key)
     {
         try
@@ -28,7 +28,8 @@ public abstract class Settings
             var config = (Dictionary<object?, object>) obj["settings"];
             reader.Close();
 
-            return (string) config[key] == "true";
+            //config[key] je typu object, proto je potřeba ho pro porovnání se string na string také převést
+            return (string) config[key] == "true"; //Ne zcela elegantní řešení, ale funguje
         }
         catch (FileLoadException)
         {

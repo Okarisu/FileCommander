@@ -102,11 +102,9 @@ public class App : Gtk.Window
 
         ShowAll();
 
-        if (!Settings.GetConf("ShowMountedDrives"))
-        {
-            LeftDiskBar.Hide();
-            RightDiskBar.Hide();
-        }
+        if (Settings.GetConf("ShowMountedDrives")) return;
+        LeftDiskBar.Hide();
+        RightDiskBar.Hide();
     }
 
     public static void UpdateDisks()
