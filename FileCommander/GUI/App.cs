@@ -46,8 +46,8 @@ public class App : Window
 
     public static int FocusedPanel;
     
-    private static HBox leftTwinPanelHeader = new HBox(true, 0);
-    private static HBox rightTwinPanelHeader = new HBox(true, 0);
+    private static HBox _leftTwinPanelHeader = new HBox(true, 0);
+    private static HBox _rightTwinPanelHeader = new HBox(true, 0);
 
     public App() : base("File Commander")
     {
@@ -75,16 +75,16 @@ public class App : Window
         TwinPanels.DrawRightPanel();
 
         //HBox leftTwinPanelHeader = new HBox(true, 0);
-        leftTwinContainer.PackStart(leftTwinPanelHeader, false, true, 0);
-        leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
+        leftTwinContainer.PackStart(_leftTwinPanelHeader, false, true, 0);
+        _leftTwinPanelHeader.PackStart(ToolbarLeft.DrawLeftToolbar(), false, true, 0);
         LeftRootLabel.LineWrap = true;
         LeftRootLabel.MaxWidthChars = 50;
         leftTwinContainer.PackStart(LeftRootLabel, false, true, 0);
         leftTwinContainer.PackStart(LeftScrolledWindow, true, true, 0);
 
         //HBox rightTwinPanelHeader = new HBox(true, 0);
-        rightTwinContainer.PackStart(rightTwinPanelHeader, false, true, 0);
-        rightTwinPanelHeader.PackStart(ToolbarRight.DrawRightToolbar(), false, true, 0);
+        rightTwinContainer.PackStart(_rightTwinPanelHeader, false, true, 0);
+        _rightTwinPanelHeader.PackStart(ToolbarRight.DrawRightToolbar(), false, true, 0);
         RightRootLabel.LineWrap = true;
         RightRootLabel.MaxWidthChars = 50;
         rightTwinContainer.PackStart(RightRootLabel, false, true, 0);
@@ -93,8 +93,8 @@ public class App : Window
         LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
-        leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
-        rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
+        _leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
+        _rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
 
         ShowAll();
 
@@ -110,8 +110,8 @@ public class App : Window
         LeftDiskBar = Disks.DrawDiskBar(LeftHistory, LeftHistoryForward, LeftRoot, LeftStore, LeftRootLabel);
         RightDiskBar = Disks.DrawDiskBar(RightHistory, RightHistoryForward, RightRoot, RightStore, RightRootLabel);
 
-        leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
-        rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
+        _leftTwinPanelHeader.PackStart(LeftDiskBar, false, true, 0);
+        _rightTwinPanelHeader.PackStart(RightDiskBar, false, true, 0);
 
     }
 
@@ -200,7 +200,7 @@ public class App : Window
                 (bool) store.GetValue(treeIterator, ColIsDirectory));
         }
 
-        return files!;
+        return files;
     }
 
     public static void UpdateRootLabel(Label label, DirectoryInfo root)
