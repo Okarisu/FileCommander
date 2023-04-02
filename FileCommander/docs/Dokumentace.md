@@ -160,7 +160,7 @@ Funkce vrací jako root adresář o úroveň výše, než je root předaný funk
 Funkce posouvající uživatele nazpět v historii navštívených složek. Pokud je zásobník navštívených cest prázdný, vrací aktuální adresář. V opačném případě zařadí do zásobníku historie vpřed cestu k aktuálnímu adresáři, zobrazí v panelu poslední navštívenou složku a s odstraněním této složky ze zásobníku historie ji vrátí jako root.
 
 ##### OnForwardClicked()
-
+Funkce posouvající uživatele dopředu v historii navštívených složek. Pokud je zásobník navštívených cest prázdný, vrací aktuální adresář. V opačném případě zařadí do zásobníku historie cestu k aktuálnímu adresáři, zobrazí v panelu poslední složku z historie vpřed a s odstraněním této složky ze zásobníku historie vpřed ji vrátí jako root.
 
 
 

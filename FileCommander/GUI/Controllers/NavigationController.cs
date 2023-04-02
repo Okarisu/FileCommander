@@ -54,6 +54,7 @@ public abstract class NavigationController
         RefreshIconViews();
     }
 
+    //Obnovení zobrazení položek v obou panelech
     public static void RefreshIconViews()
     {
         FillStore(LeftStore, LeftRoot);
