@@ -74,7 +74,7 @@ public partial class Core
         if (duplicateArchiveFilesOccured)
             new PromptUserDialogWindow("Several directories with the same name already exist.");
         
-        //Generováno GitHub Copilotem
+        //Následující řádek byl generován GitHub Copilotem
         new PromptUserDialogWindow("Extraction finished.");
     }
 }

@@ -149,7 +149,7 @@ public partial class Core
             RefreshIconViews();
         }
         
-        //Generováno GitHub Copilotem
+        //Následující řádek byl generován GitHub Copilotem
         new PromptUserDialogWindow("Compression finished.");
     }
 }

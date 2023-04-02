@@ -110,7 +110,18 @@ Extract() funkce stejně jako Compress() určí dotazem na uživatele adresář,
 Dále podobnou funkcí, jako tomu bylo například u Copy(), zjistí jméno archivu oddělením jeho koncovky, a následně zkontroluje, zda se v adresáři již složka s tímto jménem nevyskytuje. Pokud ano, tento archiv přeskakuje a hodnotu flagu duplicateArchiveFilesOccured nastavuje na true.
 Poté je v novém vlákně spuštěn proces extrahování, který používá metodu ZipFile.ExtractToDirectory(). Tento proces se opakuje pro všechny označené položky, nakonci funkce se pak v závislosti na hodnotách zmíněných flagů uživateli oznámí přeskočení položek nebo výskyt duplicitních archivů a ukončení operace.
 
+## Část GUI
+Tato část zajišťuje vykreslování grafického uživatelského rozhranní a navigaci v něm. 
 
+### Třída App
+Třída App obsahuje hlavní konstruktor, kteý je volán z vstupní třídy Main(). Postupně volá všechny konstruktory jednotlivých UI prvků a přidává je do hlavního kontejneru celého okna windowContainer. Vyjma toho obsahuje následující funkce:
+
+#### CreateStore()
+Vrací vytvořený objekt ListStore, do něhož následně budou načítány ikony položek. Vytváří se se dvěma parametry string (cesta a jméno), typem PixBuf (ikona) a bool (isDirectory). Objekt Store nastavuje tak, aby zobrazoval jména položek a řadil je ve vzestupném abecedním pořadí. 
+
+#### FillStore()
+Funkce FillStore iteruje skrze veškeré složky nalezené v adresáři, který je jí předán v parametru root, a do předaného objektu ListStore je přidává s ikonou složky. Obdobně postupuje při iterování dostupnými soubory v předaném adresáři root. Pokud je uživatelem zapnuta možnost zobrazení skrytých položek (začínajících tečkou), přidává i tyto položky, v opačném případě je vynechává.
+Funkce vytváří vlastní ikony souboru a složky, přestože je knihovna Gtk obsahuje. Je to z důvodu minimalizace problémů se spuštěním - některá témata ikon soubor gtk-file obsahují, jiná ne.
 
 
 

@@ -52,7 +52,6 @@ public abstract class NavigationController
     public static void OnRefreshClicked(object sender, EventArgs e)
     {
         RefreshIconViews();
-        UpdateDisks();
     }
 
     public static void RefreshIconViews()
