@@ -139,7 +139,11 @@ Tato funkce obnovuje text zobrazený na nástrojové liště obou panelů a ozna
 
 
 
+### Třída TwinPanels
+TwinPanels obsahuje 2 funkce pro vykreslení paralelních panelů zobrazujících obsah adresářů. Původně jsem zamýšlel vytvořit jednu funkci a volat ji dvakrát s odlišnými parametry, ale tento postup se neukázal jako funkční, proto má každý panel svoji funkci.
 
+https://docs.gtk.org/gtk3/method.ScrolledWindow.set_policy.html
+Nejdříve se do objektu ListStore přidají ikony položek v adresáři a následně se Widgetu pro zobrazení posouvatelných oken se nejdříve nastaví automatické zobrazování posuvné lišty. PolicyType.Automatic určuje zobrazení, je-li potřeba (větší množství položek v adresáři), jinak posuvník zobrazen není. Poté se  a 
 
 
 

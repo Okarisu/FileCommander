@@ -11,30 +11,31 @@ using System.Text;
 
 public abstract class TwinPanels
 {
-    
     public static void DrawLeftPanel()
     {
-        LeftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         FillStore(LeftStore, LeftRoot);
+        LeftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic); //Nastavení chování posuvníku
+        LeftIconView.GrabFocus(); //Jeden z panelů musí být na začátku soustředěn kvůli předejití chybám
+        LeftIconView.SelectionMode = SelectionMode.Multiple; //Možnost výběru více souborů
+        LeftIconView.TextColumn = ColDisplayName; //Zobrazení jména souboru pod ikonou
+        LeftIconView.PixbufColumn = ColPixbuf; //Zobrazení ikony souboru
 
-        LeftIconView.GrabFocus();
-        LeftIconView.SelectionMode = SelectionMode.Multiple;
-        LeftIconView.TextColumn = ColDisplayName;
-        LeftIconView.PixbufColumn = ColPixbuf;
+        //Zpracování dvojkliku na položku
         LeftIconView.ItemActivated += (_, args) =>
         {
+            //Funkce musí nový root vracet - při jeho aktualizaci pouze ve funkci by se nezměnil
             LeftRoot = OnItemActivated(args, LeftRoot, LeftStore, LeftHistory, LeftHistoryForward);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
-        LeftIconView.FocusInEvent += (_, _) => SetFocusedPanel(1);
-        
-        LeftScrolledWindow.Add(LeftIconView);
+        LeftIconView.FocusInEvent += (_, _) => SetFocusedPanel(1); //Nastavení panelu jako soustředěného
+
+        LeftScrolledWindow.Add(LeftIconView); //Přidání widgetu do okna
     }
+
     public static void DrawRightPanel()
     {
-        RightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         FillStore(RightStore, RightRoot);
-
+        RightScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
         RightIconView.SelectionMode = SelectionMode.Multiple;
         RightIconView.TextColumn = ColDisplayName;
         RightIconView.PixbufColumn = ColPixbuf;

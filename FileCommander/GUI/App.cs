@@ -27,8 +27,8 @@ public class App : Gtk.Window
 
     
     public static ListStore LeftStore = CreateStore(), RightStore = CreateStore(); //Objekty obsahující data o souborech a složkách (GC)
-    public static ScrolledWindow LeftScrolledWindow = new(), RightScrolledWindow = new(); //Objekty pro zobrazení posouvatelných panelů
-    public static IconView LeftIconView = new(LeftStore), RightIconView = new(RightStore); //Objekty pro zobrazení ikon
+    public static ScrolledWindow LeftScrolledWindow = new(), RightScrolledWindow = new(); //Widgety pro zobrazení posouvatelných panelů
+    public static IconView LeftIconView = new(LeftStore), RightIconView = new(RightStore); //Widgety pro zobrazení ikon
 
     //Zásobníky pro historii adresářů
     public static Stack<DirectoryInfo> LeftHistory = new();
