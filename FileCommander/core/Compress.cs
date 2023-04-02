@@ -39,8 +39,20 @@ public partial class Core
             }
             else
             {
-                ZipFile.CreateFromDirectory(items[0]!.Path, targetPath);
+                //Komprimování složky
+                var handler = new ProcessHandler(items[0]!.Path, targetPath, true);
+                var thread = new Thread(handler.Compress);
+                thread.Start();
+
+                //Cyklus zajišťující to, aby GUI nezamrzlo
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
+
+            RefreshIconViews();
         }
         else
         {
@@ -54,16 +66,12 @@ public partial class Core
                 return;
             }
 
+            //Vytvoření dočasné složky (GC)
             var tmpDirPath = Path.Combine(promptedTarget.root,
                 archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             try
             {
                 Directory.CreateDirectory(tmpDirPath);
-            }
-            catch (ArgumentNullException)
-            {
-                new PromptUserDialogWindow("Archive name cannot be null.");
-                return;
             }
             catch (PathTooLongException)
             {
@@ -101,34 +109,33 @@ public partial class Core
             {
                 if (item!.IsDirectory)
                 {
+                    //Zkopírování složky do dočasné složky (GC)
                     var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), true);
                     var thread = new Thread(handler.Copy);
                     thread.Start();
 
-
                     while (thread.IsAlive)
                     {
                         while (Application.EventsPending())
                             Application.RunIteration();
                     }
-
                 }
                 else
                 {
+                    //Zkopírování souboru do dočasné složky (GC)
                     var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), false);
                     var thread = new Thread(handler.Copy);
                     thread.Start();
 
-
                     while (thread.IsAlive)
                     {
                         while (Application.EventsPending())
                             Application.RunIteration();
                     }
-
                 }
             }
-            
+
+            //Komprimování dočasné složky (GC)
             var zipHandler = new ProcessHandler(tmpDirPath, archiveTargetPath, false);
             var zipThread = new Thread(zipHandler.Compress);
             zipThread.Start();
@@ -138,8 +145,8 @@ public partial class Core
                 while (Application.EventsPending())
                     Application.RunIteration();
             }
-        }
 
-        RefreshIconViews();
+            RefreshIconViews();
+        }
     }
 }

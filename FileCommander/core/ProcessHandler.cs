@@ -69,7 +69,7 @@ public class ProcessHandler
     private static void RecursiveCopyDirectory(string sourceDirectory, string destinationDirectory)
     {
         var dir = new DirectoryInfo(sourceDirectory); //zdrojový adresář
-        
+
         DirectoryInfo[] dirs = dir.GetDirectories(); //podadresáře zdrojového adresáře (GC)
 
         Directory.CreateDirectory(destinationDirectory); //vytvoření cílového adresáře
@@ -130,8 +130,15 @@ public class ProcessHandler
     {
         try
         {
-            ZipFile.CreateFromDirectory(SourcePath, TargetPath);
-            Directory.Delete(SourcePath, true);
+            if (IsDirectory)
+            {
+                ZipFile.CreateFromDirectory(SourcePath, TargetPath);
+            }
+            else
+            {
+                ZipFile.CreateFromDirectory(SourcePath, TargetPath);
+                Directory.Delete(SourcePath, true);
+            }
         }
         catch (Exception)
         {

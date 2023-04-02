@@ -61,7 +61,7 @@ V každé funkci, která svůj proces ve vláknu spouští, je navíc smyčka č
 
 Tento způsob zpracování byl původně plánován kvůli zobrazení okna s informacemi o průběhu operace, ale protože jsem během vývoje narazil na problémy (stále zaseklý progress bar, neukončitelné okno nebo vlákno), se kterými si nevěděl rady ani nikdo z lidí, se kterými jsem problém konzultoval, tato funkconalita programu tedy implementována není. Myslím si však, že je dobré proces, u kterého je větší riziko chyby, oddělit od hlavního procesu programu, a tak jsem tyto procesy do vláken umístil všechny, i když by se to mohlo bez funkce zmíněného informačního okna zdát zbytečné. 
 
-### Funkce New
+### New()
 Funkce vytvářející novou složku je nejjednodušší funkcí z celé části core. Po zpracování uživatelského vstupu kontroluje, zda už v adresáři není složka se stejným názvem, a následně ji v try/catch bloku zkouší vytvořit. Tento blok se snaží zachytit výjimky, ke kterým by mohlo při zadávání dojít, jako prázdné jméno složky, přesažení limitu délky názvu (na linuxu 255 znaků), zakázaných znaků v názvu (specifické pro Windows) nebo pokus o vytvoření složky v adresáři, kam uživatel nemá přístup. Poslední výjiku se mi povedlo zdárně otestovat, program v root adresáři systému opravdu složku nevytvoří a vrátí uživateli chybovou hlášku.
 Funkce na konci zavolá RefreshIconViews(), čímž obnoví zobrazení obsahu obou panelů.
 
@@ -100,9 +100,12 @@ Funkce následně iteruje skrze pole označených objektů, přičemž pokaždé
 
 Vzhledem k tomu, že objekty zůstávají na svém místě na disku, nejde o tak náročnou operaci, jako je jejich přesouvání do jiného adresáře, a proto jsem se rozhodl funkce File/Directory.Move nevolat z nových vláken. Musel jsem však ošetřit možné výjimky způsobené špatným formátem jména či nedostatečnými právy uživatele k úpravě adresáře, stejně jako u funkce New() pomocí try/catch bloku.
 
+### Compress()
+Tato funkce se na začátku uživatele dotáže, zda si přeje označené položky komprimovat do adresáře v soustředěném panelu, nebo do vedlejšího. Následně, pokud je označen pouze jedna položka, která je složkou, se tato složka komprimuje do archivu formátu .zip se stejným názvem, jako měla původní složka, a to v novém vláknu. Pokud již archiv s tímto názvem existuje, uživateli se zobrazí chybová hláška a akce se neprovede.
+Pokud je označen soubor či více položek, je uživatel dotázán na jméno archivu. Pokud již archiv s tímto názvem existuje, uživateli se zobrazí chybová hláška a akce se neprovede. 
+Platforma .NET umožňuje vytvářet archivy pouze ze složek, což znamená, že musí být vybrané soubory zkopírovány do dočasné složky. Aby se zamezilo konfliktu s již existujícími složkami, je tato dočasná složka pojmenována ve formátu název archivu_tmp_čas vytvoření proměnné názvu složky v unix timestampu. Šance, že bude adresář obsahovat složku s tímto názvem, je velmi malá. Následuje pokus vytvořit složku v try/catch bloku, který ošetřuje výjimky jako délka názvu archivu/složky či práva k úpravě adresáře. Poté jsou všechny označené soubory v novém vlákně překopírovány do dočasné složky a ta je opět v novém vlákně zkomprimována do archivu, načež je smazána. Jménem archivu je jméno zadané uživatelem. Po skončení akce je o tom uživatel informován a zobrazené soubory v obou panelech jsou obnoveny.
 
-
-
+### Extract()
 
 
 
@@ -127,6 +130,6 @@ Vzhledem k tomu, že objekty zůstávají na svém místě na disku, nejde o tak
 - YamlDotNet - https://github.com/aaubry/YamlDotNet
 
 ### Vývojové prostředí
-Pro vývoj programu na linuxu jsem použil JetBrains Rider ver. 2022.3.2 a jeho doplněk ReSharper pro formátování kódu a upozorňování na konvence názvů proměnných. Pro debugování na Windows jsem použil Visual Studio 2022. Při vývoji jsem používal doplněk GitHub Autopilot, a to zejména kvůli zjednodušení opakovaného volání konstruktorů s velkým počtem argumentů nebo importování tříd v hlavičkách souborů. Také jsem s jeho pomocí psal některé vysvětlující komentáře v kódu - ty jsou na konci označeny písmeny GC (generováno copilotem). Všechny podstatnější či rozsáhlejší části kódu, které doplněk vygeneroval, jsou v kódu viditelně označeny. Rovněž jsem použil balíček PackageRestore (https://www.nuget.org/packages/PackageRestore) kvůli pár problémům s odstraněním knihoven.
+Pro vývoj programu na linuxu jsem použil JetBrains Rider ver. 2022.3.2 a jeho doplněk ReSharper pro formátování kódu a upozorňování na konvence názvů proměnných. Pro debugování na Windows jsem použil Visual Studio 2022. Při vývoji jsem používal doplněk GitHub Autopilot, a to zejména kvůli zjednodušení opakovaného volání konstruktorů s velkým počtem argumentů nebo importování tříd v hlavičkách souborů. Také jsem s jeho pomocí psal některé vysvětlující komentáře v kódu - tyto komentáře jsou na konci označeny písmeny GC (generováno copilotem). Všechny podstatnější či rozsáhlejší části kódu, které doplněk vygeneroval, jsou v kódu viditelně označeny komentářem //Generováno GitHub Copilotem. Rovněž jsem použil balíček PackageRestore (https://www.nuget.org/packages/PackageRestore) kvůli pár problémům s odstraněním knihoven.
 
 ## Spuštění
