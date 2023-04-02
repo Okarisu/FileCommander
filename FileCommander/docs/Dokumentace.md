@@ -181,7 +181,13 @@ Tato třída obsahuje pouze konstruktor dialogu pro oznámení zprávy uživatel
 #### Třída ProgressDialogWindow
 Tato třída je v podstatě totožná s třídou PromptUserDialogWindow, jediným rozdílem je namísto tlačítka Close tlačítko Ok a smyčka zabraňující zamrznutí uživatelského rzohranní, kterou jsem již popsal v části Core.
 
-#### Třída 
+#### Třída PromptTargetPanelDialogWindow
+Konstruktor této třídy zobrazí uživateli okno s výběrem cílového panelu operace. Podle toho, jaké tlačítko uživatel v okně stiskne a který panel tím zvolí, se nastaví hodnota proměnné \_targetHere, kterou je pak možné z instance získat funkcí GetTargetPanel(). Názvy jednotlivých ResponseId ve switchi propojeném s EventHandlerem Response nemají žádný význam - bylo pouze zapotřebí nějak od sebe jednotlivá tlačítka odlišit.
+
+#### Třída PromptPathInputDialogWindow
+Třída tohoto dialogového okna získává od uživatele název vytvářené položky. Pokud je třeba uživatele informovat o příponách u souborů, jako je tomu u blokového přejmenovávání, je do okna dialogu přidáno textové pole objektem Label. Okno obsahuje okénko pro vstup typu Entry, z níž je po potvrzení volby uživatelem získán zadaný text. V případě zrušení je cesta vynulována a příznak Cancel nastaven na true. Zadané hodnoty se z instance získají zavoláním funkce GetPath, která je vrácí v objektu tuple.
+
+#### Třída PromptConfirmDialogWindow
 
 
 

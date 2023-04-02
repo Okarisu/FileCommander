@@ -12,7 +12,7 @@ public abstract class TargetController
 {
     public static (string root, bool cancel) GetTargetPanel(string operation)
     {
-        var promptedTargetPanel = new PromptTargetPanelDialog(operation).GetTargetPanel();
+        var promptedTargetPanel = new PromptTargetPanelDialogWindow(operation).GetTargetPanel();
 
         string root;
         if (promptedTargetPanel.targetHere)
@@ -27,7 +27,7 @@ public abstract class TargetController
         }
 
         var cancel = promptedTargetPanel.cancel;
-        PromptTargetPanelDialog.NullPrompt();
+        PromptTargetPanelDialogWindow.NullPrompt();
         
         return (root, cancel);
     }

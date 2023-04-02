@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using Gtk;
 
-public class PromptTargetPanelDialog : Dialog
+public class PromptTargetPanelDialogWindow : Dialog
 {
     public const int ResponseIdOk = 1;
     private const int ResponseIdYes = 4;
@@ -12,7 +12,7 @@ public class PromptTargetPanelDialog : Dialog
     private static bool _targetHere { get; set; }
     private static bool _cancel;
 
-    public PromptTargetPanelDialog(string operation)
+    public PromptTargetPanelDialogWindow(string operation)
     {
         _dialog = new Dialog(operation, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel,
             operation+" aside", ButtonsType.YesNo, operation+" here", ButtonsType.Ok);
