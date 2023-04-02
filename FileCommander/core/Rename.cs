@@ -71,6 +71,8 @@ public partial class Core
                 {
                     Directory.Move(item.Path, childDestinationPath);
                 }
+                //Následující catch bloky a výjimky byly generovány GitHub Copilotem.
+                //Řádky volání konstruktoru okna s chybovou hláškou jsou mým vlastním dílem.
                 catch (ArgumentNullException)
                 {
                     new PromptUserDialogWindow("Name cannot be null.");
@@ -123,6 +125,8 @@ public partial class Core
                 {
                     File.Move(item.Path, childDestinationPath);
                 }
+                //Následující catch bloky a výjimky byly generovány GitHub Copilotem.
+                //Řádky volání konstruktoru okna s chybovou hláškou jsou mým vlastním dílem.
                 catch (ArgumentNullException)
                 {
                     new PromptUserDialogWindow("Name cannot be null.");

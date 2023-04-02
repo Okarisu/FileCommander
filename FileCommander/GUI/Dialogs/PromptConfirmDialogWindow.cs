@@ -10,6 +10,12 @@ public class PromptConfirmDialogWindow : Dialog
     private static bool _isConfirmed;
     private static string? PromptSettingsKey { get; set; }
 
+    /*
+     * Při tvorbě jsem se inspiroval zde:
+     * Dialogs in GTK#: Message dialogs. ZetCode [online]. [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/dialogs/
+     * Upraveno.
+     */
     public PromptConfirmDialogWindow(string title, string prompt, string? promptSettingsKey)
     {
         PromptSettingsKey = promptSettingsKey;

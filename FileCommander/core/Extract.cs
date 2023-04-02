@@ -56,7 +56,7 @@ public partial class Core
                 duplicateArchiveFilesOccured = true;
                 continue;
             }
-
+            
             var handler = new ProcessHandler(item.Path, targetDirectoryPath, false);
             var thread = new Thread(handler.Extract);
             thread.Start();

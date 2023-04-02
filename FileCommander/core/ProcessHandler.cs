@@ -7,6 +7,11 @@ using FileCommander.GUI.Dialogs;
 
 namespace FileCommander.core;
 
+/*
+ * Při tvorbě třídy jsem se inspiroval zde:
+ * File Copy with Progress Bar. StackOverflow [online]. [cit. 2023-04-02].
+ * Dostupné z: https://stackoverflow.com/a/6055385
+ */
 public class ProcessHandler
 {
     private string SourcePath { get; set; }

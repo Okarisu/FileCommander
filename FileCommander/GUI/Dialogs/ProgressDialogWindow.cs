@@ -6,8 +6,13 @@ using Gtk;
 
 public class ProgressDialogWindow : Dialog
 {
-    public static Dialog _dialog;
+    private static Dialog _dialog;
 
+    /*
+     * Dialogs in GTK#: Message dialogs. ZetCode [online]. [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/dialogs/
+     * Upraveno.
+     */
     public ProgressDialogWindow(string prompt)
     {
         _dialog = new MessageDialog(this,

@@ -73,6 +73,9 @@ public partial class Core
             {
                 Directory.CreateDirectory(tmpDirPath);
             }
+            
+            //Následující catch bloky a výjimky byly generovány GitHub Copilotem.
+            //Řádky volání konstruktoru okna s chybovou hláškou jsou mým vlastním dílem.
             catch (PathTooLongException)
             {
                 new PromptUserDialogWindow("The specified archive name exceeded the system-defined maximum length.");

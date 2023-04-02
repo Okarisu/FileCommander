@@ -138,7 +138,7 @@ public partial class Core
 
             RefreshIconViews();
         }
-
+        //Následující řádek byl generován GitHub Copilotem
         new PromptUserDialogWindow("Finished copying files.");
     }
 }

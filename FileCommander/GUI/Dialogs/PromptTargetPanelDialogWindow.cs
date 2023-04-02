@@ -12,6 +12,12 @@ public class PromptTargetPanelDialogWindow : Dialog
     private static bool _targetHere { get; set; }
     private static bool _cancel;
 
+    /*
+     * Při tvorbě jsem se inspiroval zde:
+     * Dialogs in GTK#: Message dialogs. ZetCode [online]. [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/dialogs/
+     * Upraveno.
+     */
     public PromptTargetPanelDialogWindow(string operation)
     {
         _dialog = new Dialog(operation, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel,

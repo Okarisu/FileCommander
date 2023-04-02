@@ -31,6 +31,8 @@ public partial class Core
         {
             Directory.CreateDirectory(newDirectoryPath);
         }
+        //Následující catch bloky a výjimky byly generovány GitHub Copilotem.
+        //Řádky volání konstruktoru okna s chybovou hláškou jsou mým vlastním dílem.
         catch (ArgumentNullException)
         {
             new PromptUserDialogWindow("Folder name cannot be null.");

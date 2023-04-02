@@ -13,9 +13,10 @@ public abstract class DrawMenu
 {
     
     /*
+     * Při tvorbě třídy jsem se inspiroval zde:
      * Menus in GTK#: Simple menu. ZetCode [online]. 6. 1. 2022 [cit. 2023-04-02].
      * Dostupné z: https://zetcode.com/gtksharp/menus/
-     * Značně upraveno. 
+     * Upraveno. 
      */
     public static MenuBar DrawMenuBar()
     {

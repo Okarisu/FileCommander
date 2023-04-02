@@ -17,7 +17,7 @@ public abstract class TargetController
         string root;
         if (promptedTargetPanel.targetHere)
         {
-            //Cíl je v soustředěném panelu
+            //Cíl je v aktivním panelu
             root = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
         }
         else

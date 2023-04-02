@@ -50,6 +50,11 @@ public abstract class Disks
         }
         else
         {
+            /*
+             * Při tvořbě této části kódu jsem se inspiroval zde:
+             * MICROSOFT. DriveInfo.GetDrives Method. Microsoft Learn [online]. [cit. 2023-04-02].
+             * Dostupné z: https://learn.microsoft.com/en-us/dotnet/api/system.io.driveinfo.getdrives?view=net-7.0
+             */
             foreach (var drive in DriveInfo.GetDrives())
             {
                 if(!drive.IsReady)

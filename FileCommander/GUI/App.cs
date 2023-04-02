@@ -42,13 +42,19 @@ public class App : Gtk.Window
 
     public static Toolbar LeftDiskBar = new(), RightDiskBar = new();
 
-    //Určuje, který panel je aktuálně soustředěn - nastavována z třídy TwinPanels. 1 = levý panel, 2 = pravý panel
+    //Určuje, který panel je aktivní - nastavována z třídy TwinPanels. 1 = levý panel, 2 = pravý panel
     private static int _focusedPanel;
 
     //"Hlavičky" panelů, obsahující navigační tlačítka, ikony disků a název adresáře
     private static HBox _leftTwinPanelHeader = new HBox(true, 0);
     private static HBox _rightTwinPanelHeader = new HBox(true, 0);
 
+    /*
+     * Informace pro tvorbu konstruktoru jsem čerpal zde:
+     * Advanced widgets in GTK#. ZetCode [online]. 6. 1. 2022 [cit. 2023-04-03].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/advancedwidgets/
+     * Upraveno.
+     */
     public App() : base("File Commander")
     {
         //Nastavení vlastností okna

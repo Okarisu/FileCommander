@@ -13,6 +13,12 @@ using System.Text;
 
 public abstract class TwinToolbars
 {
+    /*
+     * Při tvorbě třídy jsem se inspiroval zde:
+     * Toolbars in GTK#: Simple toolbar. ZetCode [online]. 6. 1. 2022 [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/toolbars/
+     * Upraveno.
+     */
     public static Toolbar DrawLeftToolbar()
     {
         var leftToolbar = new Toolbar();

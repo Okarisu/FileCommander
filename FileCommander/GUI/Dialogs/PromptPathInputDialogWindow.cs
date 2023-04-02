@@ -11,6 +11,12 @@ public class PromptPathInputDialogWindow : Dialog
 
     private static bool _addSuffix { get; set; }
 
+    /*
+     * Při tvorbě jsem se inspiroval zde:
+     * Dialogs in GTK#: Message dialogs. ZetCode [online]. [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gui/gtksharp/dialogs/
+     * Upraveno.
+     */
     public PromptPathInputDialogWindow(string title, bool promptSuffix)
     {
         _dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
