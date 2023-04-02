@@ -1,7 +1,3 @@
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et harum quidem rerum facilis est et expedita distinctio. Curabitur bibendum justo non orci. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Nam sed tellus id magna eleme - 255
-
-
-
 # Cíl práce
 Cílem práce je vytvořit v programovacím jazyce C# s použitím knihovny GTK multiplatformní  
 desktopovou aplikaci pro správu souborů. Mezi funkce programu bude patřit přesouvání a  
@@ -66,8 +62,17 @@ Tento způsob zpracování byl původně plánován kvůli zobrazení okna s inf
 Funkce vytvářející novou složku je nejjednodušší funkcí z celé části core. Po zpracování uživatelského vstupu kontroluje, zda už v adresáři není složka se stejným názvem, a následně ji v try/catch bloku zkouší vytvořit. Tento blok se snaží zachytit výjimky, ke kterým by mohlo při zadávání dojít, jako prázdné jméno složky, přesažení limitu délky názvu (na linuxu 255 znaků), zakázaných znaků v názvu (specifické pro Windows) nebo pokus o vytvoření složky v adresáři, kam uživatel nemá přístup. Poslední výjiku se mi povedlo zdárně otestovat, program v root adresáři systému opravdu složku nevytvoří a vrátí uživateli chybovou hlášku.
 Funkce na konci zavolá RefreshIconViews(), čímž obnoví zobrazení obsahu obou panelů.
 
-### Funkce Copy
-Tato funkce 
+### Způsob fungování Copy a Move
+Tyto funkce mají slopečný základ a liší se jen částmi specifickými pro danou operaci. Informace o označených souborech se zjišťují funkcí GetSelectedItems z třídy App a následně se kontroluje, zda jsou vůbec nějaké soubory vybrány. V tomto případě uživateli zobrazí okno s upozorněním. Inforrmace o označených souborech se ukládají do pole items jako objekty typu Item. 
+Cílový adresář se zjišťuje pomocí funkce GetFocusedWindow, již popisuji níže a která vrací int o hodnotě 1 pro levý a 2 pro pravý panel. Pokud je soustředěný panel levý, cílovým adresářem bude ten vpravo, a naopak.
+Následně funkce iteruje skrze pole s uloženými označenými soubory. V každém běhu smyčky se deklaruje proměnná cílové cesty, skládající se z adresy cílové složky a názvu zpracovávaného souboru.
+Každá iterace probíhá podle toho, zda je objekt dané iterace soubor, nebo složka, kvůli odlišnosti práce s těmito objekty. K tomuto rozlišení slouží field objektu isDirectory.
+Po určení způsobu, jakým má být s objektem Item nakládáno, zkontrolují obě funkce, zda již v cílovém adresáři objekt se stejným názvem není. Při kopírování lze tyto soubory kopírovat s přidanou příponou, přesouvání tyto soubory přeskakuje. Následně je v novém vlákně spuštěn proces, který zvolenou akci pro daný objekt provede, po jeho ukončení se obnoví zobrazení souborů v panelech a probíhá další kolo smyčky.
+Po skončení iterace vyskočí dialogové okno, ohlašující konec operace.
+
+#### Copy
+V této funkci si program kromě průběhu popsaného výše navíc v každém běhu smyčky načte uživatelské preference ohledně kopírování duplicitních souborů, a to funkcí GetConf s argumentem PromptDuplicityFileCopy. Vrátí-li tato funkce true, dotazuje se při výskytu duplicitního objektu, zda má objekt kopírovat a připojit mu číselnou příponu, či ho má přeskočit. Takto 
+Každá smyčka 
 
 
 
@@ -79,6 +84,7 @@ Tato funkce
 
 
 
+Tato funkce zajišťuje kopírování souborů mezi zobrazenými adresáři. I
 
 
 

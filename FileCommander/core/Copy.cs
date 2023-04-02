@@ -11,7 +11,6 @@ using Gtk;
 
 namespace FileCommander.core;
 
-
 using static App;
 using static NavigationController;
 using static PromptConfirmDialogWindow;
@@ -33,7 +32,7 @@ public partial class Core
 
         //Fukus na levém panelu => přesouvá se do pravého
         var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-        
+
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item.Name!);
@@ -45,7 +44,7 @@ public partial class Core
                 {
                     if (promptAskAgain)
                     {
-                        new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
+                        new PromptConfirmDialogWindow("Are you sure?", $"Directory with name {item.Name} already exists.",
                             PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
@@ -86,7 +85,7 @@ public partial class Core
                 {
                     if (promptAskAgain)
                     {
-                        new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
+                        new PromptConfirmDialogWindow("Are you sure?", $"File with name {item.Name} already exists.",
                             PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
@@ -122,7 +121,7 @@ public partial class Core
                             Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
                     }
                 }
-                
+
                 //Kopírování souboru (GC)
                 var handler = new ProcessHandler(item.Path, childDestinationPath, false);
                 var thread = new Thread(handler.Copy);
@@ -134,9 +133,10 @@ public partial class Core
                         Application.RunIteration();
                 }
             }
+
+            RefreshIconViews();
         }
-        RefreshIconViews();
+
         new PromptUserDialogWindow("Finished copying files.");
     }
-
 }

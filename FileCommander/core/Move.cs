@@ -73,10 +73,11 @@ public partial class Core
                         Application.RunIteration();
                 }
             }
+
+            RefreshIconViews();
         }
 
 
-        RefreshIconViews();
         if (duplicateFilesOccured)
             new PromptUserDialogWindow("File(s) with the same name already exists.");
         new PromptUserDialogWindow("Finished moving files.");
