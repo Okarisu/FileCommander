@@ -84,6 +84,22 @@ V této rekurzivní funkci nejdříve vytvoří cílovou složku, zkopíruje do 
 Funkce Move() krom částí společných s funkcí Copy() kontroluje výskyt duplicitních objektů a pokud nějaké najde, nenahrazuje je, ale přeskakuje. Je to z důvodu mé osobní preference, protože se tím podle mne zvyšuje riziko nenávratného smazání souborů omylem. Po skončení akce je uživatel informován, že došlo k výskytu duplicit a že byly přeskočeny. Funkce také kontroluje, zda přesouvaný objekt neleží na cestě systémové složky programu, protože by při přesunutí jeho souborů došlo k chybě. 
 Proces přesunu je opět spuštěn v novém vlákně s argumenty zdrojové a cílové cesty a hodnty isDirectory. Platforma .NET implementuje funkci přesouvání jak pro složky, tak pro soubory, a tím pádem není potřeba psát rekurzivní funkci pro přesun složek.
 
+### Delete()
+Funkce Delete() se před začátkem operace uživatele dotáže, zda si je skutečně mazáním vybraných souborů jistý. Metoda File/Directory.Delete volá interní metodu FileSystem.RemoveFile/Directory, která neumožňuje obnovení odstraněných souborů, a proto je operace mazání nevratná. Předpokládá se, že si je po potvrzení operace uživatel jistý, které soubory k odstranění zvolil, a proto se funkce dotazuje jen jednou na začátku, nikoli před smazáním každého jednotlivého souboru. Funkce opět načítá uživatelské preference, tentokrát pod klíčem PromptDelete, a uživatel má možnost zaškrtnou možnost "již se nedotazovat". Dotazování může být opět obnoveno upravením klíče v konfiguračním souboru - přepsáním hodnoty PromptDelete z false na true.
+Funkce, stejně jako Move(), kontroluje, zda není mazán systémový adresář programu či jeho soubory. V takovém případě tyto soubory přeskakuje a zobrazuje okno s chybovou hláškou. Proces však dále běží v novém vlákně.
+Funkce Delete() třídy ProcessHandler nepotřebuje cílovou cestu, jako tento parametr se předává hodnota null. Podle toho, jaká je konstruktoru ProcessHandler předána hodnota isDirectory, se spouští buď metoda Directory.Delete() s parametrem pro rekurzivní odstranění složky jako true, nebo metoda File.Delete().
+
+### Rename()
+Funkce Rename() se po získání označených souborů a kontrole, zda je označen alespoň jeden soubor, uživatele dotáže na nové jméno souboru či složky. Pokud je objektů označených více, je uživatel upozorněn, že ke jménu bude přidávána číselná přípona. Tento dotaz probíhá ve funkci GetTargetPath(), která volá kostruktor dialogového okna PromptPathInputDialogWindow a vrací do tuple objektu newFilename nové jméno, signál pro zrušení operace a signál pro přidání přípony. Je-li flag Cancel pravdivý, je operace zrušena. 
+
+Vzhledem k tomu, že přejmenování objektu je vlastně jeho přesunutí do stejného adresáře pod jiným jménem, je třeba určit jeho cílovou složku. To provádí opět funkce GetFocusedWindow, která ji nastavuje na adresář, jež je soustředěný.
+
+Pro případ, že mají být objektům přidávány přípony, se vytvoří dva objekty typu Queue - jeden pro přípony složek a jeden pro soubory. Následně se do těchto front zařadí stejný počet přípon zvyšujících se o 1, jako je počet přejmenovávaných objektů.
+
+Funkce následně iteruje skrze pole označených objektů, přičemž pokaždé kontroluje, zda uživatel nepřejmenovává systémové soubory programu. V takovém případě vyhazuje informační okno a v pozadí pokračuje v operaci. Funkce se opět dělí na část pro složky a část pro soubory. Pokud mají být připojovány přípony, za jméno objektu je přidána přípona jejím vyřazením z příslušné fronty dle typu objektu. U souborů je pak od původního názvu souboru oddělena koncovka, vytvořeno nové jméno s příponou a koncovkou a soubor přejmenován (tj. přesunut).
+
+Vzhledem k tomu, že objekty zůstávají na svém místě na disku, nejde o tak náročnou operaci, jako je jejich přesouvání do jiného adresáře, a proto jsem se rozhodl funkce File/Directory.Move nevolat z nových vláken. Musel jsem však ošetřit možné výjimky způsobené špatným formátem jména či nedostatečnými právy uživatele k úpravě adresáře, stejně jako u funkce New() pomocí try/catch bloku.
+
 
 
 

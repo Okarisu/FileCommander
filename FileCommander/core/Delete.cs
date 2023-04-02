@@ -24,9 +24,8 @@ public partial class Core
             new PromptUserDialogWindow("No files selected.");
             return;
         }
-        var promptAskAgain = Settings.GetConf(promptDeleteKey);
         
-        if (promptAskAgain)
+        if (Settings.GetConf(promptDeleteKey))
         {
             new PromptConfirmDialogWindow("Are you sure?", "This action cannot be undone.", promptDeleteKey);
             var consent = PromptConfirmDialogWindow.IsConfirmed();
@@ -35,6 +34,7 @@ public partial class Core
 
         foreach (var item in items)
         {
+            //Nepovolit smazání systémových souborů (GC)
             if(item.Path.Contains(Directory.GetCurrentDirectory()))
             {
                 new PromptUserDialogWindow("Cannot delete system files.");
@@ -42,31 +42,32 @@ public partial class Core
             }
             if (item!.IsDirectory)
             {
+                //Vytvoření nového vlákna pro smazání složky (GC)
                 var handler = new ProcessHandler(item.Path, null, true);
                 var thread = new Thread(handler.Delete);
                 thread.Start();
 
+                //Cyklus zajišťující to, aby GUI nezamrzlo
                 while (thread.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
                 }
-
-                //Directory.Delete(item.Path, true);
             }
             else
             {
+                //Vytvoření nového vlákna pro smazání souboru (GC)
                 var handler = new ProcessHandler(item.Path, null, false);
                 var thread = new Thread(handler.Delete);
                 thread.Start();
 
+                //Cyklus zajišťující to, aby GUI nezamrzlo
                 while (thread.IsAlive)
                 {
                     while (Application.EventsPending())
                         Application.RunIteration();
                 }
-
-                //File.Delete(item.Path);
+                
             }
         }
 

@@ -26,8 +26,6 @@ public class PromptPathInputDialogWindow : Dialog
         var entry = new Entry();
         _dialog.ContentArea.PackStart(entry, true, true, 0);
 
-        //TODO přidat validaci vstupu
-
         _dialog.Response += delegate(object _, ResponseArgs args)
         {
             if ((int) args.ResponseId == 1) //OK

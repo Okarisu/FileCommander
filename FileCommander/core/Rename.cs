@@ -23,7 +23,6 @@ public partial class Core
             return;
         }
 
-        var root = GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot;
         (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
@@ -39,7 +38,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot).ToString();
+        var destinationPath = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
 
         var fileSuffixes = new Queue<int>();
         var folderSuffixes = new Queue<int>();
@@ -112,7 +111,7 @@ public partial class Core
             {
                 var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                 var childDestinationPath = Path.Combine(destinationPath, newFilename.Name + "." +
-                                                                         cleanFilename[cleanFilename.Length - 1]);
+                                                                         cleanFilename[^1]); //přidání koncovky
                 if (newFilename.addSuffix)
                 {
                     childDestinationPath = Path.Combine(destinationPath,
