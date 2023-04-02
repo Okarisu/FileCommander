@@ -8,7 +8,7 @@ using Gtk;
 using static PromptPathInputDialogWindow;
 using static App;
 
-public class TargetController
+public abstract class TargetController
 {
     public static (string root, bool cancel) GetTargetPanel(string operation)
     {
@@ -17,11 +17,11 @@ public class TargetController
         string root;
         if (promptedTargetPanel.targetHere)
         {
-            root = (GetFocusedPanel() == 1 ? App.LeftRoot : RightRoot).ToString();
+            root = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
         }
         else
         {
-            root = (GetFocusedPanel() == 1 ? RightRoot : App.LeftRoot).ToString();
+            root = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
         }
 
         var cancel = promptedTargetPanel.cancel;

@@ -162,7 +162,11 @@ Funkce posouvající uživatele nazpět v historii navštívených složek. Poku
 ##### OnForwardClicked()
 Funkce posouvající uživatele dopředu v historii navštívených složek. Pokud je zásobník navštívených cest prázdný, vrací aktuální adresář. V opačném případě zařadí do zásobníku historie cestu k aktuálnímu adresáři, zobrazí v panelu poslední složku z historie vpřed a s odstraněním této složky ze zásobníku historie vpřed ji vrátí jako root.
 
+#### Třída TargetController
+Tato třída zpracovává požadavky funkcí třídy Core ohledně cílového adresáře a názvu položky.
 
+##### GetTargetPanel()
+Tato funkce 
 
 
 
