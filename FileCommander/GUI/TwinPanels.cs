@@ -26,7 +26,7 @@ public abstract class TwinPanels
             LeftRoot = OnItemActivated(args, LeftRoot, LeftStore, LeftHistory, LeftHistoryForward);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
-        LeftIconView.FocusInEvent += (_, _) => FocusedPanel = 1;
+        LeftIconView.FocusInEvent += (_, _) => SetFocusedPanel(1);
         
         LeftScrolledWindow.Add(LeftIconView);
     }
@@ -43,7 +43,7 @@ public abstract class TwinPanels
             RightRoot = OnItemActivated(args, RightRoot, RightStore, RightHistory, RightHistoryForward);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
-        RightIconView.FocusInEvent += (_, _) => FocusedPanel = 2;
+        RightIconView.FocusInEvent += (_, _) => SetFocusedPanel(2);
 
         RightScrolledWindow.Add(RightIconView);
     }

@@ -15,31 +15,37 @@ namespace FileCommander.GUI;
 
 public class App : Gtk.Window
 {
-    private const int ColPath = 0;
-    public const int ColDisplayName = 1;
-    public const int ColPixbuf = 2;
-    private const int ColIsDirectory = 3;
+    //Konstanty určující property objektu ListStore, kterou chceme získat
+    private const int ColPath = 0; //Cesta k souboru (GC)
+    public const int ColDisplayName = 1; //Jméno souboru (GC)
+    public const int ColPixbuf = 2; //Ikona souboru (GC)
+    private const int ColIsDirectory = 3; //Je soubor složkou? (GC)
 
+    //Aktuální cesta k levému a pravému zobrazenému adresáři - na začátku je nastavena na osobní složku
     public static DirectoryInfo LeftRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
     public static DirectoryInfo RightRoot = new(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
+    
+    public static ListStore LeftStore = CreateStore(), RightStore = CreateStore(); //Objekty obsahující data o souborech a složkách (GC)
+    public static ScrolledWindow LeftScrolledWindow = new(), RightScrolledWindow = new(); //Objekty pro zobrazení posouvatelných panelů
+    public static IconView LeftIconView = new(LeftStore), RightIconView = new(RightStore); //Objekty pro zobrazení ikon
 
-    public static ListStore LeftStore = CreateStore(), RightStore = CreateStore();
-    public static ScrolledWindow LeftScrolledWindow = new(), RightScrolledWindow = new();
-    public static IconView LeftIconView = new(LeftStore), RightIconView = new(RightStore);
-
+    //Zásobníky pro historii adresářů
     public static Stack<DirectoryInfo> LeftHistory = new();
     public static Stack<DirectoryInfo> LeftHistoryForward = new();
     public static Stack<DirectoryInfo> RightHistory = new();
     public static Stack<DirectoryInfo> RightHistoryForward = new();
 
+    //Textová pole zobrazující název aktuálního adresáře
     public static Label LeftRootLabel = new("Current directory: " + LeftRoot);
     public static Label RightRootLabel = new("Current directory: " + RightRoot);
 
     public static Toolbar LeftDiskBar = new(), RightDiskBar = new();
 
-    public static int FocusedPanel;
+    //Určuje, který panel je aktuálně soustředěn - nastavována z třídy TwinPanels. 1 = levý panel, 2 = pravý panel
+    private static int _focusedPanel;
 
+    //"Hlavičky" panelů, obsahující navigační tlačítka, ikony disků a název adresáře
     private static HBox _leftTwinPanelHeader = new HBox(true, 0);
     private static HBox _rightTwinPanelHeader = new HBox(true, 0);
 
@@ -171,18 +177,18 @@ public class App : Gtk.Window
     * Dostupné z: https://zetcode.com/gtksharp/advancedwidgets/
     * Upraveno.
     */
-    public static DirectoryInfo OnItemActivated(ItemActivatedArgs a, DirectoryInfo root, ListStore store,
+    public static DirectoryInfo OnItemActivated(ItemActivatedArgs args, DirectoryInfo root, ListStore store,
         Stack<DirectoryInfo> history, Stack<DirectoryInfo> historyForward)
     {
-        store.GetIter(out var iter, a.Path);
+        store.GetIter(out var iter, args.Path);
         var path = (string) store.GetValue(iter, ColPath);
         var isDir = (bool) store.GetValue(iter, ColIsDirectory);
 
         if (!isDir)
             return root;
 
-        history.Push(root);
-        historyForward.Clear();
+        history.Push(root); //Uložení aktuální složky do historie "zpět" (GC)
+        historyForward.Clear(); //Při otevření složky se maže historie "dopředu"
 
         root = new DirectoryInfo(path);
         FillStore(store, root);
@@ -190,13 +196,14 @@ public class App : Gtk.Window
         return root;
     }
     /* Konec citace */
-    public static int GetFocusedWindow() => FocusedPanel;
+    public static int GetFocusedPanel() => _focusedPanel;
+    public static void SetFocusedPanel(int panel) => _focusedPanel = panel;
 
     public static Item[] GetSelectedItems()
     {
-        var selection = FocusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
+        var selection = _focusedPanel == 1 ? LeftIconView.SelectedItems : RightIconView.SelectedItems;
 
-        var store = FocusedPanel == 1 ? LeftStore : RightStore;
+        var store = _focusedPanel == 1 ? LeftStore : RightStore;
         var files = new Item[selection.Length];
 
         for (var i = 0; i < selection.Length; i += 1)

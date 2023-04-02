@@ -123,9 +123,16 @@ Vrací vytvořený objekt ListStore, do něhož následně budou načítány iko
 Funkce FillStore iteruje skrze veškeré složky nalezené v adresáři, který je jí předán v parametru root, a do předaného objektu ListStore je přidává s ikonou složky. Obdobně postupuje při iterování dostupnými soubory v předaném adresáři root. Pokud je uživatelem zapnuta možnost zobrazení skrytých položek (začínajících tečkou), přidává i tyto položky, v opačném případě je vynechává.
 Funkce vytváří vlastní ikony souboru a složky, přestože je knihovna Gtk obsahuje. Je to z důvodu minimalizace problémů se spuštěním - některá témata ikon soubor gtk-file obsahují, jiná ne.
 
+#### OnItemActivated()
+Tato funkce je volána z EventHandleru panelů zobrazujících soubory při rozkliknutí položky. Nad předaným objektem ListStore zavolají metodu GetIter - ta vrátí iterátor, s nímž můžeme procházet zobrazené položky. Pomocí metody GetValue pak získáme cestu k položce a informaci o tom, zda je složkou. Pokud není, otevřít ji nemůžeme a funkce vrací současný adresář - nic se neděje. Pokud je položka složkou, do zásobníku historie se přidá aktuální adresář a smaže se zásobník pro procházení historie ve směru vpřed. Získají se informace o obsahu rozkliknuté složky, objekt Store se vyplní obsahem rozkliknuté složky a funkce vrací cestu rozkliknuté složky.
 
+#### Get/SetFocusedPanel()
+Vrací/nastavuje hodnotu privátní proměnné  \_focusedPanel. Je-li hodnota rovna 1, je soustředěný levý panel, je-li rovna 2, pravý.  
 
-
+#### GetSelectedItems()
+Funkce nejprve získá pole označených položek (selection). Aktuálně soustředěný panel (FocusedPanel) porovná s hodnotou 1 - pokud se hodnoty rovnají, soustředěný je levý panel, v opačném případě je soustředěn panel pravý. Následně získá property SelectedItems pro příslušný objekt IconView. Stejným porovnáním pak získá pro soustředěný panel i objekt ListStore.
+Poté funkce iteruje skrze položky v poli selection a ukládá je do nového pole files jako objekty typu Item. Tento způsob iterace je stejný jako u funkce FillStore(), jen s tím rozdílem, že zde iterujeme pouze skrze pole označených položek, kdežto ve FillStore() probíhá iterace skrze celý adresář.
+Funkce nakonec vrací pole objektů typu Item.
 
 
 

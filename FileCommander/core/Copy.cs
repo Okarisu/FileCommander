@@ -31,7 +31,7 @@ public partial class Core
 
 
         //Fukus na levém panelu => přesouvá se do pravého
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+        var destinationPath = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
 
         foreach (var item in items)
         {

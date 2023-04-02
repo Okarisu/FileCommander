@@ -38,7 +38,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+        var destinationPath = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
 
         var fileSuffixes = new Queue<int>();
         var folderSuffixes = new Queue<int>();

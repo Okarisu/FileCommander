@@ -25,7 +25,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+        var destinationPath = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
         var duplicateFilesOccured = false;
 
         foreach (var item in items)

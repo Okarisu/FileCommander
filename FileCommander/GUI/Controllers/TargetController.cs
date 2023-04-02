@@ -17,11 +17,11 @@ public class TargetController
         string root;
         if (promptedTargetPanel.targetHere)
         {
-            root = (GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot).ToString();
+            root = (GetFocusedPanel() == 1 ? App.LeftRoot : RightRoot).ToString();
         }
         else
         {
-            root = (GetFocusedWindow() == 1 ? RightRoot : App.LeftRoot).ToString();
+            root = (GetFocusedPanel() == 1 ? RightRoot : App.LeftRoot).ToString();
         }
 
         var cancel = promptedTargetPanel.cancel;
