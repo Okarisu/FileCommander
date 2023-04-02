@@ -21,21 +21,7 @@ public class PromptConfirmDialogWindow : Dialog
 
         var requestLabel = new Label(prompt);
         dialog.ContentArea.PackStart(requestLabel, true, true, 0);
-
-
-        KeyPressEvent += (o, args) =>
-        {
-            var key = Console.ReadKey();
-            switch (key.Key)
-            {
-                case ConsoleKey.Enter:
-                    _isConfirmed = true;
-                    break;
-                case ConsoleKey.Escape:
-                    dialog.Destroy();
-                    break;
-            }
-        };
+     
         
         if (GetConf(promptSettingsKey))
         {

@@ -166,7 +166,22 @@ Funkce posouvající uživatele dopředu v historii navštívených složek. Pok
 Tato třída zpracovává požadavky funkcí třídy Core ohledně cílového adresáře a názvu položky.
 
 ##### GetTargetPanel()
-Tato funkce 
+Funkce volá konstruktor dialogového okna PromptTargetPanelDialog, z jehož instance následně funkcí GetTargetPanel() získá tuple obsahující cílový panel a signál cancel. Pokud je hodnota targetHere true, uživatel chce akci provést do soustředěného panelu - root se tedy nastaví pomocí již popsaného způsobu porovnáním hodnoty vrácené funkcí GetFocusedPanel. Pokud je hodnota targetHere false, uživatel si přeje akci provést do vedlejšího panelu a v tom případě se v porovnávací podmínce prohodí levý a pravý root. 
+Následně se uloží hodnota cancel a v dialogu se vynuluje, aby se všechny následující akce samy nerušily. Nakonec jsou vráceny hodnoty root a cancel.
+
+##### GetTargetPath()
+Tato funkce volá konstruktor dialogu PromptPathInputDialogWindow ve smyčce do - while, přičemž od uživatele požaduje buď validní vstup (tedy takový, který není prázdný string), nebo zrušení operace. Z instance dialogu získává cestu (path), signál cancel a hodnotu určující, zda bude k názvům připojována přípona. Tyto hodnoty vrací v objektu tuple.
+
+### Namespace Dialogs
+Do tohoto namespace jsou sdruženy všechny třídy dialogových oken.
+
+#### Třída PromptUserDialogWindow
+Tato třída obsahuje pouze konstruktor dialogu pro oznámení zprávy uživateli pomocí jednoduchého dialogového okna. Jako argument se konstruktoru předává zpráva a okno obsahuje jediné tlačítko - Close.
+
+#### Třída ProgressDialogWindow
+Tato třída je v podstatě totožná s třídou PromptUserDialogWindow, jediným rozdílem je namísto tlačítka Close tlačítko Ok a smyčka zabraňující zamrznutí uživatelského rzohranní, kterou jsem již popsal v části Core.
+
+#### Třída 
 
 
 

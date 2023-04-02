@@ -17,10 +17,12 @@ public abstract class TargetController
         string root;
         if (promptedTargetPanel.targetHere)
         {
+            //Cíl je v soustředěném panelu
             root = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
         }
         else
         {
+            //Cíl je ve vedlejším panelu
             root = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
         }
 

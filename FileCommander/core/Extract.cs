@@ -31,6 +31,7 @@ public partial class Core
 
         var notArchiveFilesOccured = false;
         var duplicateArchiveFilesOccured = false;
+        new ProgressDialogWindow("Extracting...");
         foreach (var item in items)
         {
             //Přeskočení souborů, které nejsou archivy (CG)

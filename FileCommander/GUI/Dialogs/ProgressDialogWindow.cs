@@ -14,21 +14,10 @@ public class ProgressDialogWindow : Dialog
             DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, prompt);
         _dialog.Resizable = false;
         
-        while(Application.EventsPending()) Application.RunIteration();
+        while(Application.EventsPending())
+            Application.RunIteration();
+        
         _dialog.GrabFocus();
-/*
-        _dialog.Response += delegate(object _, ResponseArgs args)
-        {
-            Console.WriteLine(args.ResponseId);
-            if ((int) args.ResponseId == 1) //OK
-            {
-               
-            }
-            else
-            {
-                _dialog.Destroy();
-            }
-        }*/
         _dialog.ShowAll();
         _dialog.Run();
         _dialog.Destroy();
