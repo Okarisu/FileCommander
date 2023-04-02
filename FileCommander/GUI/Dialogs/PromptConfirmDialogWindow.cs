@@ -51,6 +51,7 @@ public class PromptConfirmDialogWindow : Dialog
         return consent;
     }
 
+    //Následující funkce byla generována GitHub Copilotem
     private void OnToggle(object sender, EventArgs args)
     {
         var button = (CheckButton) sender;

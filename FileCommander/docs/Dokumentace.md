@@ -188,6 +188,13 @@ Konstruktor této třídy zobrazí uživateli okno s výběrem cílového panelu
 Třída tohoto dialogového okna získává od uživatele název vytvářené položky. Pokud je třeba uživatele informovat o příponách u souborů, jako je tomu u blokového přejmenovávání, je do okna dialogu přidáno textové pole objektem Label. Okno obsahuje okénko pro vstup typu Entry, z níž je po potvrzení volby uživatelem získán zadaný text. V případě zrušení je cesta vynulována a příznak Cancel nastaven na true. Zadané hodnoty se z instance získají zavoláním funkce GetPath, která je vrácí v objektu tuple.
 
 #### Třída PromptConfirmDialogWindow
+Dialogové okno této třídy se dotazuje uživatele na souhlas s operací při mazání a kopírování duplicitních souborů. V argumentech je konstruktoru předán klíč, pod nímž může být následně uživatelem nastavena možnost "již se nedotazovat". Pokud uživatel tuto možnost zaškrtne, ve funkci OnToggle je zavolána funkce SetConf s klíčem předaným konstruktoru a argumentem true. Pokud by si uživatel nastavení rozmyslel, může možnost ještě odškrtnout - v tom případě ji funkce OnToggle nastaví na false. Po potvrzení akce se proměnná isConfirmed nastaví na true a její hodnotu je možné získat voláním funkce IsConfirmed().
+
+
+
+
+
+
 
 
 
