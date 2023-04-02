@@ -61,7 +61,7 @@ public class App : Gtk.Window
         Add(windowContainer);
         var menuBar = DrawMenu.DrawMenuBar();
         windowContainer.PackStart(menuBar, false, true, 0);
-        var toolbar = TopToolbar.DrawToolbar();
+        var toolbar = TopToolbar.DrawTopToolbar();
         windowContainer.PackStart(toolbar, false, true, 0);
 
         //Nastavení kontejneru pro dvojici panelů (GC)

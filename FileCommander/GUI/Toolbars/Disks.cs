@@ -26,7 +26,6 @@ public abstract class Disks
         var diskBar = new Toolbar();
         var diskButtons = new List<ToolButton>();
         diskBar.ToolbarStyle = ToolbarStyle.Both;
-        DirectoryInfo MNT;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -35,7 +34,7 @@ public abstract class Disks
             {
                 return diskBar;
             }
-            foreach (var mnt in new DirectoryInfo(GetMountLocation().location).GetDirectories())
+            foreach (var mnt in new DirectoryInfo(mount.location).GetDirectories())
             {
                 var diskButton = new ToolButton(new Image(Stock.Harddisk, IconSize.SmallToolbar), mnt.Name);
                 diskButton.Clicked += (_, _) =>

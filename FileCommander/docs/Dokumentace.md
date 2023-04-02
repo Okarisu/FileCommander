@@ -190,10 +190,34 @@ Třída tohoto dialogového okna získává od uživatele název vytvářené po
 #### Třída PromptConfirmDialogWindow
 Dialogové okno této třídy se dotazuje uživatele na souhlas s operací při mazání a kopírování duplicitních souborů. V argumentech je konstruktoru předán klíč, pod nímž může být následně uživatelem nastavena možnost "již se nedotazovat". Pokud uživatel tuto možnost zaškrtne, ve funkci OnToggle je zavolána funkce SetConf s klíčem předaným konstruktoru a argumentem true. Pokud by si uživatel nastavení rozmyslel, může možnost ještě odškrtnout - v tom případě ji funkce OnToggle nastaví na false. Po potvrzení akce se proměnná isConfirmed nastaví na true a její hodnotu je možné získat voláním funkce IsConfirmed().
 
+### Namespace Toolbars
+Zde jsou sdruženy všechny prvky, které vykreslují obsah navigačních lišt.
 
+#### Třída TopToolbar a funkce DrawTopToolbar()
+Tato funkce vytvoří objekt typu Toolbar a nastaví její styl zobrazení na ToolbarStyle.Both - ikony i jejich popis. Dále vytvoří jednotlivá tlačítka nástrojové lišty, přidjá je do objektu toolbar a připojí k jejich EventHandleru Clicked odpovídající funkci třídy Core nebo NavigationController. Mezi tlačítky s podobným typem operace jsou pro přehlednost grafického rozhranní umístěny svislé oddělovací prvky.
 
+#### Třída TwinToolbars
+Třída TwinToolbars obsahuje funkce pro vykreslení obou nástrojových lišt paralelních panelů.  Narazil jsem na potíže při sjednocování těchto dvou funkcí do jedné, volané s odlišnými argumenty, a proto vytvářím každou lištu ve své vlastní funkci. 
 
+Tyto funkce jsou velmi podobné funkci DrawTopToolbar() - vytváří objekt Toolbar a tlačítka pro navigaci, připojují k nim odpovídající funkce z třídy NavigationController, přidávají tlačítka do Toolbar objektu a ten poté vrací.
 
+#### Třída DrawMenu 
+Tato třída ve funkci DrawMenuBar() vytváří novou menu lištu a vkládá do ní kategorii View. Do té následně vkládá 2 položky - "zobrazit skryté soubory" a "zobrazit připojené disky". Každou pološku lze zaškrtnou a odškrtnout, což má za následek příspušnou akci.
+
+Pro obě položky si funkce načte uloženou preferenci a podle její hodnoty zobrazí položku jako zaškrtnutou, nebo odškrtnutou. Následně jejímu EvengtHandleru Toggled připojí lambdou funkci nastavující tuto preferenci podle stavu položky.
+
+#### Třída Disks
+Třída Disks obsahuje jednu hlavní funkci, která vykresluje tlačítka připojených disků, a jednu vedlejší, která na linuxu zjišťuje lokaci disků.
+
+Funkce DrawDiskBar na začátku vytvoří objekt Toolbar a List objektů Toolbutton. Poté již funkce probíhá podle toho, zda program běží na linuxu, nebo na Windows. 
+
+V případě linuxu je nejrpve zavolána funkce GetMountLocation(), která z konfiguračního souboru získá cestu k adresáři, kam jsou připojovány disky. Uživatel může tuto cestu přepsat, pokud má disky připojeny jinde, než na cestě /run/media/{UserName}/. Uživatelské jméno může být buď do souboru napsáno přímo, nebo může být použit řetězec {UserName}, který je poté v kódu nahrazen uživatelským jménem aktuálního uživatele. Funkce vrací informaci o tom, zda přípojná cesta existuje, a cestu k ní. Pokud cesta neexistuje, vrací spolu s hodnotou false i prázdný řetězec. 
+
+Pokud cesta neexistuje, vrací hlavní funkce prázdný objekt Toolbar. Pokud existuje, iteruje skrz adresáře nalezené v přípojné složce a pro každou složku vytváří nové tlačítko. Tlačítku přidává název složky a jeho EventHandleru Clicked připojuje lambda funkci pro změnu adresáře na příslušný disk. Tlačítko nakonec přidává do Listu tlačítek a pokračuje v iteraci. 
+
+Pro OS Windows probíhá proces podobně s tou výjimkou, že program iteruje skrze pole disků vrácené voláním metody DriveInfo.GetDrives().
+
+Na konci funkce jsou do Toolbaru vložena všechna tlačítka disků a Toolbar je funkcí vrácen.
 
 
 

@@ -11,15 +11,21 @@ using System.Text;
 
 public abstract class DrawMenu
 {
+    
+    /*
+     * Menus in GTK#: Simple menu. ZetCode [online]. 6. 1. 2022 [cit. 2023-04-02].
+     * Dostupné z: https://zetcode.com/gtksharp/menus/
+     * Značně upraveno. 
+     */
     public static MenuBar DrawMenuBar()
     {
         MenuBar menuBar = new MenuBar();
-        Menu viewmenu = new Menu();
+        Menu viewMenu = new Menu();
         MenuItem view = new MenuItem("View");
-        view.Submenu = viewmenu;
+        view.Submenu = viewMenu;
 
         CheckMenuItem showHiddenFiles = new CheckMenuItem("Show hidden files");
-        viewmenu.Append(showHiddenFiles);
+        viewMenu.Append(showHiddenFiles);
         if (Settings.GetConf("ShowHiddenFiles"))
         {
             showHiddenFiles.Active = true;
@@ -44,7 +50,7 @@ public abstract class DrawMenu
         };
 
         CheckMenuItem showMountedDrives = new CheckMenuItem("Show mounted drives");
-        viewmenu.Append(showMountedDrives);
+        viewMenu.Append(showMountedDrives);
         if (Settings.GetConf("ShowMountedDrives"))
         {
             showMountedDrives.Active = true;
