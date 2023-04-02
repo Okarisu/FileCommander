@@ -1,50 +1,36 @@
-using Gtk;
-
 namespace FileCommander.GUI.Dialogs;
 
+using System;
+using System.IO;
+using Gtk;
 using static Settings;
 
 public class PromptConfirmDialogWindow : Dialog
 {
-    private static Gtk.Dialog _dialog;
-    private static bool _isConfirmed = false;
-    private static string PromptSettingsKey { get; set; }
+    private static bool _isConfirmed;
+    private static string? PromptSettingsKey { get; set; }
 
-    public PromptConfirmDialogWindow(string title, string prompt, string promptSettingsKey)
+    public PromptConfirmDialogWindow(string title, string prompt, string? promptSettingsKey)
     {
         PromptSettingsKey = promptSettingsKey;
 
-        _dialog = new Gtk.Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
+        var dialog = new Dialog(title, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel, Stock.Ok,
             ButtonsType.Ok);
-        _dialog.Resizable = false;
+        dialog.Resizable = false;
 
 
         var requestLabel = new Label(prompt);
-        _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
-
-
-        KeyPressEvent += (o, args) =>
-        {
-            var key = Console.ReadKey();
-            switch (key.Key)
-            {
-                case ConsoleKey.Enter:
-                    _isConfirmed = true;
-                    break;
-                case ConsoleKey.Escape:
-                    _dialog.Destroy();
-                    break;
-            }
-        };
+        dialog.ContentArea.PackStart(requestLabel, true, true, 0);
+     
         
         if (GetConf(promptSettingsKey))
         {
             var promptSettingsButton = new CheckButton("Don't ask again");
             promptSettingsButton.Toggled += OnToggle;
-            _dialog.ContentArea.PackStart(promptSettingsButton, true, true, 0);
+            dialog.ContentArea.PackStart(promptSettingsButton, true, true, 0);
         }
 
-        _dialog.Response += delegate(object _, ResponseArgs args)
+        dialog.Response += delegate(object _, ResponseArgs args)
         {
             if ((int) args.ResponseId == 1) //OK
             {
@@ -53,9 +39,9 @@ public class PromptConfirmDialogWindow : Dialog
         };
 
 
-        _dialog.ShowAll();
-        _dialog.Run();
-        _dialog.Destroy();
+        dialog.ShowAll();
+        dialog.Run();
+        dialog.Destroy();
     }
 
     public static bool IsConfirmed()
@@ -65,6 +51,7 @@ public class PromptConfirmDialogWindow : Dialog
         return consent;
     }
 
+    //Následující funkce byla generována GitHub Copilotem
     private void OnToggle(object sender, EventArgs args)
     {
         var button = (CheckButton) sender;

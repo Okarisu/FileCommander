@@ -16,8 +16,12 @@
         <EmbeddedResource Include="config.yaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
-        <None Remove="icons\icon_move.png" />
-        <None Remove="icons\mov.png" />
+        <EmbeddedResource Include="icons\file.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Update="icons\folder.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

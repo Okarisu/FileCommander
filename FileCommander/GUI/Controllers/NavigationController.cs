@@ -1,14 +1,16 @@
 // ReSharper disable ObjectCreationAsStatement
 
-using Gtk;
-
 namespace FileCommander.GUI.Controllers;
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gtk;
 using static App;
 
 public abstract class NavigationController
 {
-    public static DirectoryInfo OnHomeClicked(EventArgs e, ListStore store)
+    public static DirectoryInfo OnHomeClicked(ListStore store)
     {
         var root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
@@ -25,12 +27,35 @@ public abstract class NavigationController
         return root.Parent;
     }
 
-    public static void OnRefreshClicked(object sender, EventArgs e)
+    public static DirectoryInfo OnBackClicked(DirectoryInfo root, Stack<DirectoryInfo> history,
+        Stack<DirectoryInfo> historyForward, ListStore store)
     {
-        Refresh();
+        if (history.Count == 0)
+            return root;
+
+        historyForward.Push(root);
+        FillStore(store, history.Peek());
+        return history.Pop();
     }
 
-    public static void Refresh()
+    public static DirectoryInfo OnForwardClicked(DirectoryInfo root, Stack<DirectoryInfo> history,
+        Stack<DirectoryInfo> historyForward, ListStore store)
+    {
+        if (historyForward.Count == 0)
+            return root;
+
+        history.Push(root);
+        FillStore(store, historyForward.Peek());
+        return historyForward.Pop();
+    }
+
+    public static void OnRefreshClicked(object sender, EventArgs e)
+    {
+        RefreshIconViews();
+    }
+
+    //Obnovení zobrazení položek v obou panelech
+    public static void RefreshIconViews()
     {
         FillStore(LeftStore, LeftRoot);
         FillStore(RightStore, RightRoot);

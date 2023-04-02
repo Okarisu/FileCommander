@@ -2,19 +2,23 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System;
+using System.IO;
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
 using static PromptConfirmDialogWindow;
 
 public partial class Core
 {
-    const string promptCkey = "PromptDuplicitFileCopy";
+    private const string? PromptCopyKey = "PromptDuplicityFileCopy";
+
 
     public static void OnCopyClicked(object sender, EventArgs e)
     {
@@ -27,16 +31,12 @@ public partial class Core
 
 
         //Fukus na levém panelu => přesouvá se do pravého
-        var destinationPath = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
-
-
-        //Thread thread = new Thread(ProgressBarDialogWindow.StartCopyBar);
-        //thread.Start();
+        var destinationPath = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
 
         foreach (var item in items)
         {
             var childDestinationPath = Path.Combine(destinationPath, item.Name!);
-            var promptAskAgain = Settings.GetConf(promptCkey);
+            var promptAskAgain = Settings.GetConf(PromptCopyKey);
 
             if (item.IsDirectory)
             {
@@ -44,12 +44,13 @@ public partial class Core
                 {
                     if (promptAskAgain)
                     {
-                        new PromptConfirmDialogWindow("Are you sure?", "Directory with this name already exists.",
-                            promptCkey);
+                        new PromptConfirmDialogWindow("Are you sure?", $"Directory with name {item.Name} already exists.",
+                            PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }
 
+                    //Část kódu pro přejmenování složky při kolizi - zjištění počtu složek s tímto jménem
                     var foldersFound = new DirectoryInfo(destinationPath);
                     int duplicateFolders = 0;
                     foreach (DirectoryInfo dir in foldersFound.GetDirectories())
@@ -65,10 +66,19 @@ public partial class Core
                         duplicateFolders++;
                         childDestinationPath += $" ({duplicateFolders})";
                     }
-
                 }
 
-                RecursiveCopyDirectory(item.Path, childDestinationPath);
+                //Kopírování složky (GC)
+                var handler = new ProcessHandler(item.Path, childDestinationPath, true);
+                var thread = new Thread(handler.Copy);
+                thread.Start();
+
+                //Cyklus zajišťující to, aby GUI nezamrzlo (GC)
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
             else
             {
@@ -76,23 +86,24 @@ public partial class Core
                 {
                     if (promptAskAgain)
                     {
-                        new PromptConfirmDialogWindow("Are you sure?", "File with this name already exists.",
-                            promptCkey);
+                        new PromptConfirmDialogWindow("Are you sure?", $"File with name {item.Name} already exists.",
+                            PromptCopyKey);
                         var consent = IsConfirmed();
                         if (!consent) continue;
                     }
 
 
-                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    //Část kódu pro přejmenování souboru při kolizi (GC)
+                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky (GC)
                     var extension = cleanFilename[^1]; //koncovka souboru; ^1 = poslední prvek pole
                     var filename = cleanFilename[0]; //jméno souboru bez koncovky
-                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
+                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka (GC)
                     {
                         for (var i = 0; i < cleanFilename.Length - 2; i++)
                             filename += "." + cleanFilename[i];
                     }
 
-
+                    //Zjištění počtu souborů s tímto jménem (GC)
                     var filesFound = new DirectoryInfo(destinationPath);
                     int duplicateFiles = 0;
                     foreach (FileInfo file in filesFound.GetFiles())
@@ -112,42 +123,22 @@ public partial class Core
                     }
                 }
 
-                File.Copy(item.Path, childDestinationPath);
+                //Kopírování souboru (GC)
+                var handler = new ProcessHandler(item.Path, childDestinationPath, false);
+                var thread = new Thread(handler.Copy);
+                thread.Start();
+
+                //Cyklus zajišťující to, aby GUI nezamrzlo (GC)
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
+
+            RefreshIconViews();
         }
 
-        //thread.Interrupt();
-        Refresh();
         new PromptUserDialogWindow("Finished copying files.");
     }
-
-    /*
-     * MICROSOFT. How to: Copy directories. Microsoft: Microsoft Learn [online]. [cit. 2023-03-11].
-     * Dostupné z: https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories.
-     * Upraveno.
-     */
-
-    private static void RecursiveCopyDirectory(string sourceDirectory, string destinationDirectory)
-    {
-        var dir = new DirectoryInfo(sourceDirectory);
-
-        // Cache directories before start of copying
-        DirectoryInfo[] dirs = dir.GetDirectories();
-
-        Directory.CreateDirectory(destinationDirectory);
-
-        foreach (FileInfo file in dir.GetFiles())
-        {
-            var targetFilePath = Path.Combine(destinationDirectory, file.Name);
-            file.CopyTo(targetFilePath);
-        }
-
-        foreach (DirectoryInfo subDir in dirs)
-        {
-            var newDestinationDir = Path.Combine(destinationDirectory, subDir.Name);
-            RecursiveCopyDirectory(subDir.FullName, newDestinationDir);
-        }
-    }
-
-    /* Konec citace */
 }

@@ -2,15 +2,15 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
-using FileCommander.GUI.Controllers;
-using FileCommander.GUI.Dialogs;
-using static FileCommander.GUI.Controllers.TargetController;
-
 namespace FileCommander.core;
 
+using System;
+using System.IO;
 using GUI;
+using GUI.Dialogs;
+using static GUI.Controllers.TargetController;
 using static GUI.App;
-using static NavigationController;
+using static GUI.Controllers.NavigationController;
 
 public partial class Core
 {
@@ -23,7 +23,6 @@ public partial class Core
             return;
         }
 
-        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
         (string Name, bool Cancel, bool addSuffix) newFilename;
         if (items.Length == 1)
         {
@@ -39,7 +38,7 @@ public partial class Core
             return;
         }
 
-        var destinationPath = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+        var destinationPath = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
 
         var fileSuffixes = new Queue<int>();
         var folderSuffixes = new Queue<int>();
@@ -54,6 +53,12 @@ public partial class Core
 
         foreach (var item in items)
         {
+            if (item.Path.Contains(Directory.GetCurrentDirectory()))
+            {
+                new PromptUserDialogWindow("Cannot rename system files.");
+                continue;
+            }
+
             if (item!.IsDirectory)
             {
                 var childDestinationPath = Path.Combine(destinationPath, newFilename.Name);
@@ -62,13 +67,51 @@ public partial class Core
                     childDestinationPath += "_" + folderSuffixes.Dequeue();
                 }
 
-                Directory.Move(item.Path, childDestinationPath);
+                try
+                {
+                    Directory.Move(item.Path, childDestinationPath);
+                }
+                catch (ArgumentNullException)
+                {
+                    new PromptUserDialogWindow("Name cannot be null.");
+                    return;
+                }
+                catch (PathTooLongException)
+                {
+                    new PromptUserDialogWindow("The specified name exceeded the system-defined maximum length.");
+                    return;
+                }
+                catch (ArgumentException)
+                {
+                    new PromptUserDialogWindow("Malformed name");
+                    return;
+                }
+                catch (IOException)
+                {
+                    new PromptUserDialogWindow("Parent directory is read-only.");
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    new PromptUserDialogWindow("Access to the path is denied.");
+                    return;
+                }
+                catch (NotSupportedException)
+                {
+                    new PromptUserDialogWindow("The specified name is in an invalid format.");
+                    return;
+                }
+                catch (Exception)
+                {
+                    new PromptUserDialogWindow("Unknown error has occured.");
+                    return;
+                }
             }
             else
             {
                 var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
                 var childDestinationPath = Path.Combine(destinationPath, newFilename.Name + "." +
-                    cleanFilename[cleanFilename.Length - 1]);
+                                                                         cleanFilename[^1]); //přidání koncovky
                 if (newFilename.addSuffix)
                 {
                     childDestinationPath = Path.Combine(destinationPath,
@@ -76,10 +119,48 @@ public partial class Core
                         cleanFilename[1]);
                 }
 
-                File.Move(item.Path, childDestinationPath);
+                try
+                {
+                    File.Move(item.Path, childDestinationPath);
+                }
+                catch (ArgumentNullException)
+                {
+                    new PromptUserDialogWindow("Name cannot be null.");
+                    return;
+                }
+                catch (PathTooLongException)
+                {
+                    new PromptUserDialogWindow("The specified name exceeded the system-defined maximum length.");
+                    return;
+                }
+                catch (ArgumentException)
+                {
+                    new PromptUserDialogWindow("Malformed name");
+                    return;
+                }
+                catch (IOException)
+                {
+                    new PromptUserDialogWindow("Parent directory is read-only.");
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    new PromptUserDialogWindow("Access to the path is denied.");
+                    return;
+                }
+                catch (NotSupportedException)
+                {
+                    new PromptUserDialogWindow("The specified name is in an invalid format.");
+                    return;
+                }
+                catch (Exception)
+                {
+                    new PromptUserDialogWindow("Unknown error has occured.");
+                    return;
+                }
             }
         }
 
-        Refresh();
+        RefreshIconViews();
     }
 }

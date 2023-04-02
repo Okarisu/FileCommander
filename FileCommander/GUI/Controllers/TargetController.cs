@@ -1,28 +1,35 @@
 using FileCommander.GUI.Dialogs;
 
 namespace FileCommander.GUI.Controllers;
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gtk;
 using static PromptPathInputDialogWindow;
 using static App;
 
-public class TargetController
+public abstract class TargetController
 {
     public static (string root, bool cancel) GetTargetPanel(string operation)
     {
-        var promptedTargetPanel = new PromptTargetPanelDialog(operation).GetTargetPanel();
+        var promptedTargetPanel = new PromptTargetPanelDialogWindow(operation).GetTargetPanel();
 
         string root;
         if (promptedTargetPanel.targetHere)
         {
-            root = (GetFocusedWindow() == 1 ? LeftRoot : RightRoot).ToString();
+            //Cíl je v soustředěném panelu
+            root = (GetFocusedPanel() == 1 ? LeftRoot : RightRoot).ToString();
         }
         else
         {
-            root = (GetFocusedWindow() == 1 ? RightRoot : LeftRoot).ToString();
+            //Cíl je ve vedlejším panelu
+            root = (GetFocusedPanel() == 1 ? RightRoot : LeftRoot).ToString();
         }
 
-
-        return (root, promptedTargetPanel.cancel);
+        var cancel = promptedTargetPanel.cancel;
+        PromptTargetPanelDialogWindow.NullPrompt();
+        
+        return (root, cancel);
     }
 
     public static (string path, bool cancel, bool addSuffix) GetTargetPath(string dialogTitle, bool promptSuffix)

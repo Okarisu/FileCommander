@@ -1,14 +1,18 @@
-using Gtk;
-
 namespace FileCommander.GUI.Dialogs;
 
-public class PromptTargetPanelDialog : Dialog
+using System;
+using System.IO;
+using Gtk;
+
+public class PromptTargetPanelDialogWindow : Dialog
 {
+    public const int ResponseIdOk = 1;
+    private const int ResponseIdYes = 4;
     private static Dialog _dialog { get; set; }
     private static bool _targetHere { get; set; }
-    private static bool _cancel { get; set; }
+    private static bool _cancel;
 
-    public PromptTargetPanelDialog(string operation)
+    public PromptTargetPanelDialogWindow(string operation)
     {
         _dialog = new Dialog(operation, this, DialogFlags.DestroyWithParent, Stock.Cancel, ButtonsType.Cancel,
             operation+" aside", ButtonsType.YesNo, operation+" here", ButtonsType.Ok);
@@ -19,17 +23,14 @@ public class PromptTargetPanelDialog : Dialog
         {
             switch ((int) args.ResponseId)
             {
-                //OK
-                case 1:
+                case ResponseIdOk:
                     _targetHere = true;
                     break;
-                //Yes
-                case 2:
+                case ResponseIdYes:
                     _targetHere = false;
                     break;
                 default:
                     _cancel = true;
-                    //_dialog.Destroy();
                     break;
             }
         };
@@ -39,6 +40,11 @@ public class PromptTargetPanelDialog : Dialog
     }
 
     public (bool targetHere, bool cancel) GetTargetPanel() => (_targetHere, _cancel);
+
+    public static void NullPrompt()
+    {
+        _cancel = false;
+    }
 
     
 }

@@ -2,13 +2,18 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System;
+using System.IO;
+using System.IO.Compression;
+using FileCommander.GUI;
+using FileCommander.GUI.Controllers;
+using FileCommander.GUI.Dialogs;
+using Gtk;
+
 namespace FileCommander.core;
 
-using GUI.Controllers;
-using GUI.Dialogs;
-using static GUI.App;
-using static GUI.Controllers.NavigationController;
-using System.IO.Compression;
+using static App;
+using static NavigationController;
 
 public partial class Core
 {
@@ -34,8 +39,20 @@ public partial class Core
             }
             else
             {
-                ZipFile.CreateFromDirectory(items[0]!.Path, targetPath);
+                //Komprimování složky
+                var handler = new ProcessHandler(items[0]!.Path, targetPath, true);
+                var thread = new Thread(handler.Compress);
+                thread.Start();
+
+                //Cyklus zajišťující to, aby GUI nezamrzlo
+                while (thread.IsAlive)
+                {
+                    while (Application.EventsPending())
+                        Application.RunIteration();
+                }
             }
+
+            RefreshIconViews();
         }
         else
         {
@@ -48,26 +65,91 @@ public partial class Core
                 new PromptUserDialogWindow("Archive with this name already exists.");
                 return;
             }
-            
-            var tmpDirPath = Path.Combine(promptedTarget.root, archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            Directory.CreateDirectory(tmpDirPath);
+            //Vytvoření dočasné složky (GC)
+            var tmpDirPath = Path.Combine(promptedTarget.root,
+                archiveName.path + "_tmp_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            try
+            {
+                Directory.CreateDirectory(tmpDirPath);
+            }
+            catch (PathTooLongException)
+            {
+                new PromptUserDialogWindow("The specified archive name exceeded the system-defined maximum length.");
+                return;
+            }
+            catch (ArgumentException)
+            {
+                new PromptUserDialogWindow("Malformed archive name");
+                return;
+            }
+            catch (IOException)
+            {
+                new PromptUserDialogWindow("Parent directory is read-only.");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                new PromptUserDialogWindow("Access to the path is denied.");
+                return;
+            }
+            catch (NotSupportedException)
+            {
+                new PromptUserDialogWindow("The specified archive name is in an invalid format.");
+                return;
+            }
+            catch (Exception)
+            {
+                new PromptUserDialogWindow("Unknown error has occured.");
+                return;
+            }
 
+            new ProgressDialogWindow("Compressing...");
             foreach (var item in items)
             {
                 if (item!.IsDirectory)
                 {
-                    RecursiveCopyDirectory(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                    //Zkopírování složky do dočasné složky (GC)
+                    var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), true);
+                    var thread = new Thread(handler.Copy);
+                    thread.Start();
+
+                    while (thread.IsAlive)
+                    {
+                        while (Application.EventsPending())
+                            Application.RunIteration();
+                    }
                 }
                 else
                 {
-                    File.Copy(item.Path, Path.Combine(tmpDirPath, item.Name!));
+                    //Zkopírování souboru do dočasné složky (GC)
+                    var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), false);
+                    var thread = new Thread(handler.Copy);
+                    thread.Start();
+
+                    while (thread.IsAlive)
+                    {
+                        while (Application.EventsPending())
+                            Application.RunIteration();
+                    }
                 }
             }
-            ZipFile.CreateFromDirectory(tmpDirPath, archiveTargetPath);
-            Directory.Delete(tmpDirPath, true);
-        }
 
-        Refresh();
+            //Komprimování dočasné složky (GC)
+            var zipHandler = new ProcessHandler(tmpDirPath, archiveTargetPath, false);
+            var zipThread = new Thread(zipHandler.Compress);
+            zipThread.Start();
+
+            while (zipThread.IsAlive)
+            {
+                while (Application.EventsPending())
+                    Application.RunIteration();
+            }
+
+            RefreshIconViews();
+        }
+        
+        //Následující řádek byl generován GitHub Copilotem
+        new PromptUserDialogWindow("Compression finished.");
     }
 }

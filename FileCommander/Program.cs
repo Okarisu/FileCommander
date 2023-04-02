@@ -1,18 +1,15 @@
-﻿namespace FileCommander;
-
+﻿using FileCommander.GUI;
 using Gtk;
-using GUI;
 
-static class Program
+namespace FileCommander;
+
+abstract class Program
 {
     public static void Main()
     {
-        
         Application.Init();
         new App();
-        Application.Run();
-        
-    }
 
-    
+        Application.Run();
+    }
 }

@@ -1,7 +1,8 @@
-using Gtk;
-
 namespace FileCommander.GUI.Dialogs;
 
+using System;
+using System.IO;
+using Gtk;
 public class PromptPathInputDialogWindow : Dialog
 {
     private static Dialog _dialog { get; set; }
@@ -18,14 +19,12 @@ public class PromptPathInputDialogWindow : Dialog
 
         if (promptSuffix)
         {
-            var requestLabel = new Label("Multiple files selected. Add suffix to all files?");
+            var requestLabel = new Label("Multiple files selected. Suffix will be added to new files.");
             _dialog.ContentArea.PackStart(requestLabel, true, true, 0);
         }
 
         var entry = new Entry();
         _dialog.ContentArea.PackStart(entry, true, true, 0);
-
-        //TODO přidat validaci vstupu
 
         _dialog.Response += delegate(object _, ResponseArgs args)
         {

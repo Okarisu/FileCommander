@@ -2,15 +2,17 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System;
+using System.IO;
+using FileCommander.GUI;
 using FileCommander.GUI.Controllers;
 using FileCommander.GUI.Dialogs;
+using Gtk;
 
 namespace FileCommander.core;
 
-using GUI;
-using static GUI.App;
+using static App;
 using static NavigationController;
-using System.IO.Compression;
 
 public partial class Core
 {
@@ -29,8 +31,16 @@ public partial class Core
 
         var notArchiveFilesOccured = false;
         var duplicateArchiveFilesOccured = false;
+        new ProgressDialogWindow("Extracting...");
         foreach (var item in items)
         {
+            //Přeskočení souborů, které nejsou archivy (CG)
+            if (!item.Name!.EndsWith(".zip") || item.IsDirectory)
+            {
+                notArchiveFilesOccured = true;
+                continue;
+            }
+
             var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
             var filename = cleanFilename[0]; //jméno souboru bez koncovky
             if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
@@ -40,26 +50,32 @@ public partial class Core
             }
 
             var targetDirectoryPath = Path.Combine(promptedTarget.root, filename);
-            if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
-            {
-                if (Directory.Exists(targetDirectoryPath))
-                {
-                    duplicateArchiveFilesOccured = true;
-                    continue;
-                }
 
-                ZipFile.ExtractToDirectory(item.Path, targetDirectoryPath);
-            }
-            else
+            if (Directory.Exists(targetDirectoryPath))
             {
-                notArchiveFilesOccured = true;
+                duplicateArchiveFilesOccured = true;
+                continue;
             }
+
+            var handler = new ProcessHandler(item.Path, targetDirectoryPath, false);
+            var thread = new Thread(handler.Extract);
+            thread.Start();
+
+            while (thread.IsAlive)
+            {
+                while (Application.EventsPending())
+                    Application.RunIteration();
+            }
+
+            RefreshIconViews();
         }
 
         if (notArchiveFilesOccured)
             new PromptUserDialogWindow("Several files were not a .zip archive.");
         if (duplicateArchiveFilesOccured)
             new PromptUserDialogWindow("Several directories with the same name already exist.");
-        Refresh();
+        
+        //Následující řádek byl generován GitHub Copilotem
+        new PromptUserDialogWindow("Extraction finished.");
     }
 }

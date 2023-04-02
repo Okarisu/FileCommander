@@ -56,7 +56,7 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 |    F2     |  +  |     |     |     |     |     |     |     |
 |    F3     |     |  +  |  +  |  +  |  +  |  +  |     |     |
 |    F4     |     |     |     |     |     |     |  +  |  +  |
- |    F5     |     |     |  +  |  +  |     |     |  +  |  +  |  
+|    F5     |     |     |  +  |  +  |     |     |  +  |  +  |  
 
 ## Milestones
  
@@ -69,8 +69,8 @@ Bude vyvíjena snaha implementovat uživatelská nastavení, ale program se vzhl
 - [x] UC4
 - [x] UC5
 - [x] UC6
-- [ ] UC7
-- [ ] UC8
+- [x] UC7
+- [x] UC8
 
 ### MS3. - 20.3.
-- [ ] Kontrola cest, testing, ať to proboha funguje
+- [x] Kontrola cest, testing, ať to proboha funguje
