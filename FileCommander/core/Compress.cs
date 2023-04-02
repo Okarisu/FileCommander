@@ -101,7 +101,7 @@ public partial class Core
             {
                 if (item!.IsDirectory)
                 {
-                    var handler = new FileHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), true);
+                    var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), true);
                     var thread = new Thread(handler.Copy);
                     thread.Start();
 
@@ -115,7 +115,7 @@ public partial class Core
                 }
                 else
                 {
-                    var handler = new FileHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), false);
+                    var handler = new ProcessHandler(item.Path, Path.Combine(tmpDirPath, item.Name!), false);
                     var thread = new Thread(handler.Copy);
                     thread.Start();
 
@@ -129,7 +129,7 @@ public partial class Core
                 }
             }
             
-            var zipHandler = new FileHandler(tmpDirPath, archiveTargetPath, false);
+            var zipHandler = new ProcessHandler(tmpDirPath, archiveTargetPath, false);
             var zipThread = new Thread(zipHandler.Compress);
             zipThread.Start();
 

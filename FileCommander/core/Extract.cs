@@ -49,7 +49,7 @@ public partial class Core
                     duplicateArchiveFilesOccured = true;
                     continue;
                 }
-                var _handler = new FileHandler(item.Path, targetDirectoryPath, false);
+                var _handler = new ProcessHandler(item.Path, targetDirectoryPath, false);
                 var _thread = new Thread(_handler.Extract);
                 _thread.Start();
 

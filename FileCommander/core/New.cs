@@ -18,7 +18,7 @@ public partial class Core
     {
         var newFolderName = TargetController.GetTargetPath("New folder", false);
 
-        var root = GetFocusedWindow() == 1 ? App.LeftRoot : RightRoot;
+        var root = GetFocusedWindow() == 1 ? LeftRoot : RightRoot;
 
         var newDirectoryPath = Path.Combine(root.ToString(), newFolderName.path);
         if (Directory.Exists(newDirectoryPath))

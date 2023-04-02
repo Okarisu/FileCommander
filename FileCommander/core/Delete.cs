@@ -42,7 +42,7 @@ public partial class Core
             }
             if (item!.IsDirectory)
             {
-                var handler = new FileHandler(item.Path, null, true);
+                var handler = new ProcessHandler(item.Path, null, true);
                 var thread = new Thread(handler.Delete);
                 thread.Start();
 
@@ -56,7 +56,7 @@ public partial class Core
             }
             else
             {
-                var handler = new FileHandler(item.Path, null, false);
+                var handler = new ProcessHandler(item.Path, null, false);
                 var thread = new Thread(handler.Delete);
                 thread.Start();
 

@@ -55,6 +55,18 @@ Funkce GetConf(Str) vrací konfiguraci jako bool nebo string. V argumentu se jim
 
 Funkce SetConf nejdříve deserializuje obsah konfiguračního souboru a následně v Dictionary přepíše hodnotu pod zadaným klíčem na novou hodnotu. Dictionary poté serializuje nazpět a pomocí instance StreamWriter konfiguraci uloží do souboru.
 
+## Část core
+Tato část obsahuje všechny funkce, které se soubory manipulují. Funkce, u kterých hrozí, že jejich procesy zaberou déle času, se spouští v odlišném vláknu, než je vlákno hlavního procesu. 
+
+K tomu slouží třída ProcessHandler, jejíž konstruktor nastaví do privátních proměnných zdrojovou a cílovou cestu akce a informaci, zda je objekt složkou. Akce, která má být se souborem provedena, pak probíhá ve  vlastním vláknu jako metoda beroucí své argumenty z těchto privátních proměnných.
+
+Tento způsob zpracování byl původně plánován kvůli zobrazení okna s informacemi o průběhu operace, ale protože jsem během vývoje narazil na problémy (stále zaseklý progress bar, neukončitelné okno nebo vlákno), se kterými si nevěděl rady ani nikdo z lidí, se kterými jsem problém konzultoval, tato funkconalita programu tedy implementována není. Myslím si však, že je dobré proces, u kterého je větší riziko chyby, oddělit od hlavního procesu programu, a tak jsem tyto procesy do vláken umístil všechny, i když by se to mohlo bez funkce zmíněného informačního okna zdát zbytečné. 
+
+### Funkce New
+Funkce vytvářející novou složku je nejjednodušší funkcí z celé části core. Po zpracování uživatelského vstupu kontroluje, zda už v adresáři není složka se stejným názvem, a následně ji v try/catch bloku zkouší vytvořit. Tento blok se snaží zachytit výjimky, ke kterým by mohlo při zadávání dojít, jako prázdné jméno složky, přesažení limitu délky názvu (na linuxu 255 znaků), zakázaných znaků v názvu (specifické pro Windows) nebo pokus o vytvoření složky v adresáři, kam uživatel nemá přístup. Poslední výjiku se mi povedlo zdárně otestovat, program v root adresáři systému opravdu složku nevytvoří a vrátí uživateli chybovou hlášku.
+Funkce na konci zavolá RefreshIconViews(), čímž obnoví zobrazení obsahu obou panelů.
+
+
 
 
 

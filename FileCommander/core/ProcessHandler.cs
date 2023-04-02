@@ -7,13 +7,13 @@ using FileCommander.GUI.Dialogs;
 
 namespace FileCommander.core;
 
-public class FileHandler
+public class ProcessHandler
 {
     private string SourcePath { get; set; }
     private string TargetPath { get; set; }
     private bool IsDirectory { get; set; }
 
-    public FileHandler(string sourcePath, string targetPath, bool isDirectory)
+    public ProcessHandler(string sourcePath, string targetPath, bool isDirectory)
     {
         SourcePath = sourcePath;
         TargetPath = targetPath;

@@ -68,7 +68,7 @@ public partial class Core
                     }
                 }
 
-                var handler = new FileHandler(item.Path, childDestinationPath, true);
+                var handler = new ProcessHandler(item.Path, childDestinationPath, true);
                 var thread = new Thread(handler.Copy);
                 thread.Start();
 
@@ -120,7 +120,7 @@ public partial class Core
                     }
                 }
 
-                var handler = new FileHandler(item.Path, childDestinationPath, false);
+                var handler = new ProcessHandler(item.Path, childDestinationPath, false);
                 var thread = new Thread(handler.Copy);
                 thread.Start();
 
