@@ -10,7 +10,7 @@ using static App;
 
 public abstract class NavigationController
 {
-    public static DirectoryInfo OnHomeClicked(EventArgs e, ListStore store)
+    public static DirectoryInfo OnHomeClicked(ListStore store)
     {
         var root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
@@ -31,7 +31,7 @@ public abstract class NavigationController
         Stack<DirectoryInfo> historyForward, ListStore store)
     {
         if (history.Count == 0)
-            return null;
+            return root;
 
         historyForward.Push(root);
         FillStore(store, history.Peek());
@@ -42,7 +42,7 @@ public abstract class NavigationController
         Stack<DirectoryInfo> historyForward, ListStore store)
     {
         if (historyForward.Count == 0)
-            return null;
+            return root;
 
         history.Push(root);
         FillStore(store, historyForward.Peek());

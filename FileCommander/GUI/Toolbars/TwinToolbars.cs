@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 public abstract class TwinToolbars
 {
     public static Toolbar DrawLeftToolbar()
@@ -21,7 +22,7 @@ public abstract class TwinToolbars
         leftToolbar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += (sender, args) =>
         {
-            LeftRoot = OnHomeClicked(args, LeftStore);
+            LeftRoot = OnHomeClicked(LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
 
@@ -32,27 +33,26 @@ public abstract class TwinToolbars
             LeftRoot = OnUpClicked(LeftRoot, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
-        
+
         var leftBackButton = new ToolButton(Stock.GoBack);
         leftToolbar.Insert(leftBackButton, 2);
-        leftBackButton.Clicked += (_,_) =>
+        leftBackButton.Clicked += (_, _) =>
         {
-            var tmpRoot = OnBackClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
-            LeftRoot = tmpRoot != null ? tmpRoot : LeftRoot;
+            LeftRoot = OnBackClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
-        
+
         var leftForwardButton = new ToolButton(Stock.GoForward);
         leftToolbar.Insert(leftForwardButton, 3);
         leftForwardButton.Clicked += (sender, args) =>
         {
-            var tmpRoot = OnForwardClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
-            LeftRoot = tmpRoot != null ? tmpRoot : LeftRoot;
+            LeftRoot = OnForwardClicked(LeftRoot, LeftHistory, LeftHistoryForward, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
 
         return leftToolbar;
     }
+
     public static Toolbar DrawRightToolbar()
     {
         var rightPanelBar = new Toolbar();
@@ -62,7 +62,7 @@ public abstract class TwinToolbars
         rightPanelBar.Insert(rightHomeButton, 0);
         rightHomeButton.Clicked += (_, args) =>
         {
-            RightRoot = OnHomeClicked(args, RightStore);
+            RightRoot = OnHomeClicked(RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
@@ -78,8 +78,7 @@ public abstract class TwinToolbars
         rightPanelBar.Insert(rightBackButton, 2);
         rightBackButton.Clicked += (_, _) =>
         {
-            var tmpRoot = OnBackClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
-            RightRoot = tmpRoot != null ? tmpRoot : RightRoot;
+            RightRoot = OnBackClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
@@ -87,13 +86,10 @@ public abstract class TwinToolbars
         rightPanelBar.Insert(rightForwardButton, 3);
         rightForwardButton.Clicked += (_, _) =>
         {
-            var tmpRoot = OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
-            RightRoot = tmpRoot != null ? tmpRoot : RightRoot;
+            RightRoot = OnForwardClicked(RightRoot, RightHistory, RightHistoryForward, RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
         return rightPanelBar;
     }
-
-    
 }

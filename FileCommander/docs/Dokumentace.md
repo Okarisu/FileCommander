@@ -143,7 +143,23 @@ Tato funkce obnovuje text zobrazený na nástrojové liště obou panelů a ozna
 TwinPanels obsahuje 2 funkce pro vykreslení paralelních panelů zobrazujících obsah adresářů. Původně jsem zamýšlel vytvořit jednu funkci a volat ji dvakrát s odlišnými parametry, ale tento postup se neukázal jako funkční, proto má každý panel svoji funkci.
 
 https://docs.gtk.org/gtk3/method.ScrolledWindow.set_policy.html
-Nejdříve se do objektu ListStore přidají ikony položek v adresáři a následně se Widgetu pro zobrazení posouvatelných oken se nejdříve nastaví automatické zobrazování posuvné lišty. PolicyType.Automatic určuje zobrazení, je-li potřeba (větší množství položek v adresáři), jinak posuvník zobrazen není. Poté se  a 
+Nejdříve se do objektu ListStore přidají ikony položek v adresáři a následně se widgetu pro zobrazení posouvatelných oken nastaví automatické zobrazování posuvné lišty - PolicyType.Automatic určuje zobrazení, je-li potřeba (větší množství položek v adresáři), jinak posuvník zobrazen není. Dále se nastaví widget IconView, který zobrazuje jednotlivé ikony položek. To zahrnuje možnost vybrat více souborů (SelectionMode.Multiple) a zobrazení názvu položky a její ikony. Dále se inicializuje EventHandler pro aktivaci položky a pro změnu soustředěného okna. Na konci funkce se nastavený widget IconView přidá do widgetu, který ho obaluje, tedy ScrolledWindow.
+
+### Namespace Controllers
+
+#### Třída NavigationController
+Tato třída zahrnuje všechny funkce sloužící k navigaci pomocí tlačítek navigačních lišt.
+
+##### OnHomeClicked()
+Tato funkce vrací jako nový root složku systémem definovanou jako osobní - Environment.SpecialFolder.Personal - a v příslušném panelu (určeném argumentem store) zobrazí funkcí FillStore obsah tohoto rootu.
+
+##### OnUpClicked()
+Funkce vrací jako root adresář o úroveň výše, než je root předaný funkci v argumentech, pokud není tento adresář null. V takovém případě vrací současný root.
+
+##### OnBackClicked()
+Funkce posouvající uživatele nazpět v historii navštívených složek. Pokud je zásobník navštívených cest prázdný, vrací aktuální adresář. V opačném případě zařadí do zásobníku historie vpřed cestu k aktuálnímu adresáři, zobrazí v panelu poslední navštívenou složku a s odstraněním této složky ze zásobníku historie ji vrátí jako root.
+
+##### OnForwardClicked()
 
 
 
