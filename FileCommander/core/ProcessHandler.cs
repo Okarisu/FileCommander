@@ -68,13 +68,13 @@ public class ProcessHandler
 
     private static void RecursiveCopyDirectory(string sourceDirectory, string destinationDirectory)
     {
-        var dir = new DirectoryInfo(sourceDirectory);
+        var dir = new DirectoryInfo(sourceDirectory); //zdrojový adresář
+        
+        DirectoryInfo[] dirs = dir.GetDirectories(); //podadresáře zdrojového adresáře (GC)
 
-        // Cache directories before start of copying
-        DirectoryInfo[] dirs = dir.GetDirectories();
+        Directory.CreateDirectory(destinationDirectory); //vytvoření cílového adresáře
 
-        Directory.CreateDirectory(destinationDirectory);
-
+        //kopírování souborů zdrojového adresáře do cílového adresáře (GC)
         foreach (FileInfo file in dir.GetFiles())
         {
             try
@@ -89,6 +89,7 @@ public class ProcessHandler
             }
         }
 
+        //rekurzivní volání funkce pro zkopírování podadresářů
         foreach (DirectoryInfo subDir in dirs)
         {
             try

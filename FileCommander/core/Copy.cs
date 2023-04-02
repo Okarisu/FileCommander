@@ -73,6 +73,7 @@ public partial class Core
                 var thread = new Thread(handler.Copy);
                 thread.Start();
 
+                //Cyklus zajišťující to, aby GUI nezamrzlo (GC)
                 while (thread.IsAlive)
                 {
                     while (Application.EventsPending())
@@ -127,6 +128,7 @@ public partial class Core
                 var thread = new Thread(handler.Copy);
                 thread.Start();
 
+                //Cyklus zajišťující to, aby GUI nezamrzlo (GC)
                 while (thread.IsAlive)
                 {
                     while (Application.EventsPending())

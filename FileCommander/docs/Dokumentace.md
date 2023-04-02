@@ -52,9 +52,12 @@ Funkce GetConf(Str) vrací konfiguraci jako bool nebo string. V argumentu se jim
 Funkce SetConf nejdříve deserializuje obsah konfiguračního souboru a následně v Dictionary přepíše hodnotu pod zadaným klíčem na novou hodnotu. Dictionary poté serializuje nazpět a pomocí instance StreamWriter konfiguraci uloží do souboru.
 
 ## Část core
-Tato část obsahuje všechny funkce, které se soubory manipulují. Funkce, u kterých hrozí, že jejich procesy zaberou déle času, se spouští v odlišném vláknu, než je vlákno hlavního procesu. 
+Tato část obsahuje všechny funkce, které se soubory manipulují. Sdružil jsem je do jedné třídy Core, přičemž každá funkce je implementována ve vlastním souboru v parciální třídě. Přišlo mi zbytečné, aby měla každá funkce svoji třídu, ale zároveň jsem je potřeboval kvůli přehlednosti kódu rozčlenit do jednotlivých souborů, a použití parciální třídy mi to umožnilo. 
 
-K tomu slouží třída ProcessHandler, jejíž konstruktor nastaví do privátních proměnných zdrojovou a cílovou cestu akce a informaci, zda je objekt složkou. Akce, která má být se souborem provedena, pak probíhá ve  vlastním vláknu jako metoda beroucí své argumenty z těchto privátních proměnných.
+## Třída ProcessHandler
+Funkce, u kterých hrozí, že jejich procesy zaberou déle času, se spouští v odlišném vláknu, než je vlákno hlavního procesu. K tomu slouží třída ProcessHandler, jejíž konstruktor nastaví do privátních proměnných zdrojovou a cílovou cestu akce a informaci, zda je objekt složkou. Akce, která má být se souborem provedena, pak probíhá ve  vlastním vláknu jako metoda beroucí své argumenty z těchto privátních proměnných.
+
+V každé funkci, která svůj proces ve vláknu spouští, je navíc smyčka čekající na skončení procesu. Ta zajišťuje, že bude okno Gtk obnovováno a zamezuje tak zamrznutí programu.
 
 Tento způsob zpracování byl původně plánován kvůli zobrazení okna s informacemi o průběhu operace, ale protože jsem během vývoje narazil na problémy (stále zaseklý progress bar, neukončitelné okno nebo vlákno), se kterými si nevěděl rady ani nikdo z lidí, se kterými jsem problém konzultoval, tato funkconalita programu tedy implementována není. Myslím si však, že je dobré proces, u kterého je větší riziko chyby, oddělit od hlavního procesu programu, a tak jsem tyto procesy do vláken umístil všechny, i když by se to mohlo bez funkce zmíněného informačního okna zdát zbytečné. 
 
@@ -70,9 +73,16 @@ Každá iterace probíhá podle toho, zda je objekt dané iterace soubor, nebo s
 Po určení způsobu, jakým má být s objektem Item nakládáno, zkontrolují obě funkce, zda již v cílovém adresáři objekt se stejným názvem není. Při kopírování lze tyto soubory kopírovat s přidanou příponou, přesouvání tyto soubory přeskakuje. Následně je v novém vlákně spuštěn proces, který zvolenou akci pro daný objekt provede, po jeho ukončení se obnoví zobrazení souborů v panelech a probíhá další kolo smyčky.
 Po skončení iterace vyskočí dialogové okno, ohlašující konec operace.
 
-#### Copy
-V této funkci si program kromě průběhu popsaného výše navíc v každém běhu smyčky načte uživatelské preference ohledně kopírování duplicitních souborů, a to funkcí GetConf s argumentem PromptDuplicityFileCopy. Vrátí-li tato funkce true, dotazuje se při výskytu duplicitního objektu, zda má objekt kopírovat a připojit mu číselnou příponu, či ho má přeskočit. Takto 
-Každá smyčka 
+#### Copy()
+V této funkci si program kromě průběhu popsaného výše navíc v každém běhu smyčky načte uživatelské preference ohledně kopírování duplicitních souborů, a to funkcí GetConf s argumentem PromptDuplicityFileCopy. Vrátí-li tato funkce true, dotazuje se při výskytu duplicitního objektu, zda má objekt kopírovat a připojit mu číselnou příponu, či ho má přeskočit. Takto můžeme rozlišit jednotlivé případy a pro každý objekt zvolit zvlášť. Pokud však uživatel zaškrtne políčko "Don't ask again", program si tuto preferenci uloží do konfiguračního souboru a již se dotazovat nebude, a to ani při nové instanci programu. Soubory bude odteď automaticky kopírovat s přidanou příponou. Pokud si uživatel přeje dotazování obnovit, musí v konfiguračním souboru změnit hodnotu klíče PromptDuplicityFileCopy z false na true. Tento způsob řešení vychází z mých zkušeností s kopírováním na různých operačních systémech. 
+Následuje blok kódu pro přejmenování objektu v případě výskytu duplicit. V případě složek program iteruje skrze všechny nalezené složky v cílovém adresáři a kontroluje, zda neobsahují název kopírované složky. Pokud nějaké najde, uloží si jejich počet a toto číslo pak připojí k názvu kopírované složky. Následně zkontroluje, zda již neexistuje kopie složky se stejnou příponou, a pokud ano, k názvu přidá ještě jednu příponu. Toto ošetření je zde pro případ, že bychom kopírovali složku, která již jednu příponu má.
+V případě souborů je tento postup stejný, ale předchází mu rozdělení názvu souboru na jméno a koncovku, aby mezi ně mohla být vsunuta přípona. Název je rozdělen do pole stringů funkcí String.Split s argumentem tečky. Poslední prvek pole, tj. koncovka, a první prvek pole se uloží do oddělených proměnných a pokud je pole delší než 2 (což znamená, že je v názvu tečka), ke stringu s prvním prvkem se postupně připojí všechny další prvky v poli, vyjma toho posledního (koncovky). Následně probíhá stejný proces kontroly názvů a přípon, jako u složek, pouze se navíc připojuje koncovka.
+Funkce kopírování se spouští v odděleném vláknu, objekt ProcessHandler se vytváří s parametry zdrojové a cílové cesty a hodnoty isDirectory. Pokud je objekt složka, je hodnota true, pokud ne, false. Funkce Copy třídy ProcessHandler pak kopíruje buď soubor pomocí metody File.Copy(), nebo rekurzivně kopíruje celou složku.
+V této rekurzivní funkci nejdříve vytvoří cílovou složku, zkopíruje do ní všechny soubory a poté volá sama sebe pro zkopírování dalších vnořených složek. Takto postupuje, dokud nejsou zkopírovány všechny soubory ve složce obsažené.
+
+### Move()
+Funkce Move() krom částí společných s funkcí Copy() kontroluje výskyt duplicitních objektů a pokud nějaké najde, nenahrazuje je, ale přeskakuje. Je to z důvodu mé osobní preference, protože se tím podle mne zvyšuje riziko nenávratného smazání souborů omylem. Po skončení akce je uživatel informován, že došlo k výskytu duplicit a že byly přeskočeny. Funkce také kontroluje, zda přesouvaný objekt neleží na cestě systémové složky programu, protože by při přesunutí jeho souborů došlo k chybě. 
+Proces přesunu je opět spuštěn v novém vlákně s argumenty zdrojové a cílové cesty a hodnty isDirectory. Platforma .NET implementuje funkci přesouvání jak pro složky, tak pro soubory, a tím pádem není potřeba psát rekurzivní funkci pro přesun složek.
 
 
 
@@ -84,7 +94,10 @@ Každá smyčka
 
 
 
-Tato funkce zajišťuje kopírování souborů mezi zobrazenými adresáři. I
+
+
+
+
 
 
 
