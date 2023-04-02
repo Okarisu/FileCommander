@@ -66,7 +66,8 @@ Tento způsob zpracování byl původně plánován kvůli zobrazení okna s inf
 Funkce vytvářející novou složku je nejjednodušší funkcí z celé části core. Po zpracování uživatelského vstupu kontroluje, zda už v adresáři není složka se stejným názvem, a následně ji v try/catch bloku zkouší vytvořit. Tento blok se snaží zachytit výjimky, ke kterým by mohlo při zadávání dojít, jako prázdné jméno složky, přesažení limitu délky názvu (na linuxu 255 znaků), zakázaných znaků v názvu (specifické pro Windows) nebo pokus o vytvoření složky v adresáři, kam uživatel nemá přístup. Poslední výjiku se mi povedlo zdárně otestovat, program v root adresáři systému opravdu složku nevytvoří a vrátí uživateli chybovou hlášku.
 Funkce na konci zavolá RefreshIconViews(), čímž obnoví zobrazení obsahu obou panelů.
 
-
+### Funkce Copy
+Tato funkce 
 
 
 
@@ -91,6 +92,6 @@ Funkce na konci zavolá RefreshIconViews(), čímž obnoví zobrazení obsahu ob
 - YamlDotNet - https://github.com/aaubry/YamlDotNet
 
 ### Vývojové prostředí
-Pro vývoj programu na linuxu jsem použil JetBrains Rider ver. 2022.3.2 a pro debugování na Windows pak Visual Studio 2022. Při vývoji jsem používal doplněk GitHub Autopilot, a to zejména kvůli zjednodušení opakovaného volání konstruktorů s velkým počtem argumentů nebo importování tříd v hlavičkách souborů. Všechny podstatnější či rozsáhlejší části kódu, které doplněk vygeneroval, jsou v kódu viditelně označeny. Rovněž jsem použil balíček PackageRestore (https://www.nuget.org/packages/PackageRestore) kvůli pár problémům s odstraněním knihoven.
+Pro vývoj programu na linuxu jsem použil JetBrains Rider ver. 2022.3.2 a jeho doplněk ReSharper pro formátování kódu a upozorňování na konvence názvů proměnných. Pro debugování na Windows jsem použil Visual Studio 2022. Při vývoji jsem používal doplněk GitHub Autopilot, a to zejména kvůli zjednodušení opakovaného volání konstruktorů s velkým počtem argumentů nebo importování tříd v hlavičkách souborů. Také jsem s jeho pomocí psal některé vysvětlující komentáře v kódu - ty jsou na konci označeny písmeny GC (generováno copilotem). Všechny podstatnější či rozsáhlejší části kódu, které doplněk vygeneroval, jsou v kódu viditelně označeny. Rovněž jsem použil balíček PackageRestore (https://www.nuget.org/packages/PackageRestore) kvůli pár problémům s odstraněním knihoven.
 
 ## Spuštění

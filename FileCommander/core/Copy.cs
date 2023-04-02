@@ -51,6 +51,7 @@ public partial class Core
                         if (!consent) continue;
                     }
 
+                    //Část kódu pro přejmenování složky při kolizi - zjištění počtu složek s tímto jménem
                     var foldersFound = new DirectoryInfo(destinationPath);
                     int duplicateFolders = 0;
                     foreach (DirectoryInfo dir in foldersFound.GetDirectories())
@@ -68,6 +69,7 @@ public partial class Core
                     }
                 }
 
+                //Kopírování složky (GC)
                 var handler = new ProcessHandler(item.Path, childDestinationPath, true);
                 var thread = new Thread(handler.Copy);
                 thread.Start();
@@ -91,16 +93,17 @@ public partial class Core
                     }
 
 
-                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
+                    //Část kódu pro přejmenování souboru při kolizi (GC)
+                    var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky (GC)
                     var extension = cleanFilename[^1]; //koncovka souboru; ^1 = poslední prvek pole
                     var filename = cleanFilename[0]; //jméno souboru bez koncovky
-                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
+                    if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka (GC)
                     {
                         for (var i = 0; i < cleanFilename.Length - 2; i++)
                             filename += "." + cleanFilename[i];
                     }
 
-
+                    //Zjištění počtu souborů s tímto jménem (GC)
                     var filesFound = new DirectoryInfo(destinationPath);
                     int duplicateFiles = 0;
                     foreach (FileInfo file in filesFound.GetFiles())
@@ -119,7 +122,8 @@ public partial class Core
                             Path.Combine(destinationPath, filename + $" ({duplicateFiles})." + extension);
                     }
                 }
-
+                
+                //Kopírování souboru (GC)
                 var handler = new ProcessHandler(item.Path, childDestinationPath, false);
                 var thread = new Thread(handler.Copy);
                 thread.Start();

@@ -29,7 +29,7 @@ public abstract class Settings
             reader.Close();
 
             //config[key] je typu object, proto je potřeba ho pro porovnání se string na string také převést
-            return (string) config[key] == "true"; //Ne zcela elegantní řešení, ale funguje
+            return (string) config[key] == "true";
         }
         catch (FileLoadException)
         {
