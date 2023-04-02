@@ -134,7 +134,8 @@ Funkce nejprve získá pole označených položek (selection). Aktuálně soust�
 Poté funkce iteruje skrze položky v poli selection a ukládá je do nového pole files jako objekty typu Item. Tento způsob iterace je stejný jako u funkce FillStore(), jen s tím rozdílem, že zde iterujeme pouze skrze pole označených položek, kdežto ve FillStore() probíhá iterace skrze celý adresář.
 Funkce nakonec vrací pole objektů typu Item.
 
-
+#### UpdateRootLabel()
+Tato funkce obnovuje text zobrazený na nástrojové liště obou panelů a oznamuje název současného adresáře spolu s adresářem o úroveň výše. Program odlišuje zobrazení nejvyššího adresáře na linuxu (root /) a na Windows (C:\). Dále rozlišuje, zda jednotlivé složky oddělovat lomítkem (linux), nebo zpětným lomítkem (Windows). 
 
 
 
