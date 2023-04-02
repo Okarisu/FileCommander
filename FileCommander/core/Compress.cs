@@ -148,5 +148,8 @@ public partial class Core
 
             RefreshIconViews();
         }
+        
+        //Generováno GitHub Copilotem
+        new PromptUserDialogWindow("Compression finished.");
     }
 }

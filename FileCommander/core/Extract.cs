@@ -33,6 +33,13 @@ public partial class Core
         var duplicateArchiveFilesOccured = false;
         foreach (var item in items)
         {
+            //Přeskočení souborů, které nejsou archivy (CG)
+            if (!item.Name!.EndsWith(".zip") || item.IsDirectory)
+            {
+                notArchiveFilesOccured = true;
+                continue;
+            }
+
             var cleanFilename = item.Name!.Split('.'); //rozdělení jména souboru a koncovky
             var filename = cleanFilename[0]; //jméno souboru bez koncovky
             if (cleanFilename.Length > 2) //Případ, kdy je v názvu souboru tečka
@@ -42,33 +49,32 @@ public partial class Core
             }
 
             var targetDirectoryPath = Path.Combine(promptedTarget.root, filename);
-            if (!item!.IsDirectory && item.Name!.EndsWith(".zip"))
-            {
-                if (Directory.Exists(targetDirectoryPath))
-                {
-                    duplicateArchiveFilesOccured = true;
-                    continue;
-                }
-                var _handler = new ProcessHandler(item.Path, targetDirectoryPath, false);
-                var _thread = new Thread(_handler.Extract);
-                _thread.Start();
 
-                while (_thread.IsAlive)
-                {
-                    while (Application.EventsPending())
-                        Application.RunIteration();
-                }
-            }
-            else
+            if (Directory.Exists(targetDirectoryPath))
             {
-                notArchiveFilesOccured = true;
+                duplicateArchiveFilesOccured = true;
+                continue;
             }
+
+            var handler = new ProcessHandler(item.Path, targetDirectoryPath, false);
+            var thread = new Thread(handler.Extract);
+            thread.Start();
+
+            while (thread.IsAlive)
+            {
+                while (Application.EventsPending())
+                    Application.RunIteration();
+            }
+
+            RefreshIconViews();
         }
 
         if (notArchiveFilesOccured)
             new PromptUserDialogWindow("Several files were not a .zip archive.");
         if (duplicateArchiveFilesOccured)
             new PromptUserDialogWindow("Several directories with the same name already exist.");
-        RefreshIconViews();
+        
+        //Generováno GitHub Copilotem
+        new PromptUserDialogWindow("Extraction finished.");
     }
 }

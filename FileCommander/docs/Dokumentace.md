@@ -101,11 +101,15 @@ Funkce následně iteruje skrze pole označených objektů, přičemž pokaždé
 Vzhledem k tomu, že objekty zůstávají na svém místě na disku, nejde o tak náročnou operaci, jako je jejich přesouvání do jiného adresáře, a proto jsem se rozhodl funkce File/Directory.Move nevolat z nových vláken. Musel jsem však ošetřit možné výjimky způsobené špatným formátem jména či nedostatečnými právy uživatele k úpravě adresáře, stejně jako u funkce New() pomocí try/catch bloku.
 
 ### Compress()
-Tato funkce se na začátku uživatele dotáže, zda si přeje označené položky komprimovat do adresáře v soustředěném panelu, nebo do vedlejšího. Následně, pokud je označen pouze jedna položka, která je složkou, se tato složka komprimuje do archivu formátu .zip se stejným názvem, jako měla původní složka, a to v novém vláknu. Pokud již archiv s tímto názvem existuje, uživateli se zobrazí chybová hláška a akce se neprovede.
+Tato funkce se na začátku uživatele dotáže, zda si přeje označené položky komprimovat do adresáře v soustředěném panelu, nebo do vedlejšího. Následně, pokud je označen pouze jedna položka, která je složkou, se tato složka komprimuje do archivu formátu .zip se stejným názvem, jako měla původní složka, a to v novém vláknu za použití metody ZipFile.CreateFromDirectory(). Pokud již archiv s tímto názvem existuje, uživateli se zobrazí chybová hláška a akce se neprovede.
 Pokud je označen soubor či více položek, je uživatel dotázán na jméno archivu. Pokud již archiv s tímto názvem existuje, uživateli se zobrazí chybová hláška a akce se neprovede. 
 Platforma .NET umožňuje vytvářet archivy pouze ze složek, což znamená, že musí být vybrané soubory zkopírovány do dočasné složky. Aby se zamezilo konfliktu s již existujícími složkami, je tato dočasná složka pojmenována ve formátu název archivu_tmp_čas vytvoření proměnné názvu složky v unix timestampu. Šance, že bude adresář obsahovat složku s tímto názvem, je velmi malá. Následuje pokus vytvořit složku v try/catch bloku, který ošetřuje výjimky jako délka názvu archivu/složky či práva k úpravě adresáře. Poté jsou všechny označené soubory v novém vlákně překopírovány do dočasné složky a ta je opět v novém vlákně zkomprimována do archivu, načež je smazána. Jménem archivu je jméno zadané uživatelem. Po skončení akce je o tom uživatel informován a zobrazené soubory v obou panelech jsou obnoveny.
 
 ### Extract()
+Extract() funkce stejně jako Compress() určí dotazem na uživatele adresář, kam má označené archivy rozbalovat. Následně iteruje skrze všechny označené položky a jako první kontroluje, zda položka končí koncovkou .zip nebo zda není složkou. V takovém případě přeskakuje na další položku a hodnotu notArchiveFilesOccured nastavuje na true.
+Dále podobnou funkcí, jako tomu bylo například u Copy(), zjistí jméno archivu oddělením jeho koncovky, a následně zkontroluje, zda se v adresáři již složka s tímto jménem nevyskytuje. Pokud ano, tento archiv přeskakuje a hodnotu flagu duplicateArchiveFilesOccured nastavuje na true.
+Poté je v novém vlákně spuštěn proces extrahování, který používá metodu ZipFile.ExtractToDirectory(). Tento proces se opakuje pro všechny označené položky, nakonci funkce se pak v závislosti na hodnotách zmíněných flagů uživateli oznámí přeskočení položek nebo výskyt duplicitních archivů a ukončení operace.
+
 
 
 
