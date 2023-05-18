@@ -28,7 +28,7 @@ public abstract class TwinToolbars
         leftToolbar.Insert(leftHomeButton, 0);
         leftHomeButton.Clicked += (sender, args) =>
         {
-            LeftRoot = OnHomeClicked(LeftStore);
+            LeftRoot = OnHomeClicked(LeftRoot, LeftHistory, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
 
@@ -36,7 +36,7 @@ public abstract class TwinToolbars
         leftToolbar.Insert(leftUpButton, 1);
         leftUpButton.Clicked += (_, _) =>
         {
-            LeftRoot = OnUpClicked(LeftRoot, LeftStore);
+            LeftRoot = OnUpClicked(LeftRoot, LeftHistory, LeftStore);
             UpdateRootLabel(LeftRootLabel, LeftRoot);
         };
 
@@ -68,7 +68,7 @@ public abstract class TwinToolbars
         rightPanelBar.Insert(rightHomeButton, 0);
         rightHomeButton.Clicked += (_, args) =>
         {
-            RightRoot = OnHomeClicked(RightStore);
+            RightRoot = OnHomeClicked(RightRoot, RightHistory, RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
 
@@ -76,7 +76,7 @@ public abstract class TwinToolbars
         rightPanelBar.Insert(rightUpButton, 1);
         rightUpButton.Clicked += (_, _) =>
         {
-            RightRoot = OnUpClicked(RightRoot, RightStore);
+            RightRoot = OnUpClicked(RightRoot, RightHistory, RightStore);
             UpdateRootLabel(RightRootLabel, RightRoot);
         };
 

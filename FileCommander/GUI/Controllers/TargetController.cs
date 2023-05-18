@@ -42,6 +42,13 @@ public abstract class TargetController
             NullPath();
         } while (path.path == "" && !path.cancel);
 
+        foreach (var c in Path.GetInvalidFileNameChars())
+        {
+            if (!path.path.Contains(c)) continue;
+            new PromptUserDialogWindow("Invalid character in file name.");
+            return GetTargetPath(dialogTitle, promptSuffix);
+        }
+
         return (path.path, path.cancel, path.addSuffix);
     }
 }
