@@ -10,16 +10,20 @@ using static App;
 
 public abstract class NavigationController
 {
-    public static DirectoryInfo OnHomeClicked(ListStore store)
+    public static DirectoryInfo OnHomeClicked(DirectoryInfo root, Stack<DirectoryInfo> history, ListStore store)
     {
-        var root = new DirectoryInfo(Environment.GetFolderPath(
+        history.Push(root);
+
+        root = new DirectoryInfo(Environment.GetFolderPath(
             Environment.SpecialFolder.Personal));
         FillStore(store, root);
         return root;
     }
 
-    public static DirectoryInfo OnUpClicked(DirectoryInfo root, ListStore store)
+    public static DirectoryInfo OnUpClicked(DirectoryInfo root, Stack<DirectoryInfo> history, ListStore store)
     {
+        history.Push(root);
+
         if (root.Parent == null)
             return root;
 

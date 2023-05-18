@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Pango;
 
 namespace FileCommander.GUI;
 
@@ -203,7 +204,24 @@ public class App : Gtk.Window
     }
     /* Konec citace */
     public static int GetFocusedPanel() => _focusedPanel;
-    public static void SetFocusedPanel(int panel) => _focusedPanel = panel;
+
+    public static void SetFocusedPanel(int panel)
+    {
+        _focusedPanel = panel;
+
+        //Zvýraznění aktivního panelu
+        switch (panel)
+        {
+            case 1:
+                LeftRootLabel.ModifyFg(StateType.Normal, new Gdk.Color(0, 200, 0));
+                RightRootLabel.ModifyFg(StateType.Normal, new Gdk.Color(255, 255, 255));
+                break;
+            case 2:
+                RightRootLabel.ModifyFg(StateType.Normal, new Gdk.Color(0, 200, 0));
+                LeftRootLabel.ModifyFg(StateType.Normal, new Gdk.Color(255, 255, 255));
+                break;
+        }
+    }
 
     public static Item[] GetSelectedItems()
     {

@@ -51,6 +51,4 @@ public class PromptTargetPanelDialogWindow : Dialog
     {
         _cancel = false;
     }
-
-    
 }

@@ -22,6 +22,7 @@ public abstract class TwinPanels
         FillStore(LeftStore, LeftRoot);
         LeftScrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic); //Nastavení chování posuvníku
         LeftIconView.GrabFocus(); //Jeden z panelů musí být na začátku zaktivován kvůli předejití chybám
+        LeftRootLabel.ModifyFg(StateType.Normal, new Gdk.Color(0, 200, 0)); //Zvýraznění aktivního panelu
         LeftIconView.SelectionMode = SelectionMode.Multiple; //Možnost výběru více souborů
         LeftIconView.TextColumn = ColDisplayName; //Zobrazení jména souboru pod ikonou
         LeftIconView.PixbufColumn = ColPixbuf; //Zobrazení ikony souboru

@@ -2,6 +2,8 @@
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System.Data;
+
 namespace FileCommander.core;
 
 using System;
@@ -48,9 +50,14 @@ public partial class Core
             new PromptUserDialogWindow("Malformed folder name");
             return;
         }
+        catch (ReadOnlyException)
+        {
+            new PromptUserDialogWindow("Directory is read-only.");
+            return;
+        }
         catch (IOException)
         {
-            new PromptUserDialogWindow("Parent directory is read-only.");
+            new PromptUserDialogWindow("Input/output error has occurred.");
             return;
         }
         catch (UnauthorizedAccessException)
